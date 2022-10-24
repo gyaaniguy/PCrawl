@@ -1,0 +1,23 @@
+{
+    "name": "gyaaniguy/php-crawly",
+    "description": "Library to assist to common carwling, scraping tasks",
+    "keywords": ["scraping", "php"],
+    "authors": [
+        {
+            "name": "Nikhil Jain",
+            "email": "nik.jain@gmail.com"
+        }
+    ],
+    "type": "library",
+    "require": {
+		"php": ">=7.1"
+    },
+    "require-dev": {
+		"phpunit/phpunit": "7.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gyaaniguy\\PCrawl\\": "src/"
+        }
+    }
+}
