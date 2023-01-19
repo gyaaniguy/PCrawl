@@ -70,6 +70,11 @@ class CurlClient extends HttpClient
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, $cookiePath);
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, $cookiePath);
     }
+    function disableCookies()
+    {
+        curl_setopt($this->ch, CURLOPT_COOKIEJAR, '');
+        curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
+    }
     
     function clearCookies()
     {

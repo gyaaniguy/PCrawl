@@ -9,7 +9,7 @@ class PRequest{
 
     private array $options = [
         'user_agent'      => '',
-        'headers'         => '',
+        'headers'         => [],
         'tidy'            => false,
         'https'           => false,
         'httpclient'      => 'curl',
@@ -94,6 +94,13 @@ class PRequest{
         return $this;
     }
     
+    function disableCookies(): PRequest
+    {
+        $this->options['cookies_enabled'] = false;
+        $this->httpClient->disableCookies();
+        return $this;
+    }
+    
     function clearCookies(): PRequest
     {
         $this->httpClient->clearCookies();
@@ -132,6 +139,14 @@ class PRequest{
         if ($this->options['tidy']) {
             $res->tidy();
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 
 }

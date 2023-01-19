@@ -15,6 +15,7 @@ abstract class HttpClient
     abstract function setUserAgent(string $userAgent);
     abstract function setHeaders(array $headers );
     abstract function enableCookies(string $cookiePath);
+    abstract function disableCookies();
     abstract function clearCookies();
     abstract function allowHttps();
     abstract function setRedirects(int $num);    
