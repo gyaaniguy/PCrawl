@@ -37,10 +37,11 @@ class CurlClient extends HttpClient
         );
         
         $curlRes = curl_exec($this->ch);
-        $this->res->body = $curlRes;
-        $this->res->error = curl_error($this->ch);
-        $this->res->httpCode = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-        $this->res->responseHeaders = $this->responseHeaders;
+        $this->res->setRequestUrl($url);
+        $this->res->setBody($curlRes);
+        $this->res->setError(curl_error($this->ch));
+        $this->res->setHttpCode(curl_getinfo($this->ch, CURLINFO_HTTP_CODE));
+        $this->res->setResponseHeaders($this->responseHeaders);
         return $this->res;
     }
 
@@ -50,7 +51,6 @@ class CurlClient extends HttpClient
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $options);
         return $this->get($url);
     }
-
 
     function setUserAgent(string $userAgent)
     {
@@ -71,7 +71,7 @@ class CurlClient extends HttpClient
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, $cookiePath);
     }
     
-    public function clearCookies()
+    function clearCookies()
     {
         if (!empty($this->cookiePath)) {
             unlink($this->cookiePath);

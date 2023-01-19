@@ -9,15 +9,11 @@
 *  @author yourname
 */
 class PResponse{
-    public $body; 
-    public $responseHeaders;
-    public $responseCode;
-    public $error;
-    /**
-     * @var mixed
-     */
-    public $httpCode;
-    public $url;
+    protected $body; 
+    protected $responseHeaders;
+    protected $error;
+    protected $httpCode;
+    protected $requestUrl;
     private PParser $parser;
 
     function modBody(array $callbacks ){
@@ -34,6 +30,57 @@ class PResponse{
     // use url to convert
     function toAbsoluteUrls(){
         
+    }
+
+    /**
+     * @param mixed $body
+     */
+    public function setBody($body): void
+    {
+        $this->body = $body;
+    }
+
+    /**
+     * @param mixed $responseHeaders
+     */
+    public function setResponseHeaders($responseHeaders): void
+    {
+        $this->responseHeaders = $responseHeaders;
+    }
+
+    /**
+     * @param mixed $error
+     */
+    public function setError($error): void
+    {
+        $this->error = $error;
+    }
+
+    /**
+     * @param mixed $httpCode
+     */
+    public function setHttpCode($httpCode): void
+    {
+        $this->httpCode = $httpCode;
+    }
+    /**
+     * @param mixed $requestUrl
+     */
+    public function setRequestUrl($requestUrl): void
+    {
+        $this->requestUrl = $requestUrl;
+    }
+
+    public function tidy()
+    {
+        $config = array(
+            'indent'         => true,
+            'output-xhtml'   => true,
+            'wrap'           => 200);
+        $tidy = new Tidy();
+        $tidy->parseString($this->body, $config, 'utf8');
+        $tidy->cleanRepair();
+        $this->body = $tidy->value;
     }
 
 }

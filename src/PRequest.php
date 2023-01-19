@@ -19,7 +19,8 @@ class PRequest{
             $this->enableCookies();
         }
         $this->lastRawResponse = $this->httpClient->get($url);
-        return $this->postProcessing($this->lastRawResponse, $url);
+        $this->postProcessing($this->lastRawResponse, $url);
+        return $this->lastRawResponse;
     }
     
     function post($url = '',$postData) : PResponse {
@@ -30,8 +31,8 @@ class PRequest{
             $postData = http_build_query($postData);
         }
         $this->lastRawResponse = $this->httpClient->post($url,$postData);
-        return $this->postProcessing($this->lastRawResponse, $url);
-    }
+        $this->postProcessing($this->lastRawResponse, $url);
+        return $this->lastRawResponse;    }
 
     function setUserAgent(string $userAgent)
     {
@@ -85,18 +86,8 @@ class PRequest{
     function postProcessing(PResponse $res, string $url): PResponse
     {
         if ($this->tidyEnabled) {
-            $config = array(
-                'indent'         => true,
-                'output-xhtml'   => true,
-                'wrap'           => 200);
-            $tidy = new Tidy();
-            $tidy->parseString($res->body, $config, 'utf8');
-            $tidy->cleanRepair();
-            $res->body = $tidy->value;
+            $res->tidy();
         }
-        $res->url = $url ;
-        $res->createParser()
-        return $res;
     }
 
 }
