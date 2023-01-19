@@ -7,85 +7,129 @@
 */
 class PRequest{
 
-    public $tidyEnabled = false;
-    public $cookiesEnables = false;
+    private array $options = [
+        'user_agent'      => '',
+        'headers'         => '',
+        'tidy'            => false,
+        'https'           => false,
+        'httpclient'      => 'curl',
+        'cookies_enabled' => '',
+        'redirects'       => '',
+    ]; 
     private PResponse $lastRawResponse;
     private HttpClient $httpClient;
     private string $cookiePath;
-    private string $hostName;
+//    private string $hostName;
+
+    public function __construct($options)
+    {
+        if (!empty($options['httpClient']) && $options['httpClient'] == 'guzzle') {
+            $this->useGuzzle();
+        } else {
+            $this->useCurl();
+        }        
+        if (!empty($options['user_agent'])) {
+            $this->setUserAgent($options['user_agent']);
+        } 
+        if (!empty($options['headers']) ) {
+            $this->setHeaders($options['headers']);
+        } 
+        if (!empty($options['tidy'])) {
+            $this->enableTidy();
+        }
+        if (!empty($options['https'])) {
+            $this->setStrictHttps();
+        }
+        if (!empty($options['cookies_enabled'])) {
+            $this->enableCookies();
+        } 
+        if (!empty($options['redirects']) ) {
+            $this->setRedirects($options['redirects']);
+        }         
+    }
+
 
     function get($url = '') : PResponse {
-        if ($this->cookiesEnables) {
+        if (!empty($this->options['cookies_enabled'])) {
             $this->enableCookies();
         }
+        
         $this->lastRawResponse = $this->httpClient->get($url);
-        $this->postProcessing($this->lastRawResponse, $url);
+        $this->postProcessing($this->lastRawResponse);
         return $this->lastRawResponse;
     }
     
-    function post($url = '',$postData) : PResponse {
-        if ($this->cookiesEnables) {
+    function post($url,$postData) : PResponse {
+        if ($this->options['cookies_enabled']) {
             $this->enableCookies();
         }
         if (is_array($postData)) {
             $postData = http_build_query($postData);
         }
         $this->lastRawResponse = $this->httpClient->post($url,$postData);
-        $this->postProcessing($this->lastRawResponse, $url);
+        $this->postProcessing($this->lastRawResponse);
         return $this->lastRawResponse;    }
 
-    function setUserAgent(string $userAgent)
+    function setUserAgent(string $userAgent) : PRequest
     {
+        $this->options['user_agent'] = $userAgent;
         $this->httpClient->setUserAgent($userAgent);
         return $this;
     }
 
-    function setHeaders(array $headers){
+    function setHeaders(array $headers): PRequest
+    {
+        $this->options['headers'] = $headers;
         $this->httpClient->setHeaders($headers);
         return $this;
     }
 
-    function enableCookies(){
-        $this->cookiesEnables = true;
+    function enableCookies(): PRequest
+    {
+        $this->options['cookies_enabled'] = true;
         if (empty($this->cookiePath)) {
             $this->cookiePath = '/tmp/cook-prequest-'.uniqid();
         }
         $this->httpClient->enableCookies($this->cookiePath);
         return $this;
     }
-    function clearCookies(){
+    
+    function clearCookies(): PRequest
+    {
         $this->httpClient->clearCookies();
         return $this;
     }
-    function setStrictHttps(){
+    function setStrictHttps(): PRequest
+    {
+        $this->options['https'] = true;
         $this->httpClient->allowHttps();
         return $this;
     }
-    function setRedirects(int $num = 2)
+    function setRedirects(int $num = 2): PRequest
     {
+        $this->options['redirects'] = $num;
         $this->httpClient->setRedirects($num);
         return $this;
-    }    
-    
-    function useCurl()
+    }
+    function useCurl(): PRequest
     {
         $this->httpClient = new CurlClient();
         return $this;
     }
-    function useGuzzle()
+
+    function useGuzzle(): PRequest
     {
         return $this;
     }
 
-    public function enableTidy()
+    function enableTidy()
     {
-        $this->tidyEnabled = true;
+        $this->options['tidy'] = true;
     }
-
     
-    function postProcessing(PResponse $res, string $url): PResponse
+    function postProcessing(PResponse $res)
     {
-        if ($this->tidyEnabled) {
+        if ($this->options['tidy']) {
             $res->tidy();
         }
     }
