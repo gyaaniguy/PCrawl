@@ -10,13 +10,19 @@ class PRequestTest extends TestCase
     function testMain()
     {
         $req = new PRequest();
+        $req->setRequestHeaders(
+            ['user-agent' => 'Bad bot bat ball boy'] // <- I made a  tongue twister ! 
+        )->setUserAgent('Good bot bat ball boy');
+        
         $req->opts
             ->setUseTidy(true)
-            ->setSleepBetween(100*2);
+            ->setSleepBetween(100 * 2);
+
+        $page = $req->get('site.com');
+        $this->assertStringContainsString('body', $page);
+        $this->assertEquals(200, $req->opts->getSleepBetween());
+        $this->assertEquals(true, $req->opts->isUseTidy());
         
         $page = $req->get('site.com');
-        $this->assertStringContainsString('body',$page);
-        $this->assertEquals(200,$req->opts->getSleepBetween());
-        $this->assertEquals(true,$req->opts->isUseTidy());
     }
 }
