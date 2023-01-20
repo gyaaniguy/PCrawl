@@ -15,16 +15,16 @@ class CurlClient extends HttpClient
     {
         $this->res = new PResponse();
         $this->ch = curl_init();
-        curl_setopt($this->ch,CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 
     function get($url, $options = []): PResponse
     {
         curl_setopt($this->ch, CURLOPT_URL, $url);
         // this function is called by curl for each header received
-        curl_setopt($this->ch, CURLOPT_HEADERFUNCTION,
-            function($curl, $header) 
-            {
+        curl_setopt(
+            $this->ch, CURLOPT_HEADERFUNCTION,
+            function ($curl, $header) {
                 $len = strlen($header);
                 $header = explode(':', $header, 2);
                 if (count($header) < 2) {
@@ -35,7 +35,7 @@ class CurlClient extends HttpClient
                 return $len;
             }
         );
-        
+
         $curlRes = curl_exec($this->ch);
         $this->res->setRequestUrl($url);
         $this->res->setBody($curlRes);
@@ -55,33 +55,34 @@ class CurlClient extends HttpClient
 
     function setUserAgent(string $userAgent)
     {
-        curl_setopt($this->ch,CURLOPT_USERAGENT,$userAgent);        
+        curl_setopt($this->ch, CURLOPT_USERAGENT, $userAgent);
     }
 
     function setHeaders(array $headers)
     {
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
-    }    
+    }
 
     function enableCookies(string $cookiePath)
     {
         if (empty($cookiePath)) {
-            $this->cookiePath = '/tmp/cook-prequest-'.uniqid();
+            $this->cookiePath = '/tmp/cook-prequest-' . uniqid();
         }
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, $cookiePath);
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, $cookiePath);
     }
+
     function disableCookies()
     {
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, '');
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
     }
-    
+
     function clearCookies()
     {
         if (!empty($this->cookiePath)) {
             unlink($this->cookiePath);
-        }        
+        }
     }
 
     function allowHttps()

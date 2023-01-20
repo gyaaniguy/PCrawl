@@ -1,15 +1,18 @@
-<?php namespace Gyaaniguy\PCrawl;
+<?php
+
+namespace Gyaaniguy\PCrawl;
 
 /**
-*  A sample class
-*
-*  Use this section to define what this class is doing, the PHPDocumentator will use this
-*  to automatically generate an API documentation using this information.
-*
-*  @author yourname
-*/
-class PResponse{
-    protected string $body; 
+ *  A sample class
+ *
+ *  Use this section to define what this class is doing, the PHPDocumentator will use this
+ *  to automatically generate an API documentation using this information.
+ *
+ * @author yourname
+ */
+class PResponse
+{
+    protected string $body;
     protected string $responseHeaders;
     protected string $error;
     protected string $httpCode;
@@ -17,10 +20,11 @@ class PResponse{
     protected string $requestUrl;
     private PParser $parser;
 
-    public function modBody(array $callbacks ){
+    public function modBody(array $callbacks)
+    {
         foreach ($callbacks as $middleware) {
-            $this->body = $middleware($this->body);          
-        }        
+            $this->body = $middleware($this->body);
+        }
     }
 
 
@@ -37,7 +41,7 @@ class PResponse{
      */
     public function getBody(): string
     {
-        return $this->body; 
+        return $this->body;
     }
 
     /**
@@ -63,6 +67,7 @@ class PResponse{
     {
         $this->httpCode = $httpCode;
     }
+
     /**
      * @param mixed $requestUrl
      */
@@ -77,10 +82,10 @@ class PResponse{
     }
 
 
-
     public function setLastUrl($lastUrl)
     {
         $this->lastUrl = $lastUrl;
     }
+
 
 }

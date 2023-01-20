@@ -1,10 +1,11 @@
-<?php namespace Gyaaniguy\PCrawl;
+<?php
+namespace Gyaaniguy\PCrawl;
 
 /**
-*  A sample class
-*
-*  @author Nikhil Jain
-*/
+ *  A sample class
+ *
+ * @author Nikhil Jain
+ */
 class PRequest
 {
 
@@ -20,6 +21,7 @@ class PRequest
     private PResponse $lastRawResponse;
     private HttpClient $httpClient;
     private string $cookiePath;
+
     public function __construct($options)
     {
         if (!empty($options['httpClient']) && $options['httpClient'] == 'guzzle') {
