@@ -41,6 +41,7 @@ class CurlClient extends HttpClient
         $this->res->setBody($curlRes);
         $this->res->setError(curl_error($this->ch));
         $this->res->setHttpCode(curl_getinfo($this->ch, CURLINFO_HTTP_CODE));
+        $this->res->setLastUrl(curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL));
         $this->res->setResponseHeaders($this->responseHeaders);
         return $this->res;
     }
