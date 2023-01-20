@@ -11,8 +11,7 @@ abstract class HttpClient
 
     abstract public function get($url, $options = []): PResponse;
 
-    abstract public function
-    post(
+    abstract public function post(
         $url,
         $options = []
     ): PResponse;
