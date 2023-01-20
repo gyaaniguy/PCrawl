@@ -10,7 +10,7 @@
     ],
     "type": "library",
     "require": {
-		"php": ">=7.1",
+		"php": ">=7.4",
         "guzzlehttp/guzzle": "^7.5",
         "querypath/querypath": "^3.0",
         "spatie/url": "^1.3"
