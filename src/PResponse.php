@@ -9,28 +9,20 @@
 *  @author yourname
 */
 class PResponse{
-    protected $body; 
-    protected $responseHeaders;
-    protected $error;
-    protected $httpCode;
-    protected $requestUrl;
+    protected string $body; 
+    protected string $responseHeaders;
+    protected string $error;
+    protected string $httpCode;
+    protected string $lastUrl;
+    protected string $requestUrl;
     private PParser $parser;
 
-    function modBody(array $callbacks ){
+    public function modBody(array $callbacks ){
         foreach ($callbacks as $middleware) {
             $this->body = $middleware($this->body);          
         }        
     }
 
-    function createParser()
-    {
-        $this->parser = new PParser($this->body);
-    }
-
-    // use url to convert
-    function toAbsoluteUrls(){
-        
-    }
 
     /**
      * @param mixed $body
@@ -38,6 +30,14 @@ class PResponse{
     public function setBody($body): void
     {
         $this->body = $body;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBody(): string
+    {
+        return $this->body; 
     }
 
     /**
@@ -71,16 +71,16 @@ class PResponse{
         $this->requestUrl = $requestUrl;
     }
 
-    public function tidy()
+    public function createParser()
     {
-        $config = array(
-            'indent'         => true,
-            'output-xhtml'   => true,
-            'wrap'           => 200);
-        $tidy = new Tidy();
-        $tidy->parseString($this->body, $config, 'utf8');
-        $tidy->cleanRepair();
-        $this->body = $tidy->value;
+        $this->parser = new PParser($this->body);
+    }
+
+
+
+    public function setLastUrl($lastUrl)
+    {
+        $this->lastUrl = $lastUrl;
     }
 
 }

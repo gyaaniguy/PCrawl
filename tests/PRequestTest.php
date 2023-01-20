@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 class PRequestTest extends TestCase
 {
 
-    function testMain()
+    public function testMain()
     {
         $req = new PRequest();
         $req->setRequestHeaders(
