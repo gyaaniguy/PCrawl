@@ -1,10 +1,10 @@
 <?php
 
-namespace Gyaaniguy\PCrawl;
+namespace Gyaaniguy\PCrawl\HttpClients;
 
-use GuzzleHttp\Client;
+use Gyaaniguy\PCrawl\Response\PResponse;
 
-class CurlClient extends HttpClient
+class CurlClient extends AbstractHttpClient
 {
     public PResponse $res;
     public $ch;

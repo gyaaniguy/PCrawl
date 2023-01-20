@@ -2,6 +2,7 @@
 
 namespace Gyaaniguy\PCrawl;
 
+use Gyaaniguy\PCrawl\Response\PResponse;
 use PHPUnit\Framework\TestCase;
 
 class PResponseTest extends TestCase

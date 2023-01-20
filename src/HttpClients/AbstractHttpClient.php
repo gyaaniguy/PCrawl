@@ -1,11 +1,11 @@
 <?php
 
-namespace Gyaaniguy\PCrawl;
+namespace Gyaaniguy\PCrawl\HttpClients;
 
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
+use Gyaaniguy\PCrawl\Response\PResponse;
 
-abstract class HttpClient
+abstract class AbstractHttpClient
 {
     public Client $client;
 

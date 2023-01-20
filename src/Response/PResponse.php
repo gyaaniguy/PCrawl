@@ -1,6 +1,8 @@
 <?php
 
-namespace Gyaaniguy\PCrawl;
+namespace Gyaaniguy\PCrawl\Response;
+
+use Gyaaniguy\PCrawl\PParser;
 
 /**
  *  A sample class
