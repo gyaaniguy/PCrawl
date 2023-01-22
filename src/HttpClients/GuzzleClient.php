@@ -4,7 +4,7 @@ namespace Gyaaniguy\PCrawl\HttpClients;
 
 use GuzzleHttp\Client;
 
-class GuzzleClient extends AbstractHttpClient
+class GuzzleClient implements InterfaceHttpClient
 {
     public Client $client;
 

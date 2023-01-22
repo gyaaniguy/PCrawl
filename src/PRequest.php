@@ -1,7 +1,8 @@
 <?php
+
 namespace Gyaaniguy\PCrawl;
 
-use Gyaaniguy\PCrawl\HttpClients\AbstractHttpClient;
+use Gyaaniguy\PCrawl\HttpClients\InterfaceHttpClient;
 use Gyaaniguy\PCrawl\HttpClients\CurlClient;
 use Gyaaniguy\PCrawl\Response\PResponse;
 
@@ -23,7 +24,7 @@ class PRequest
         'redirects' => '',
     ];
     private PResponse $lastRawResponse;
-    private AbstractHttpClient $httpClient;
+    private InterfaceHttpClient $httpClient;
     private string $cookiePath;
 
     public function __construct($options)

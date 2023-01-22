@@ -4,7 +4,7 @@ namespace Gyaaniguy\PCrawl\HttpClients;
 
 use Gyaaniguy\PCrawl\Response\PResponse;
 
-class CurlClient extends AbstractHttpClient
+class CurlClient implements InterfaceHttpClient
 {
     public PResponse $res;
     public $ch;
