@@ -11,6 +11,8 @@ class CurlClient implements InterfaceHttpClient
     private string $cookiePath;
     public array $responseHeaders = [];
 
+//  public array $defaultOptions = ['user_agent' => '', 'custom_client_options' => ''];
+
     public function __construct()
     {
         $this->res = new PResponse();
@@ -18,7 +20,7 @@ class CurlClient implements InterfaceHttpClient
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 
-    function get($url, $options = []): PResponse
+    public function get(string $url, array $options = []): PResponse
     {
         curl_setopt($this->ch, CURLOPT_URL, $url);
         // this function is called by curl for each header received
@@ -46,53 +48,58 @@ class CurlClient implements InterfaceHttpClient
         return $this->res;
     }
 
-    function post($url, $options = []): PResponse
+    public function post(string $url, $postData = []): PResponse
     {
         curl_setopt($this->ch, CURLOPT_POST, 1);
-        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $options);
+        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $postData);
         return $this->get($url);
     }
 
-    function setUserAgent(string $userAgent)
+    public function setUserAgent(string $userAgent)
     {
         curl_setopt($this->ch, CURLOPT_USERAGENT, $userAgent);
     }
 
-    function setHeaders(array $headers)
+    public function setHeaders(array $headers)
     {
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
     }
 
-    function enableCookies(string $cookiePath)
+    public function enableCookies(string $cookiePath)
     {
         if (empty($cookiePath)) {
-            $this->cookiePath = '/tmp/cook-prequest-' . uniqid();
+            $this->cookiePath = '/tmp/cook-preRequest-' . uniqid();
         }
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, $cookiePath);
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, $cookiePath);
     }
 
-    function disableCookies()
+    public function disableCookies()
     {
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, '');
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
     }
 
-    function clearCookies()
+    public function clearCookies()
     {
         if (!empty($this->cookiePath)) {
             unlink($this->cookiePath);
         }
     }
 
-    function allowHttps()
+    public function allowHttps()
     {
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    function setRedirects(int $num)
+    public function setRedirects(int $num)
     {
         curl_setopt($this->ch, CURLOPT_MAXREDIRS, $num);
+    }
+
+    public function customClientOptions(array $customClientOptions)
+    {
+        curl_setopt_array($this->ch, $customClientOptions);
     }
 }

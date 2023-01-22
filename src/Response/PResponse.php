@@ -15,7 +15,7 @@ use Gyaaniguy\PCrawl\PParser;
 class PResponse
 {
     protected string $body;
-    protected string $responseHeaders;
+    protected array $responseHeaders;
     protected string $error;
     protected string $httpCode;
     protected string $lastUrl;

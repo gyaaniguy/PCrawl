@@ -13,21 +13,21 @@ use Gyaaniguy\PCrawl\Response\PResponse;
  */
 class PRequest
 {
-
     private array $options = [
         'user_agent' => '',
         'headers' => [],
         'tidy' => false,
         'https' => false,
         'httpclient' => 'curl',
-        'cookies_enabled' => '',
-        'redirects' => '',
+        'enable_cookies' => '',
+        'redirect_num' => '',
+        'custom_client_options' => [],
     ];
     private PResponse $lastRawResponse;
     private InterfaceHttpClient $httpClient;
     private string $cookiePath;
 
-    public function __construct($options)
+    public function __construct($options = [])
     {
         if (!empty($options['httpClient']) && $options['httpClient'] == 'guzzle') {
             $this->useGuzzle();
@@ -38,25 +38,28 @@ class PRequest
             $this->setUserAgent($options['user_agent']);
         }
         if (!empty($options['headers'])) {
-            $this->setHeaders($options['headers']);
+            $this->setRequestHeaders($options['headers']);
         }
         if (!empty($options['tidy'])) {
             $this->enableTidy();
         }
         if (!empty($options['https'])) {
-            $this->setStrictHttps();
+            $this->allowHttps();
         }
-        if (!empty($options['cookies_enabled'])) {
+        if (!empty($options['enable_cookies'])) {
             $this->enableCookies();
         }
-        if (!empty($options['redirects'])) {
-            $this->setRedirects($options['redirects']);
+        if (!empty($options['redirect_num'])) {
+            $this->setRedirects($options['redirect_num']);
+        }
+        if (!empty($options['custom_client_options'])) {
+            $this->setCustomClientOptions($options['custom_client_options']);
         }
     }
 
     public function get($url = ''): PResponse
     {
-        if (!empty($this->options['cookies_enabled'])) {
+        if (!empty($this->options['enable_cookies'])) {
             $this->enableCookies();
         }
 
@@ -67,7 +70,7 @@ class PRequest
 
     public function post($url, $postData): PResponse
     {
-        if ($this->options['cookies_enabled']) {
+        if ($this->options['enable_cookies']) {
             $this->enableCookies();
         }
         if (is_array($postData)) {
@@ -85,7 +88,7 @@ class PRequest
         return $this;
     }
 
-    public function setHeaders(array $headers): PRequest
+    public function setRequestHeaders(array $headers): PRequest
     {
         $this->options['headers'] = $headers;
         $this->httpClient->setHeaders($headers);
@@ -94,7 +97,7 @@ class PRequest
 
     public function enableCookies(): PRequest
     {
-        $this->options['cookies_enabled'] = true;
+        $this->options['enable_cookies'] = true;
         if (empty($this->cookiePath)) {
             $this->cookiePath = '/tmp/cook-prequest-' . uniqid();
         }
@@ -104,7 +107,7 @@ class PRequest
 
     public function disableCookies(): PRequest
     {
-        $this->options['cookies_enabled'] = false;
+        $this->options['enable_cookies'] = false;
         $this->httpClient->disableCookies();
         return $this;
     }
@@ -115,7 +118,7 @@ class PRequest
         return $this;
     }
 
-    public function setStrictHttps(): PRequest
+    public function allowHttps(): PRequest
     {
         $this->options['https'] = true;
         $this->httpClient->allowHttps();
@@ -124,10 +127,11 @@ class PRequest
 
     public function setRedirects(int $num = 2): PRequest
     {
-        $this->options['redirects'] = $num;
+        $this->options['redirect_num'] = $num;
         $this->httpClient->setRedirects($num);
         return $this;
     }
+
 
     public function useCurl(): PRequest
     {
@@ -160,4 +164,41 @@ class PRequest
         return $this->options;
     }
 
+    public function setClient($client): PRequest
+    {
+        $this->httpClient = $client;
+        if (!empty($client->defaultOptions) && is_array($client->defaultOptions)) {
+            foreach ($client->defaultOptions as $optionName => $optionValue) {
+                if (!empty($optionName)) {
+                    switch ($optionName) {
+                        case 'user_agent':
+                            $this->setUserAgent($optionValue);
+                            break;
+                        case 'headers':
+                            $this->setRequestHeaders($optionValue);
+                            break;
+                        case 'redirect_num':
+                            $this->setRedirects($optionValue);
+                            break;
+                        case 'https':
+                            $this->allowHttps();
+                            break;
+                        case 'custom_client_options' && is_array($optionValue):
+                            $this->setCustomClientOptions($optionValue);
+                            break;
+                    }
+                }
+            }
+        }
+        return $this;
+    }
+
+    private function setCustomClientOptions($customOpts): PRequest
+    {
+        $this->options['custom_client_options'] = $customOpts;
+        if (method_exists($this->httpClient, 'customClientOptions')) {
+            $this->httpClient->customClientOptions($customOpts);
+        }
+        return $this;
+    }
 }
