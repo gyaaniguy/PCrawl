@@ -64,7 +64,6 @@ class PRequest
         }
 
         $this->lastRawResponse = $this->httpClient->get($url);
-        $this->postProcessing($this->lastRawResponse);
         return $this->lastRawResponse;
     }
 
@@ -114,7 +113,9 @@ class PRequest
 
     public function clearCookies(): PRequest
     {
-        $this->httpClient->clearCookies();
+        if (!empty($this->cookiePath)) {
+            unlink($this->cookiePath);
+        }
         return $this;
     }
 
@@ -132,7 +133,6 @@ class PRequest
         return $this;
     }
 
-
     public function useCurl(): PRequest
     {
         $this->httpClient = new CurlClient();
@@ -144,17 +144,12 @@ class PRequest
         return $this;
     }
 
-    public function enableTidy()
+    public function enableTidy(): PRequest
     {
         $this->options['tidy'] = true;
+        return $this;
     }
 
-    public function postProcessing(PResponse $res)
-    {
-        if ($this->options['tidy']) {
-            $res->tidy();
-        }
-    }
 
     /**
      * @return array
@@ -163,6 +158,7 @@ class PRequest
     {
         return $this->options;
     }
+
 
     public function setClient($client): PRequest
     {
@@ -186,6 +182,9 @@ class PRequest
                         case 'custom_client_options' && is_array($optionValue):
                             $this->setCustomClientOptions($optionValue);
                             break;
+                        case 'client' && is_string($optionValue):
+                            $this->setClient($optionValue);
+                            break;
                     }
                 }
             }
@@ -193,12 +192,36 @@ class PRequest
         return $this;
     }
 
-    private function setCustomClientOptions($customOpts): PRequest
+
+    public function setCustomClientOptions($customOpts): PRequest
     {
         $this->options['custom_client_options'] = $customOpts;
-        if (method_exists($this->httpClient, 'customClientOptions')) {
-            $this->httpClient->customClientOptions($customOpts);
+        if (method_exists($this->httpClient, 'setCustomClientOptions')) {
+            $this->httpClient->setCustomClientOptions($customOpts);
         }
         return $this;
+    }
+
+    /**
+     * @return InterfaceHttpClient
+     */
+    public function getHttpClient(): InterfaceHttpClient
+    {
+        return $this->httpClient;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCookiePath(): string
+    {
+        return $this->cookiePath;
+    }
+
+    public function closeConnection()
+    {
+        if (!empty($this->options['httpclient']) && $this->options['httpclient'] === 'curl') {
+            $this->httpClient->close();
+        }
     }
 }

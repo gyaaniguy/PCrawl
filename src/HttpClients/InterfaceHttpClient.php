@@ -7,6 +7,7 @@ use Gyaaniguy\PCrawl\Response\PResponse;
 
 interface InterfaceHttpClient
 {
+    //  $defaultOptions = ['user_agent' => '', 'custom_client_options' => '', 'redirect_num' => '', 'https' => 'headers'];
 
     public function get(string $url, array $options = []): PResponse;
 
@@ -20,10 +21,10 @@ interface InterfaceHttpClient
 
     public function disableCookies();
 
-    public function clearCookies();
-
     public function allowHttps();
-    public function customClientOptions(array $customClientOptions);
+
+    
+    public function setCustomClientOptions(array $customClientOptions);
 
     public function setRedirects(int $num);
 }

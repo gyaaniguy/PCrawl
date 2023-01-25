@@ -8,10 +8,8 @@ class CurlClient implements InterfaceHttpClient
 {
     public PResponse $res;
     public $ch;
-    private string $cookiePath;
     public array $responseHeaders = [];
 
-//  public array $defaultOptions = ['user_agent' => '', 'custom_client_options' => ''];
 
     public function __construct()
     {
@@ -80,13 +78,6 @@ class CurlClient implements InterfaceHttpClient
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
     }
 
-    public function clearCookies()
-    {
-        if (!empty($this->cookiePath)) {
-            unlink($this->cookiePath);
-        }
-    }
-
     public function allowHttps()
     {
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -98,8 +89,12 @@ class CurlClient implements InterfaceHttpClient
         curl_setopt($this->ch, CURLOPT_MAXREDIRS, $num);
     }
 
-    public function customClientOptions(array $customClientOptions)
+    public function setCustomClientOptions(array $customClientOptions)
     {
         curl_setopt_array($this->ch, $customClientOptions);
     }
+    
+    public function close(){
+        curl_close($this->ch);
+    } 
 }
