@@ -2,6 +2,7 @@
 
 namespace Gyaaniguy\PCrawl;
 
+use Gyaaniguy\PCrawl\Helpers\RegexStuff;
 use Gyaaniguy\PCrawl\HttpClients\InterfaceHttpClient;
 use Gyaaniguy\PCrawl\HttpClients\CurlClient;
 use Gyaaniguy\PCrawl\Response\PResponse;
@@ -84,6 +85,23 @@ class PRequest
     {
         $this->options['user_agent'] = $userAgent;
         $this->httpClient->setUserAgent($userAgent);
+        return $this;
+    }
+
+    public function addRequestHeaders(array $headers): PRequest
+    {
+        if (!empty($headers)) {
+            $headersAssoc = RegexStuff::headerToAssoc($headers);
+            $OriginalHeadersAssoc = RegexStuff::headerToAssoc($this->options['headers']);
+            $allHeaders = array_merge($OriginalHeadersAssoc, $headersAssoc);
+            if (!empty($allHeaders)) {
+                array_walk($allHeaders, function (&$val, $key) {
+                    $val = $key . ': ' . $val;
+                });
+                $this->options['headers'] = array_values($allHeaders);
+                $this->httpClient->setHeaders($this->options['headers']);
+            }
+        }
         return $this;
     }
 
