@@ -42,8 +42,17 @@ class PRequestTest extends TestCase
         // Bro bot user agent.
         $options = $req->setClient(new Brobot())->getOptions();
         $this->assertEquals("Bro bot", $options['user_agent']);
-        $res = $req->get('https://www.whatsmyua.info/');
+        $this->assertEquals( [
+            'head1 : val 1',
+            'head2 : val 2',
+        ],$options['headers']);
+        $this->assertEquals(3, $options["redirect_num"]);
+        $this->assertEquals(true, $options["https"]);
+        $res = $req->allowHttps()->get('http://www.xhaus.com/headers');
         self::assertStringContainsString("Bro bot",$res->getBody());
+        self::assertStringContainsString("Head2",$res->getBody());
+        self::assertStringContainsString("val 2",$res->getBody());
+        self::assertStringNotContainsString("val 3",$res->getBody());
         $req->setUserAgent("no bro");
         $res = $req->get('https://www.whatsmyua.info/');
         self::assertStringContainsString("no bro",$res->getBody());
@@ -100,19 +109,6 @@ class PRequestTest extends TestCase
 
 
     }
-    public function testAddRequestHeaders()
-    {
-        $req = new PRequest();
-        $headers = [
-            "accept: *",
-            "content-type: application/json",
-        ];
-        $req->setRequestHeaders($headers);
-        $options = $req->getOptions();
-        self::assertArrayHasKey('headers',$options);
-        self::assertIsArray($options['headers']);
-        self::assertEquals($headers, $options['headers']);
-    }
 
     public function testSetUserAgent()
     {
@@ -122,6 +118,8 @@ class PRequestTest extends TestCase
         $options = $req->getOptions();
         self::assertArrayHasKey('user_agent',$options);
         self::assertEquals($userAgentStr, $options['user_agent']);
+        $res = $req->get('https://www.whatsmyua.info/');
+        self::assertStringContainsString("user agent test",$res->getBody());
     }
 
     public function testCookies()
@@ -155,7 +153,13 @@ class PRequestTest extends TestCase
 class Brobot extends CurlClient
 {
     public array $defaultOptions = [
-        'user_agent'            => 'Bro bot',
+        'user_agent'   => 'Bro bot',
+        'headers'      => [
+            'head1 : val 1',
+            'head2 : val 2',
+        ],
+        'redirect_num' => 3,
+        'https'        => true,
     ];
 }
 
