@@ -3,6 +3,7 @@
 namespace Gyaaniguy\PCrawl;
 
 use Gyaaniguy\PCrawl\Response\PResponse;
+use Gyaaniguy\PCrawl\Response\PResponseMods;
 use PHPUnit\Framework\TestCase;
 
 class PResponseTest extends TestCase
@@ -16,7 +17,11 @@ class PResponseTest extends TestCase
     {
         $res = new PResponse();
         $res->setBody("up this");
-        $res->modBody([[$this, 'toAb']]);
-        self::assertEquals("UP THIS", $res->getBody());
+        $pResponseMods = new PResponseMods($res);
+        $pResponseMods->tidy()->toAbsoluteUrls()->addNikhil();
+        self::assertContains("nikhil", $res->getBody());
+
+        $pResponseMods->modBody([[$this, 'toAb']]);
+        self::assertContains("UP THIS", $res->getBody());
     }
 }

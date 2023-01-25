@@ -21,13 +21,8 @@ class PResponse
     protected string $lastUrl;
     protected string $requestUrl;
     private PParser $parser;
+    private PResponseMods $PResponseMods;
 
-    public function modBody(array $callbacks)
-    {
-        foreach ($callbacks as $middleware) {
-            $this->body = $middleware($this->body);
-        }
-    }
 
 
     /**
