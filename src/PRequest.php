@@ -19,7 +19,7 @@ class PRequest
         'headers' => [],
         'tidy' => false,
         'https' => false,
-        'httpclient' => 'curl',
+        'httpclient' => '',
         'enable_cookies' => '',
         'redirect_num' => '',
         'custom_client_options' => [],
@@ -30,11 +30,6 @@ class PRequest
 
     public function __construct($options = [])
     {
-        if (!empty($options['httpClient']) && $options['httpClient'] == 'guzzle') {
-            $this->useGuzzle();
-        } else {
-            $this->useCurl();
-        }
         if (!empty($options['user_agent'])) {
             $this->setUserAgent($options['user_agent']);
         }
@@ -56,6 +51,13 @@ class PRequest
         if (!empty($options['custom_client_options'])) {
             $this->setCustomClientOptions($options['custom_client_options']);
         }
+        // httpClient block should be last, so client default options override   
+        if (!empty($options['httpClient']) && is_object($options['httpClient']) ) {
+            $this->setClient($options['httpClient']);
+        } else {
+            $this->useCurl();
+        }
+        $this->options = $options;
     }
 
     public function get($url = ''): PResponse
@@ -153,20 +155,16 @@ class PRequest
 
     public function useCurl(): PRequest
     {
-        $this->httpClient = new CurlClient();
+        $this->setClient(new CurlClient());
         return $this;
     }
 
     public function useGuzzle(): PRequest
     {
+        $this->setClient(new CurlClient());
         return $this;
     }
 
-    public function enableTidy(): PRequest
-    {
-        $this->options['tidy'] = true;
-        return $this;
-    }
 
 
     /**
@@ -180,6 +178,7 @@ class PRequest
 
     public function setClient($client): PRequest
     {
+        $this->options['httpClient'] = $client;
         $this->httpClient = $client;
         if (!empty($client->defaultOptions) && is_array($client->defaultOptions)) {
             foreach ($client->defaultOptions as $optionName => $optionValue) {
@@ -200,9 +199,6 @@ class PRequest
                         case 'custom_client_options' && is_array($optionValue):
                             $this->setCustomClientOptions($optionValue);
                             break;
-                        case 'client' && is_string($optionValue):
-                            $this->setClient($optionValue);
-                            break;
                     }
                 }
             }
@@ -211,6 +207,7 @@ class PRequest
     }
 
 
+    // Options that are going to be relevant only for different clients - so different options for curl and guzzle
     public function setCustomClientOptions($customOpts): PRequest
     {
         $this->options['custom_client_options'] = $customOpts;
