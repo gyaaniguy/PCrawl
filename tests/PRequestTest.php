@@ -9,46 +9,146 @@ use PHPUnit\Framework\TestCase;
 class PRequestTest extends TestCase
 {
 
-    public function testMain()
+    public function testSetCustomClientOptions()
     {
         $req = new PRequest();
-        $req
-            ->setRequestHeaders(['user-agent' => 'Bad bot bat ball boy']) // <- tongue twister ! 
-            ->setUserAgent('Good bot bat ball boy');
+        $req->setCustomClientOptions([
+            CURLOPT_NOBODY => 0,
+        ]);
+        $onlyHeadRes = $req->get('icanhazip.com');
+        self::assertStringContainsString("HTTP",$onlyHeadRes->getBody());
+        self::assertStringNotContainsString("html",$onlyHeadRes->getBody());
 
-//        $page = $req->get('site.com');
-//        $this->assertStringContainsString('body', $page);
-//        $this->assertEquals(200, $req->opts->getSleepBetween());
-//        $this->assertEquals(true, $req->opts->isUseTidy());
-//        $page = $req->get('site.com');
     }
 
-    public function testCustomClient()
+    // Todo Set client as guzzle, then back to curl. Tests to make sure all options are still ok
+    public function testUseCurl()
+    {
+        $req = new PRequest();
+        $client = $req->getHttpClient();
+        self::assertIsObject($client);
+        self::assertObjectHasAttribute('res',$client);
+
+    }
+
+    public function testSetClient()
     {
         $req = new PRequest();
         $req->setUserAgent("default user");
         $options = $req->getOptions();
         self::assertArrayHasKey("user_agent", $options);
         self::assertEquals("default user",$options["user_agent"]);
-        
+
         // Bro bot user agent.
-        $options = $req->setClient(new Brobot())->getOptions();      
+        $options = $req->setClient(new Brobot())->getOptions();
         $this->assertEquals("Bro bot", $options['user_agent']);
-        $res = $req->get('http://34.205.169.194/test/');
-//        self::assertContains("Bro bot",$res->getBody());
-//        $req->setUserAgent("no bro");
-//        $res = $req->get('http://34.205.169.194/test/');
-//        self::assertContains("no bro",$res->getBody());
-        
+        $res = $req->get('https://www.whatsmyua.info/');
+        self::assertStringContainsString("Bro bot",$res->getBody());
+        $req->setUserAgent("no bro");
+        $res = $req->get('https://www.whatsmyua.info/');
+        self::assertStringContainsString("no bro",$res->getBody());
+
         // Only return Head Client
         $options = $req->setClient(new OnlyHeadClient())->setUserAgent("only head")->getOptions();
         $this->assertEquals("only head", $options['user_agent']);
         $onlyHeadRes = $req->get('icanhazip.com');
-        self::assertContains("HTTP",$onlyHeadRes->getBody());
-        self::assertNotContains("html",$onlyHeadRes->getBody());
+        self::assertStringContainsString("HTTP",$onlyHeadRes->getBody());
+        self::assertStringNotContainsString("html",$onlyHeadRes->getBody());
+    }
+
+    public function testSetRedirects()
+    {
+        $req = new PRequest();
+        $req->setRedirects(4);
+        $options = $req->getOptions();
+        self::assertArrayHasKey('redirect_num',$options);
+        self::assertEquals(4,$options['redirect_num']);
+    }
+
+    public function testAllowHttps()
+    {
+        $req = new PRequest();
+        $req->allowHttps();
+        $options = $req->getOptions();
+        self::assertArrayHasKey('https',$options);
+        self::assertTrue($options['https']);
+    }
+
+    public function testHeaders()
+    {
+        $req = new PRequest();
+        $headers = [
+            "accept: *",
+            "content-type: application/json",
+        ];
+        $req->setRequestHeaders($headers);
+        $options = $req->getOptions();
+        self::assertArrayHasKey('headers',$options);
+        self::assertIsArray($options['headers']);
+        self::assertEquals($headers, $options['headers']);
+
+        $additionalHeaders = ["x-fetch: Made Up Thing", "accept: nil"];
+        $req->addRequestHeaders($additionalHeaders);
+        $options = $req->getOptions();
+        self::assertArrayHasKey('headers',$options);
+        self::assertIsArray($options['headers']);
+        self::assertEquals([
+            "accept: nil",
+            "content-type: application/json",
+            "x-fetch: Made Up Thing",
+        ], $options['headers']);
 
 
+    }
+    public function testAddRequestHeaders()
+    {
+        $req = new PRequest();
+        $headers = [
+            "accept: *",
+            "content-type: application/json",
+        ];
+        $req->setRequestHeaders($headers);
+        $options = $req->getOptions();
+        self::assertArrayHasKey('headers',$options);
+        self::assertIsArray($options['headers']);
+        self::assertEquals($headers, $options['headers']);
+    }
 
+    public function testSetUserAgent()
+    {
+        $req = new PRequest();
+        $userAgentStr = "user agent test";
+        $req->setUserAgent($userAgentStr);
+        $options = $req->getOptions();
+        self::assertArrayHasKey('user_agent',$options);
+        self::assertEquals($userAgentStr, $options['user_agent']);
+    }
+
+    public function testCookies()
+    {
+        $req = new PRequest();
+        $req->enableCookies();
+        self::assertObjectHasAttribute('cookiePath',$req);
+        self::assertIsString($req->getCookiePath());
+        
+        $req->disableCookies();
+        $options = $req->getOptions();
+        self::assertArrayHasKey('enable_cookies',$options);
+        self::assertFalse($options['enable_cookies']);
+        
+        $req->enableCookies();
+        self::assertObjectHasAttribute('cookiePath',$req);
+        self::assertIsString($req->getCookiePath());
+        
+        touch($req->getCookiePath());
+        self::assertFileExists($req->getCookiePath());
+        $req->clearCookies();
+        self::assertIsString($req->getCookiePath());
+        self::assertFileNotExists($req->getCookiePath());
+        
+        $req->allowHttps()->get('https://google.com/');
+        $req->closeConnection();
+        self::assertFileExists($req->getCookiePath()); // curl must close for this to exist.
     }
 }
 
@@ -64,7 +164,6 @@ class WebScriptClient extends CurlClient
     public array $defaultOptions = [
         'user_agent'            => 'We use you',
     ];
-
     public function get(string $url, array $options = []): PResponse
     {
         if (empty($options['unblock_site']) && filter_var($options['unblock_site'], FILTER_VALIDATE_URL)) {
@@ -89,9 +188,10 @@ class OnlyHeadClient extends CurlClient
         'custom_client_options' => [
             CURLOPT_HEADER => 1,
             CURLOPT_NOBODY => 0,
-        ]
+        ],
+        'user_agent'            => 'Bro bot',
     ];
-    public function customClientOptions(array $customClientOptions) // <- Not needed. Exists in parent
+    public function setCustomClientOptions(array $customClientOptions) // <- Not needed. Exists in parent
     {
         curl_setopt_array($this->ch, $customClientOptions);
     }
