@@ -42,9 +42,9 @@ class PResponse
     }
 
     /**
-     * @param mixed $responseHeaders
+     * @param array $responseHeaders
      */
-    public function setResponseHeaders($responseHeaders): void
+    public function setResponseHeaders(array $responseHeaders): void
     {
         $this->responseHeaders = $responseHeaders;
     }
@@ -90,6 +90,14 @@ class PResponse
     public function getHttpCode(): string
     {
         return $this->httpCode;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResponseHeaders(): array
+    {
+        return $this->responseHeaders;
     }
 
 
