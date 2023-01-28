@@ -84,5 +84,13 @@ class PResponse
         $this->lastUrl = $lastUrl;
     }
 
+    /**
+     * @return string
+     */
+    public function getHttpCode(): string
+    {
+        return $this->httpCode;
+    }
+
 
 }
