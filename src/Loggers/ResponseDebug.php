@@ -18,6 +18,7 @@ class ResponseDebug implements InterfaceResponseDebug
     private array $badRegex;
     private array $expectedHeaders;
     private array $analysis;
+    private array $customFailCallbacks;
 
 
 
@@ -137,13 +138,14 @@ class ResponseDebug implements InterfaceResponseDebug
         $this->compareBadRegex();
         $this->compareHttpCode();
         $this->compareHeaders();
+        $this->runCustomCallbacks();
         
         return $this->resFail;
     }
 
 
 
-    private function criteriaSearchStore($stristr, $str, $key, $successIsGood)
+    private function compareSetComparisonResult($stristr, $str, $key, $successIsGood): bool
     {
         if ( ($stristr && $successIsGood === false) || (!$stristr && $successIsGood === true)) {
             $this->analysis[$key][$str] = ($successIsGood === true ? ' not ': '').' found';
@@ -161,7 +163,7 @@ class ResponseDebug implements InterfaceResponseDebug
     {
         if (!empty($this->expectedHeaders)) {
             $resHeaders = $this->res->getResponseHeaders();
-            collect($this->expectedHeaders)->every(function ($expectedHeader) use ($resHeaders) {
+            array_map(function ($expectedHeader) use ($resHeaders) {
                 $found = collect($resHeaders)->contains(function ($resHeader) use ($expectedHeader) {
                     return stristr($resHeader, $expectedHeader);
                 });
@@ -169,7 +171,7 @@ class ResponseDebug implements InterfaceResponseDebug
                     $this->analysis['expected_header'][$expectedHeader] = ' not found';
                     $this->resFail = true;
                 }
-            });
+            }, $this->expectedHeaders);
         }
     }
 
@@ -178,7 +180,7 @@ class ResponseDebug implements InterfaceResponseDebug
      */
     public function compareHttpCode(): void
     {
-        if (!empty($this->goodResponseHttpCode) && $this->res->getHttpCode() != $this->goodResponseHttpCode) {
+        if (!empty($this->goodResponseHttpCode) && $this->goodResponseHttpCode != -1 && $this->res->getHttpCode() != $this->goodResponseHttpCode) {
             $this->analysis['expected_httpcode'][$this->goodResponseHttpCode] = ' not found';
             $this->resFail = true;
         }
@@ -190,10 +192,10 @@ class ResponseDebug implements InterfaceResponseDebug
     public function compareBadStrings(): void
     {
         if (!empty($this->badStrings)) {
-            collect($this->badStrings)->every(function ($str, $key) {
+            array_map(function ($str) {
                 $stristr = stristr($this->res->getBody(), $str);
-                return $this->criteriaSearchStore($stristr, $str, 'bad_string', false);
-            });
+                return $this->compareSetComparisonResult($stristr, $str, 'bad_string', false);
+            }, $this->badStrings);
         }
     }
 
@@ -202,11 +204,11 @@ class ResponseDebug implements InterfaceResponseDebug
      */
     public function compareGoodStrings(): void
     {
-        if (!empty($this->goodStrings)) {            
-            collect($this->goodStrings)->every(function ($str, $key) {
+        if (!empty($this->goodStrings)) {
+            array_map(function ($str) {
                 $stristr = stristr($this->res->getBody(), $str);
-                return $this->criteriaSearchStore($stristr, $str, 'bad_string', true);
-            });
+                return $this->compareSetComparisonResult($stristr, $str, 'good_string', true);
+            }, $this->goodStrings);
         }
     }
 
@@ -216,10 +218,10 @@ class ResponseDebug implements InterfaceResponseDebug
     public function compareGoodRegex(): void
     {
         if (!empty($this->goodRegex)) {            
-            collect($this->goodRegex)->every(function ($str) {
+            array_map(function ($str) {
                 $stristr = preg_match($str, $this->res->getBody());
-                return $this->criteriaSearchStore($stristr, $str, 'good_regex', true);
-            });
+                return $this->compareSetComparisonResult($stristr, $str, 'good_regex', true);
+            }, $this->goodRegex);            
         }
     }
 
@@ -228,13 +230,27 @@ class ResponseDebug implements InterfaceResponseDebug
      */
     public function compareBadRegex(): void
     {
-        if (!empty($this->badRegex)){          
-            collect($this->badRegex)->every(function ($str) {
+        if (!empty($this->badRegex)){
+            array_map(function ($str) {
                 $stristr = preg_match($str, $this->res->getBody());
-                return $this->criteriaSearchStore($stristr, $str, 'bad_regex', false);
-            });
+                return $this->compareSetComparisonResult($stristr, $str, 'bad_regex', false);
+            }, $this->badRegex);
         }
     }
 
+    public function setCustomFailCondition(\Closure $callbackFunction)
+    {
+        $this->customFailCallbacks[] = $callbackFunction;
+    }
 
+    private function runCustomCallbacks()
+    {
+        if (!empty($this->customFailCallbacks)) {
+            foreach ($this->customFailCallbacks as $customFailCallback) {
+                if (!$customFailCallback($this->res)) {
+                    $this->resFail = true;
+                }
+            }
+        }
+    }
 }
