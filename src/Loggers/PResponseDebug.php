@@ -6,7 +6,7 @@ use Gyaaniguy\PCrawl\Response\PResponse;
 
 use function foo\func;
 
-class ResponseDebug implements InterfaceResponseDebug
+class PResponseDebug implements InterfaceResponseDebug
 {
     public PResponse $res;
     public bool $resFail;
@@ -24,106 +24,107 @@ class ResponseDebug implements InterfaceResponseDebug
 
     public function getFailDetail()
     {
+        return $this->analysis;
         // TODO: Implement getFailDetail() method.
     }
 
-    public function setResponse(PResponse $res): ResponseDebug
+    public function setResponse(PResponse $res): PResponseDebug
     {
         $this->res = $res;
         return $this;
     }
 
-    public function appendBadStrings(array $strings): ResponseDebug
+    public function appendBadStrings(array $strings): PResponseDebug
     {
         $this->badStrings = array_merge($this->badStrings, $strings);
         return $this;
     }
 
-    public function setBadStrings(array $strings): ResponseDebug
+    public function setBadStrings(array $strings): PResponseDebug
     {
         $this->badStrings = $strings;
         return $this;
     }
 
-    public function unsetBadStrings(): ResponseDebug
+    public function unsetBadStrings(): PResponseDebug
     {
         $this->badStrings = [];
         return $this;
     }
 
-    public function setGoodHttpCode(int $int): ResponseDebug
+    public function setGoodHttpCode(int $int): PResponseDebug
     {
         $this->goodResponseHttpCode = $int;
         return $this;
     }
 
-    public function unsetGoodHttpCode(): ResponseDebug
+    public function unsetGoodHttpCode(): PResponseDebug
     {
         $this->goodResponseHttpCode = -1;
         return $this;
     }
 
-    public function appendGoodStrings(array $strings): ResponseDebug
+    public function appendGoodStrings(array $strings): PResponseDebug
     {
         $this->goodStrings = array_merge($this->goodStrings, $strings);
         return $this;
     }
 
-    public function setGoodStrings(array $strings): ResponseDebug
+    public function setGoodStrings(array $strings): PResponseDebug
     {
         $this->goodStrings = $strings;
         return $this;
     }
 
-    public function unsetGoodStrings(): ResponseDebug
+    public function unsetGoodStrings(): PResponseDebug
     {
         $this->goodStrings = [];
         return $this;
     }
 
-    public function appendGoodRegex(array $strings): ResponseDebug
+    public function appendGoodRegex(array $strings): PResponseDebug
     {
         $this->goodRegex = array_merge($this->goodRegex, $strings);
         return $this;
     }
 
-    public function setGoodRegex(array $strings): ResponseDebug
+    public function setGoodRegex(array $strings): PResponseDebug
     {
         $this->goodRegex = $strings;
         return $this;
     }
 
-    public function unsetGoodRegex(): ResponseDebug
+    public function unsetGoodRegex(): PResponseDebug
     {
         $this->goodRegex = [];
         return $this;
     }
 
-    public function appendBadRegex(array $strings): ResponseDebug
+    public function appendBadRegex(array $strings): PResponseDebug
     {
         $this->badRegex = array_merge($this->badRegex, $strings);
         return $this;
     }
 
-    public function setBadRegex(array $strings): ResponseDebug
+    public function setBadRegex(array $strings): PResponseDebug
     {
         $this->badRegex = $strings;
         return $this;
     }
 
-    public function unsetBadRegex(): ResponseDebug
+    public function unsetBadRegex(): PResponseDebug
     {
         $this->badRegex = [];
         return $this;
     }
 
-    public function setContainExpectedHeaders(array $strings): ResponseDebug
+    public function setContainExpectedHeaders(array $strings): PResponseDebug
     {
         $this->expectedHeaders = $strings;
         return $this;
     }
 
-    public function unsetContainExpectedHeaders(): ResponseDebug
+    public function unsetContainExpectedHeaders(): PResponseDebug
     {
         $this->expectedHeaders = [];
         return $this;
@@ -132,13 +133,14 @@ class ResponseDebug implements InterfaceResponseDebug
     public function isFail(): bool
     {
         $this->resFail = false;
+        $this->analysis = [];
         $this->compareGoodStrings();
         $this->compareBadStrings();
         $this->compareGoodRegex();
         $this->compareBadRegex();
         $this->compareHttpCode();
         $this->compareHeaders();
-        $this->runCustomCallbacks();
+        $this->runCustomFailCallbacks();
         
         return $this->resFail;
     }
@@ -159,7 +161,7 @@ class ResponseDebug implements InterfaceResponseDebug
      * @param array $resHeaders
      * @return void
      */
-    public function compareHeaders(): void
+    private function compareHeaders(): void
     {
         if (!empty($this->expectedHeaders)) {
             $resHeaders = $this->res->getResponseHeaders();
@@ -178,7 +180,7 @@ class ResponseDebug implements InterfaceResponseDebug
     /**
      * @return void
      */
-    public function compareHttpCode(): void
+    private function compareHttpCode(): void
     {
         if (!empty($this->goodResponseHttpCode) && $this->goodResponseHttpCode != -1 && $this->res->getHttpCode() != $this->goodResponseHttpCode) {
             $this->analysis['expected_httpcode'][$this->goodResponseHttpCode] = ' not found';
@@ -189,7 +191,7 @@ class ResponseDebug implements InterfaceResponseDebug
     /**
      * @return void
      */
-    public function compareBadStrings(): void
+    private function compareBadStrings(): void
     {
         if (!empty($this->badStrings)) {
             array_map(function ($str) {
@@ -202,7 +204,8 @@ class ResponseDebug implements InterfaceResponseDebug
     /**
      * @return void
      */
-    public function compareGoodStrings(): void
+    private function compareGoodStrings(): void
+    
     {
         if (!empty($this->goodStrings)) {
             array_map(function ($str) {
@@ -215,7 +218,7 @@ class ResponseDebug implements InterfaceResponseDebug
     /**
      * @return void
      */
-    public function compareGoodRegex(): void
+    private function compareGoodRegex(): void
     {
         if (!empty($this->goodRegex)) {            
             array_map(function ($str) {
@@ -228,7 +231,7 @@ class ResponseDebug implements InterfaceResponseDebug
     /**
      * @return void
      */
-    public function compareBadRegex(): void
+    private function compareBadRegex(): void
     {
         if (!empty($this->badRegex)){
             array_map(function ($str) {
@@ -243,7 +246,7 @@ class ResponseDebug implements InterfaceResponseDebug
         $this->customFailCallbacks[] = $callbackFunction;
     }
 
-    private function runCustomCallbacks()
+    private function runCustomFailCallbacks()
     {
         if (!empty($this->customFailCallbacks)) {
             foreach ($this->customFailCallbacks as $customFailCallback) {
