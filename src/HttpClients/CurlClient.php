@@ -9,17 +9,18 @@ class CurlClient implements InterfaceHttpClient
     public PResponse $res;
     public $ch;
     public array $responseHeaders = [];
+    private string $cookiePath;
 
 
     public function __construct()
     {
         $this->res = new PResponse();
-        $this->ch = curl_init();
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+        $this->curl_init_if();
     }
 
     public function get(string $url, array $options = []): PResponse
     {
+        $this->curl_init_if();
         curl_setopt($this->ch, CURLOPT_URL, $url);
         // this function is called by curl for each header received
         curl_setopt(
@@ -30,12 +31,10 @@ class CurlClient implements InterfaceHttpClient
                 if (count($header) < 2) {
                     return $len;
                 }
-
                 $this->responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
                 return $len;
             }
         );
-
         $curlRes = curl_exec($this->ch);
         $this->res->setRequestUrl($url);
         $this->res->setBody($curlRes);
@@ -48,53 +47,78 @@ class CurlClient implements InterfaceHttpClient
 
     public function post(string $url, $postData = []): PResponse
     {
+        $this->curl_init_if();
         curl_setopt($this->ch, CURLOPT_POST, 1);
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $postData);
         return $this->get($url);
     }
 
-    public function setUserAgent(string $userAgent)
+    public function setUserAgent(string $userAgent): void
     {
+        $this->curl_init_if();
         curl_setopt($this->ch, CURLOPT_USERAGENT, $userAgent);
     }
 
-    public function setHeaders(array $headers)
+    public function setHeaders(array $headers): void
     {
+        $this->curl_init_if();
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
     }
 
-    public function enableCookies(string $cookiePath)
+    public function enableCookies(string $cookiePath): void
     {
+        $this->curl_init_if();
         if (empty($cookiePath)) {
             $this->cookiePath = '/tmp/cook-preRequest-' . uniqid();
         }
+        
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, $cookiePath);
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, $cookiePath);
     }
 
-    public function disableCookies()
+    public function disableCookies(): void
     {
+        $this->curl_init_if();
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, '');
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
     }
 
-    public function allowHttps()
+    public function allowHttps(): void
     {
+        $this->curl_init_if();
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    public function setRedirects(int $num)
+    public function setRedirects(int $num): void
     {
+        $this->curl_init_if();
         curl_setopt($this->ch, CURLOPT_MAXREDIRS, $num);
     }
 
-    public function setCustomClientOptions(array $customClientOptions)
+    public function setCustomClientOptions(array $customClientOptions): void
     {
+        $this->curl_init_if();
         curl_setopt_array($this->ch, $customClientOptions);
     }
-    
-    public function close(){
+
+    public function close(): void
+    {
         curl_close($this->ch);
-    } 
+    }
+
+    /**
+     * @return void
+     */
+    public function curl_init_if(): void
+    {
+        if (!$this->ch || !is_resource($this->ch)) {
+            $this->ch = curl_init();
+            if ($this->ch === false ){
+                // throw exception ?
+                return;
+            }
+            curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+        }
+    }
 }

@@ -31,7 +31,7 @@ class PRequest
     public function __construct($options = [])
     {
         // httpClient block should be first, so custom request options override its defaultoptions   
-        if (!empty($options['http_client']) && is_object($options['http_client']) ) {
+        if (!empty($options['http_client']) && is_object($options['http_client'])) {
             $this->setClient($options['http_client']);
         } else {
             $this->useCurl();
@@ -75,7 +75,6 @@ class PRequest
             $postData = http_build_query($postData);
         }
         $this->lastRawResponse = $this->httpClient->post($url, $postData);
-        $this->postProcessing($this->lastRawResponse);
         return $this->lastRawResponse;
     }
 
@@ -142,9 +141,9 @@ class PRequest
         return $this;
     }
 
-    public function setRedirects( $num = 2): PRequest
+    public function setRedirects($num = 2): PRequest
     {
-        $this->options['redirect_num'] = intval($num,10);
+        $this->options['redirect_num'] = intval($num, 10);
         $this->httpClient->setRedirects($this->options['redirect_num']);
         return $this;
     }
@@ -160,7 +159,6 @@ class PRequest
         $this->setClient(new CurlClient());
         return $this;
     }
-
 
 
     /**

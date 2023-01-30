@@ -11,12 +11,17 @@ class PRequestTest extends TestCase
 
     public function testSetCustomClientOptions()
     {
+        
+        $req = new PRequest();
+        $req->closeConnection();
+        $req->enableCookies();
         $req = new PRequest();
         $req->setCustomClientOptions([
             CURLOPT_HEADER => 1,
             CURLOPT_NOBODY => 1,
         ]);
         $onlyHeadRes = $req->get('icanhazip.com');
+        
         self::assertStringContainsString("HTTP", $onlyHeadRes->getBody());
         self::assertStringNotContainsString("html", $onlyHeadRes->getBody());
     }
@@ -125,6 +130,7 @@ class PRequestTest extends TestCase
         $req->enableCookies();
         self::assertObjectHasAttribute('cookiePath', $req);
         self::assertIsString($req->getCookiePath());
+        $req->closeConnection();
 
         $req->disableCookies();
         $options = $req->getOptions();
@@ -264,7 +270,7 @@ class OnlyHeadClient extends CurlClient
         ],
         'user_agent'            => 'Bro bot',
     ];
-    public function setCustomClientOptions(array $customClientOptions) // <- Not needed. Exists in parent
+    public function setCustomClientOptions(array $customClientOptions): void // <- Not needed. Exists in parent
     {
         curl_setopt_array($this->ch, $customClientOptions);
     }

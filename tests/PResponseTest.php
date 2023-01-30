@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class PResponseTest extends TestCase
 {
-    function toAb($body)
+    public function uppercase($body): string
     {
         return strtoupper($body);
     }
@@ -19,9 +19,9 @@ class PResponseTest extends TestCase
         $res->setBody("up this");
         $pResponseMods = new PResponseMods($res);
         $pResponseMods->tidy()->toAbsoluteUrls()->addNikhil();
-        self::assertContains("nikhil", $res->getBody());
+        self::assertStringContainsString("nikhil", $res->getBody());
 
-        $pResponseMods->modBody([[$this, 'toAb']]);
-        self::assertContains("UP THIS", $res->getBody());
+        $pResponseMods->modBody([[$this, 'uppercase']]);
+        self::assertStringContainsString("UP THIS", $res->getBody());
     }
 }

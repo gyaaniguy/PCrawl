@@ -21,14 +21,12 @@ class PResponse
     protected string $lastUrl;
     protected string $requestUrl;
     private PParser $parser;
-    private PResponseMods $PResponseMods;
-
 
 
     /**
      * @param mixed $body
      */
-    public function setBody($body): void
+    public function setBody(string $body): void
     {
         $this->body = $body;
     }
@@ -52,7 +50,7 @@ class PResponse
     /**
      * @param mixed $error
      */
-    public function setError($error): void
+    public function setError(string $error): void
     {
         $this->error = $error;
     }
@@ -60,7 +58,7 @@ class PResponse
     /**
      * @param mixed $httpCode
      */
-    public function setHttpCode($httpCode): void
+    public function setHttpCode(int $httpCode): void
     {
         $this->httpCode = $httpCode;
     }
@@ -68,18 +66,13 @@ class PResponse
     /**
      * @param mixed $requestUrl
      */
-    public function setRequestUrl($requestUrl): void
+    public function setRequestUrl(string $requestUrl): void
     {
         $this->requestUrl = $requestUrl;
     }
 
-    public function createParser()
-    {
-        $this->parser = new PParser($this->body);
-    }
 
-
-    public function setLastUrl($lastUrl)
+    public function setLastUrl(string $lastUrl)
     {
         $this->lastUrl = $lastUrl;
     }
@@ -87,7 +80,7 @@ class PResponse
     /**
      * @return string
      */
-    public function getHttpCode(): string
+    public function getHttpCode(): int
     {
         return $this->httpCode;
     }
@@ -98,6 +91,22 @@ class PResponse
     public function getResponseHeaders(): array
     {
         return $this->responseHeaders;
+    }
+
+    /**
+     * @return string
+     */
+    public function getError(): string
+    {
+        return $this->error;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastUrl(): string
+    {
+        return $this->lastUrl;
     }
 
 

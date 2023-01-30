@@ -4,7 +4,8 @@ namespace Gyaaniguy\PCrawl\Helpers;
 
 class RegexStuff
 {
-    public static function headerToAssoc(array $headers){
+    public static function headerToAssoc(array $headers): array
+    {
         $assocHeaders = [];
         foreach ($headers as $headerStr) {
             if (strstr($headerStr,':')) {
@@ -14,13 +15,5 @@ class RegexStuff
             }
         }
         return $assocHeaders;
-    }
-    public static function endsWith(string $haystack, string $needle): bool
-    {
-        if (strlen($needle) === 0) {
-            return true;
-        }
-
-        return str_ends_with($haystack, $needle);
     }
 }
