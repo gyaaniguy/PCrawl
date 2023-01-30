@@ -3,6 +3,7 @@
 namespace Gyaaniguy\PCrawl\Loggers;
 
 use Gyaaniguy\PCrawl\Response\PResponse;
+use Gyaaniguy\PCrawl\Response\PResponseDebug;
 use PHPUnit\Framework\TestCase;
 
 class PResponseDebugTest extends TestCase
