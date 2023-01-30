@@ -244,4 +244,20 @@ class PRequest
             }
         }
     }
+
+    public function branch(): PRequest
+    {
+        $clone = clone $this;
+        return $clone;
+    }
+
+    public function __clone()
+    {
+        foreach (get_object_vars($this) as $name => $value) {
+            if (is_object($value)) {
+                $this->{$name} = clone $value;
+            }
+        }
+    }
+
 }

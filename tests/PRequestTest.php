@@ -172,6 +172,51 @@ class PRequestTest extends TestCase
         self::assertEquals(true, $newReqOptions['enable_cookies']);
         self::assertEquals($headers, $newReqOptions['headers']);
     }
+    
+    public function testBranch()
+    {
+        $req = new PRequest();
+        $broBot = new Brobot();
+        $curlClient = new CurlClient();
+        $req->setClient($broBot);
+        $reqOptions = $req->getOptions();
+        self::assertEquals('Bro bot', $reqOptions['user_agent']);
+        self::assertEquals($broBot, $reqOptions['http_client']);
+
+        //deep copy test
+        $newReq = $req->branch();
+        $newReq->setUserAgent("branched");
+        self::assertInstanceOf('\Gyaaniguy\PCrawl\PRequest', $newReq);
+        
+        $newReqOptions = $newReq->getOptions();
+        self::assertEquals('branched', $newReqOptions['user_agent']);        
+        self::assertEquals($broBot, $newReqOptions['http_client']);
+        
+        $newReq->setClient($curlClient);
+        $newReqOptions = $newReq->getOptions();
+        self::assertEquals($curlClient, $newReqOptions['http_client']);
+
+        $reqOptions = $req->getOptions();
+        self::assertEquals($broBot, $reqOptions['http_client']);
+
+        //Shallow copy test
+        $req = new PRequest();
+        $curlClientShallow = new CurlClient();
+        $req->setClient($curlClientShallow);
+        $reqOptions = $req->getOptions();
+        self::assertEquals($curlClientShallow, $reqOptions['http_client']);
+
+        $newReq = $req;
+        $broBotShallowTest = new Brobot();
+        $newReq->setClient($broBotShallowTest);
+        $newReqOptions = $newReq->getOptions();
+        self::assertEquals($broBotShallowTest, $newReqOptions['http_client']);
+
+        $reqOptions = $req->getOptions();
+        self::assertEquals($broBotShallowTest, $reqOptions['http_client']);
+
+
+    }
 }
 
 class Brobot extends CurlClient
