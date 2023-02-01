@@ -15,7 +15,7 @@ PHPunit tests
 - Quickly parse html pages using querypath (TODO)
 
 #### Some More planned
-- asynchronous support with reachphp. Hopefully this will happen. React php support may require large rewrites. 
+- asynchronous support with react-php. Hopefully this will happen. React php support may require large rewrites.
 OR  
 - we could leverage guzzlehttp asynchronous support. but in that case curl clients would be out of the picture, which would be very undesirable. 
 - 
