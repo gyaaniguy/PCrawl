@@ -31,38 +31,16 @@ class PRequest
     public function __construct($options = [])
     {
         // httpClient block should be first, so custom request options override its defaultoptions   
-        if (!empty($options['http_client']) && is_object($options['http_client'])) {
-            $this->setClient($options['http_client']);
-        } else {
-            $this->useCurl();
-        }
-        if (!empty($options['user_agent'])) {
-            $this->setUserAgent($options['user_agent']);
-        }
-        if (!empty($options['headers'])) {
-            $this->setRequestHeaders($options['headers']);
-        }
-        if (!empty($options['https'])) {
-            $this->allowHttps();
-        }
-        if (!empty($options['enable_cookies'])) {
-            $this->enableCookies();
-        }
-        if (!empty($options['redirect_num'])) {
-            $this->setRedirects($options['redirect_num']);
-        }
-        if (!empty($options['custom_client_options'])) {
-            $this->setCustomClientOptions($options['custom_client_options']);
-        }
+        $this->setOptions($options);
     }
 
-    public function get($url = ''): PResponse
+    public function get($url = '', array $options = []): PResponse
     {
         if (!empty($this->options['enable_cookies'])) {
             $this->enableCookies();
         }
 
-        $this->lastRawResponse = $this->httpClient->get($url);
+        $this->lastRawResponse = $this->httpClient->get($url, $options);
         return $this->lastRawResponse;
     }
 
@@ -174,7 +152,6 @@ class PRequest
     {
         $this->options['http_client'] = $client;
         $this->httpClient = $client;
-        $this->setClientDefaultOptions($client);
         return $this;
     }
 
@@ -212,36 +189,36 @@ class PRequest
         }
     }
 
-    public function setClientDefaultOptions($client): void
-    {
-        $allOptions = $options = $this->getOptions();
-        if (!empty($client->defaultOptions) && is_array($client->defaultOptions)) {
-            $allOptions = array_merge($options, $client->defaultOptions);
-        }
-        if (!empty($allOptions)) {
-            foreach ($allOptions as $optionName => $optionValue) {
-                if (!empty($optionName)) {
-                    switch ($optionName) {
-                        case 'user_agent':
-                            $this->setUserAgent($optionValue);
-                            break;
-                        case 'headers':
-                            $this->setRequestHeaders($optionValue);
-                            break;
-                        case 'redirect_num':
-                            $this->setRedirects($optionValue);
-                            break;
-                        case 'https':
-                            $this->allowHttps();
-                            break;
-                        case 'custom_client_options' && is_array($optionValue):
-                            $this->setCustomClientOptions($optionValue);
-                            break;
-                    }
-                }
-            }
-        }
-    }
+//    public function setClientDefaultOptions($client): void
+//    {
+//        $allOptions = $options = $this->getOptions();
+//        if (!empty($client->defaultOptions) && is_array($client->defaultOptions)) {
+//            $allOptions = array_merge($options, $client->defaultOptions);
+//        }
+//        if (!empty($allOptions)) {
+//            foreach ($allOptions as $optionName => $optionValue) {
+//                if (!empty($optionName)) {
+//                    switch ($optionName) {
+//                        case 'user_agent':
+//                            $this->setUserAgent($optionValue);
+//                            break;
+//                        case 'headers':
+//                            $this->setRequestHeaders($optionValue);
+//                            break;
+//                        case 'redirect_num':
+//                            $this->setRedirects($optionValue);
+//                            break;
+//                        case 'https':
+//                            $this->allowHttps();
+//                            break;
+//                        case 'custom_client_options' && is_array($optionValue):
+//                            $this->setCustomClientOptions($optionValue);
+//                            break;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     public function branch(): PRequest
     {
@@ -256,6 +233,38 @@ class PRequest
                 $this->{$name} = clone $value;
             }
         }
+    }
+
+    /**
+     * @param $options
+     * @return PRequest
+     */
+    public function setOptions($options): PRequest
+    {
+        if (!empty($options['http_client']) && is_object($options['http_client'])) {
+            $this->setClient($options['http_client']);
+        } else {
+            $this->useCurl();
+        }
+        if (!empty($options['user_agent'])) {
+            $this->setUserAgent($options['user_agent']);
+        }
+        if (!empty($options['headers'])) {
+            $this->setRequestHeaders($options['headers']);
+        }
+        if (!empty($options['https'])) {
+            $this->allowHttps();
+        }
+        if (!empty($options['enable_cookies'])) {
+            $this->enableCookies();
+        }
+        if (!empty($options['redirect_num'])) {
+            $this->setRedirects($options['redirect_num']);
+        }
+        if (!empty($options['custom_client_options'])) {
+            $this->setCustomClientOptions($options['custom_client_options']);
+        }
+        return $this;
     }
 
 }

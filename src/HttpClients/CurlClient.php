@@ -107,9 +107,6 @@ class CurlClient implements InterfaceHttpClient
         curl_close($this->ch);
     }
 
-    /**
-     * @return void
-     */
     public function curl_init_if(): void
     {
         if (!$this->ch || !is_resource($this->ch)) {
@@ -118,7 +115,15 @@ class CurlClient implements InterfaceHttpClient
                 // throw exception ?
                 return;
             }
-            curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+            $this->enableReturnTransfer();
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function enableReturnTransfer(): void
+    {
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 }
