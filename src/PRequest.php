@@ -152,6 +152,8 @@ class PRequest
     {
         $this->options['http_client'] = $client;
         $this->httpClient = $client;
+        $this->setClientDefaultOptions($client);
+
         return $this;
     }
 
@@ -189,36 +191,36 @@ class PRequest
         }
     }
 
-//    public function setClientDefaultOptions($client): void
-//    {
-//        $allOptions = $options = $this->getOptions();
-//        if (!empty($client->defaultOptions) && is_array($client->defaultOptions)) {
-//            $allOptions = array_merge($options, $client->defaultOptions);
-//        }
-//        if (!empty($allOptions)) {
-//            foreach ($allOptions as $optionName => $optionValue) {
-//                if (!empty($optionName)) {
-//                    switch ($optionName) {
-//                        case 'user_agent':
-//                            $this->setUserAgent($optionValue);
-//                            break;
-//                        case 'headers':
-//                            $this->setRequestHeaders($optionValue);
-//                            break;
-//                        case 'redirect_num':
-//                            $this->setRedirects($optionValue);
-//                            break;
-//                        case 'https':
-//                            $this->allowHttps();
-//                            break;
-//                        case 'custom_client_options' && is_array($optionValue):
-//                            $this->setCustomClientOptions($optionValue);
-//                            break;
-//                    }
-//                }
-//            }
-//        }
-//    }
+    public function setClientDefaultOptions($client): void
+    {
+        $allOptions = $options = $this->getOptions();
+        if (!empty($client->defaultOptions) && is_array($client->defaultOptions)) {
+            $allOptions = array_merge($options, $client->defaultOptions);
+        }
+        if (!empty($allOptions)) {
+            foreach ($allOptions as $optionName => $optionValue) {
+                if (!empty($optionName)) {
+                    switch ($optionName) {
+                        case 'user_agent':
+                            $this->setUserAgent($optionValue);
+                            break;
+                        case 'headers':
+                            $this->setRequestHeaders($optionValue);
+                            break;
+                        case 'redirect_num':
+                            $this->setRedirects($optionValue);
+                            break;
+                        case 'https':
+                            $this->allowHttps();
+                            break;
+                        case 'custom_client_options' && is_array($optionValue):
+                            $this->setCustomClientOptions($optionValue);
+                            break;
+                    }
+                }
+            }
+        }
+    }
 
     public function branch(): PRequest
     {

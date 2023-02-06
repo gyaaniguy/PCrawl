@@ -2,8 +2,6 @@
 
 namespace Gyaaniguy\PCrawl\Response;
 
-use Gyaaniguy\PCrawl\Tidy;
-
 class PResponseMods
 {
     public PResponse $pRes;
@@ -23,17 +21,25 @@ class PResponseMods
         return $this;
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
     public function tidy(): PResponseMods
     {
-//        $config = array(
-//            'indent' => true,
-//            'output-xhtml' => true,
-//            'wrap' => 200
-//        );
-//        $tidy = new Tidy();
-//        $tidy->parseString($this->pRes->getBody(), $config, 'utf8');
-//        $tidy->cleanRepair();
-//        $this->pRes->setBody($tidy->value);
+        if (!class_exists('tidy')) {
+            throw new \Exception("Tidy not installed");
+        }
+        $tidy = new Tidy();
+        
+        $config = array(
+            'indent' => true,
+            'output-xhtml' => true,
+            'wrap' => 200
+        );
+        $tidy->parseString($this->pRes->getBody(), $config, 'utf8');
+        $tidy->cleanRepair();
+        $this->pRes->setBody($tidy->value);
         return $this;
     }
 

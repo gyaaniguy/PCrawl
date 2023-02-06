@@ -184,6 +184,8 @@ class PRequestTest extends TestCase
         $req = new PRequest();
         $broBot = new Brobot();
         $curlClient = new CurlClient();
+        
+        // test brobot client default options
         $req->setClient($broBot);
         $reqOptions = $req->getOptions();
         self::assertEquals('Bro bot', $reqOptions['user_agent']);

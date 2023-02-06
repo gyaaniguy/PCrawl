@@ -69,9 +69,8 @@ class CurlClient implements InterfaceHttpClient
     {
         $this->curl_init_if();
         if (empty($cookiePath)) {
-            $this->cookiePath = '/tmp/cook-preRequest-' . uniqid();
-        }
-        
+            $this->cookiePath = '/tmp/' . uniqid(rand(999,99999999),true);
+        }        
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, $cookiePath);
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, $cookiePath);
     }
@@ -111,10 +110,6 @@ class CurlClient implements InterfaceHttpClient
     {
         if (!$this->ch || !is_resource($this->ch)) {
             $this->ch = curl_init();
-            if ($this->ch === false ){
-                // throw exception ?
-                return;
-            }
             $this->enableReturnTransfer();
         }
     }
