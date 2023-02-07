@@ -14,7 +14,7 @@ use Gyaaniguy\PCrawl\Response\PResponse;
  */
 class PRequest
 {
-    private array $options = [
+    private array $clientOptions = [
         'user_agent' => '',
         'headers' => [],
         'tidy' => false,
@@ -31,12 +31,21 @@ class PRequest
     public function __construct($options = [])
     {
         // httpClient block should be first, so custom request options override its defaultoptions   
-        $this->setOptions($options);
+        $this->setClientOptions($options);
     }
 
+    public function getFile($url = '', array $options = []): PResponse
+    {
+        if (!empty($this->clientOptions['enable_cookies'])) {
+            $this->enableCookies();
+        }
+
+        $this->lastRawResponse = $this->httpClient->getFile($url, $options);
+        return $this->lastRawResponse;
+    }
     public function get($url = '', array $options = []): PResponse
     {
-        if (!empty($this->options['enable_cookies'])) {
+        if (!empty($this->clientOptions['enable_cookies'])) {
             $this->enableCookies();
         }
 
@@ -46,7 +55,7 @@ class PRequest
 
     public function post($url, $postData): PResponse
     {
-        if ($this->options['enable_cookies']) {
+        if ($this->clientOptions['enable_cookies']) {
             $this->enableCookies();
         }
         if (is_array($postData)) {
@@ -58,7 +67,7 @@ class PRequest
 
     public function setUserAgent(string $userAgent): PRequest
     {
-        $this->options['user_agent'] = $userAgent;
+        $this->clientOptions['user_agent'] = $userAgent;
         $this->httpClient->setUserAgent($userAgent);
         return $this;
     }
@@ -67,14 +76,14 @@ class PRequest
     {
         if (!empty($headers)) {
             $headersAssoc = RegexStuff::headerToAssoc($headers);
-            $OriginalHeadersAssoc = RegexStuff::headerToAssoc($this->options['headers']);
+            $OriginalHeadersAssoc = RegexStuff::headerToAssoc($this->clientOptions['headers']);
             $allHeaders = array_merge($OriginalHeadersAssoc, $headersAssoc);
             if (!empty($allHeaders)) {
                 array_walk($allHeaders, function (&$val, $key) {
                     $val = $key . ': ' . $val;
                 });
-                $this->options['headers'] = array_values($allHeaders);
-                $this->httpClient->setHeaders($this->options['headers']);
+                $this->clientOptions['headers'] = array_values($allHeaders);
+                $this->httpClient->setHeaders($this->clientOptions['headers']);
             }
         }
         return $this;
@@ -82,14 +91,14 @@ class PRequest
 
     public function setRequestHeaders(array $headers): PRequest
     {
-        $this->options['headers'] = $headers;
+        $this->clientOptions['headers'] = $headers;
         $this->httpClient->setHeaders($headers);
         return $this;
     }
 
     public function enableCookies(): PRequest
     {
-        $this->options['enable_cookies'] = true;
+        $this->clientOptions['enable_cookies'] = true;
         if (empty($this->cookiePath)) {
             $this->cookiePath = '/tmp/cook-prequest-' . uniqid();
         }
@@ -99,7 +108,7 @@ class PRequest
 
     public function disableCookies(): PRequest
     {
-        $this->options['enable_cookies'] = false;
+        $this->clientOptions['enable_cookies'] = false;
         $this->httpClient->disableCookies();
         return $this;
     }
@@ -114,15 +123,15 @@ class PRequest
 
     public function allowHttps(): PRequest
     {
-        $this->options['https'] = true;
+        $this->clientOptions['https'] = true;
         $this->httpClient->allowHttps();
         return $this;
     }
 
     public function setRedirects($num = 2): PRequest
     {
-        $this->options['redirect_num'] = intval($num, 10);
-        $this->httpClient->setRedirects($this->options['redirect_num']);
+        $this->clientOptions['redirect_num'] = intval($num, 10);
+        $this->httpClient->setRedirects($this->clientOptions['redirect_num']);
         return $this;
     }
 
@@ -142,15 +151,15 @@ class PRequest
     /**
      * @return array
      */
-    public function getOptions(): array
+    public function getClientOptions(): array
     {
-        return $this->options;
+        return $this->clientOptions;
     }
 
 
     public function setClient($client): PRequest
     {
-        $this->options['http_client'] = $client;
+        $this->clientOptions['http_client'] = $client;
         $this->httpClient = $client;
         $this->setClientDefaultOptions($client);
 
@@ -161,7 +170,7 @@ class PRequest
     // Options that are going to be relevant only for different clients - so different options for curl and guzzle
     public function setCustomClientOptions($customOpts): PRequest
     {
-        $this->options['custom_client_options'] = $customOpts;
+        $this->clientOptions['custom_client_options'] = $customOpts;
         if (method_exists($this->httpClient, 'setCustomClientOptions')) {
             $this->httpClient->setCustomClientOptions($customOpts);
         }
@@ -186,14 +195,14 @@ class PRequest
 
     public function closeConnection()
     {
-        if (!empty($this->options['http_client']) && method_exists($this->options['http_client'], 'close')) {
-            $this->options['http_client']->close();
+        if (!empty($this->clientOptions['http_client']) && method_exists($this->clientOptions['http_client'], 'close')) {
+            $this->clientOptions['http_client']->close();
         }
     }
 
     public function setClientDefaultOptions($client): void
     {
-        $allOptions = $options = $this->getOptions();
+        $allOptions = $options = $this->getClientOptions();
         if (!empty($client->defaultOptions) && is_array($client->defaultOptions)) {
             $allOptions = array_merge($options, $client->defaultOptions);
         }
@@ -238,33 +247,33 @@ class PRequest
     }
 
     /**
-     * @param $options
+     * @param $clientOptions
      * @return PRequest
      */
-    public function setOptions($options): PRequest
+    public function setClientOptions($clientOptions): PRequest
     {
-        if (!empty($options['http_client']) && is_object($options['http_client'])) {
-            $this->setClient($options['http_client']);
+        if (!empty($clientOptions['http_client']) && is_object($clientOptions['http_client'])) {
+            $this->setClient($clientOptions['http_client']);
         } else {
             $this->useCurl();
         }
-        if (!empty($options['user_agent'])) {
-            $this->setUserAgent($options['user_agent']);
+        if (!empty($clientOptions['user_agent'])) {
+            $this->setUserAgent($clientOptions['user_agent']);
         }
-        if (!empty($options['headers'])) {
-            $this->setRequestHeaders($options['headers']);
+        if (!empty($clientOptions['headers'])) {
+            $this->setRequestHeaders($clientOptions['headers']);
         }
-        if (!empty($options['https'])) {
+        if (!empty($clientOptions['https'])) {
             $this->allowHttps();
         }
-        if (!empty($options['enable_cookies'])) {
+        if (!empty($clientOptions['enable_cookies'])) {
             $this->enableCookies();
         }
-        if (!empty($options['redirect_num'])) {
-            $this->setRedirects($options['redirect_num']);
+        if (!empty($clientOptions['redirect_num'])) {
+            $this->setRedirects($clientOptions['redirect_num']);
         }
-        if (!empty($options['custom_client_options'])) {
-            $this->setCustomClientOptions($options['custom_client_options']);
+        if (!empty($clientOptions['custom_client_options'])) {
+            $this->setCustomClientOptions($clientOptions['custom_client_options']);
         }
         return $this;
     }

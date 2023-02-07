@@ -39,12 +39,12 @@ class PRequestTest extends TestCase
     {
         $req = new PRequest();
         $req->setUserAgent("default user");
-        $options = $req->getOptions();
+        $options = $req->getClientOptions();
         self::assertArrayHasKey("user_agent", $options);
         self::assertEquals("default user", $options["user_agent"]);
 
         // Bro bot user agent.
-        $options = $req->setClient(new Brobot())->getOptions();
+        $options = $req->setClient(new Brobot())->getClientOptions();
         $this->assertEquals("Bro bot", $options['user_agent']);
         $this->assertEquals([
             'head1 : val 1',
@@ -62,7 +62,7 @@ class PRequestTest extends TestCase
         self::assertStringContainsString("no bro", $res->getBody());
 
         // Only return Head Client
-        $options = $req->setClient(new OnlyHeadClient())->setUserAgent("only head")->getOptions();
+        $options = $req->setClient(new OnlyHeadClient())->setUserAgent("only head")->getClientOptions();
         $this->assertEquals("only head", $options['user_agent']);
         $onlyHeadRes = $req->get('icanhazip.com');
         self::assertStringContainsString("HTTP", $onlyHeadRes->getBody());
@@ -73,7 +73,7 @@ class PRequestTest extends TestCase
     {
         $req = new PRequest();
         $req->setRedirects(4);
-        $options = $req->getOptions();
+        $options = $req->getClientOptions();
         self::assertArrayHasKey('redirect_num', $options);
         self::assertEquals(4, $options['redirect_num']);
     }
@@ -82,7 +82,7 @@ class PRequestTest extends TestCase
     {
         $req = new PRequest();
         $req->allowHttps();
-        $options = $req->getOptions();
+        $options = $req->getClientOptions();
         self::assertArrayHasKey('https', $options);
         self::assertTrue($options['https']);
     }
@@ -95,14 +95,14 @@ class PRequestTest extends TestCase
             "content-type: application/json",
         ];
         $req->setRequestHeaders($headers);
-        $options = $req->getOptions();
+        $options = $req->getClientOptions();
         self::assertArrayHasKey('headers', $options);
         self::assertIsArray($options['headers']);
         self::assertEquals($headers, $options['headers']);
 
         $additionalHeaders = ["x-fetch: Made Up Thing", "accept: nil"];
         $req->addRequestHeaders($additionalHeaders);
-        $options = $req->getOptions();
+        $options = $req->getClientOptions();
         self::assertArrayHasKey('headers', $options);
         self::assertIsArray($options['headers']);
         self::assertEquals([
@@ -117,7 +117,7 @@ class PRequestTest extends TestCase
         $req = new PRequest();
         $userAgentStr = "user agent test";
         $req->setUserAgent($userAgentStr);
-        $options = $req->getOptions();
+        $options = $req->getClientOptions();
         self::assertArrayHasKey('user_agent', $options);
         self::assertEquals($userAgentStr, $options['user_agent']);
         $res = $req->get('https://www.whatsmyua.info/');
@@ -133,7 +133,7 @@ class PRequestTest extends TestCase
         $req->closeConnection();
 
         $req->disableCookies();
-        $options = $req->getOptions();
+        $options = $req->getClientOptions();
         self::assertArrayHasKey('enable_cookies', $options);
         self::assertFalse($options['enable_cookies']);
 
@@ -169,9 +169,9 @@ class PRequestTest extends TestCase
         $req->allowHttps();
         $req->enableCookies();
 
-        $optionsOriginal = $req->getOptions();
+        $optionsOriginal = $req->getClientOptions();
         $newReq = new PRequest($optionsOriginal);
-        $newReqOptions = $newReq->getOptions();
+        $newReqOptions = $newReq->getClientOptions();
         self::assertEquals(4, $newReqOptions['redirect_num']);
         self::assertEquals('custom agent', $newReqOptions['user_agent']);
         self::assertEquals(true, $newReqOptions['https']);
@@ -187,7 +187,7 @@ class PRequestTest extends TestCase
         
         // test brobot client default options
         $req->setClient($broBot);
-        $reqOptions = $req->getOptions();
+        $reqOptions = $req->getClientOptions();
         self::assertEquals('Bro bot', $reqOptions['user_agent']);
         self::assertEquals($broBot, $reqOptions['http_client']);
 
@@ -196,31 +196,31 @@ class PRequestTest extends TestCase
         $newReq->setUserAgent("branched");
         self::assertInstanceOf('\Gyaaniguy\PCrawl\PRequest', $newReq);
         
-        $newReqOptions = $newReq->getOptions();
+        $newReqOptions = $newReq->getClientOptions();
         self::assertEquals('branched', $newReqOptions['user_agent']);        
         self::assertEquals($broBot, $newReqOptions['http_client']);
         
         $newReq->setClient($curlClient);
-        $newReqOptions = $newReq->getOptions();
+        $newReqOptions = $newReq->getClientOptions();
         self::assertEquals($curlClient, $newReqOptions['http_client']);
 
-        $reqOptions = $req->getOptions();
+        $reqOptions = $req->getClientOptions();
         self::assertEquals($broBot, $reqOptions['http_client']);
 
         //Shallow copy test
         $req = new PRequest();
         $curlClientShallow = new CurlClient();
         $req->setClient($curlClientShallow);
-        $reqOptions = $req->getOptions();
+        $reqOptions = $req->getClientOptions();
         self::assertEquals($curlClientShallow, $reqOptions['http_client']);
 
         $newReq = $req;
         $broBotShallowTest = new Brobot();
         $newReq->setClient($broBotShallowTest);
-        $newReqOptions = $newReq->getOptions();
+        $newReqOptions = $newReq->getClientOptions();
         self::assertEquals($broBotShallowTest, $newReqOptions['http_client']);
 
-        $reqOptions = $req->getOptions();
+        $reqOptions = $req->getClientOptions();
         self::assertEquals($broBotShallowTest, $reqOptions['http_client']);
 
 

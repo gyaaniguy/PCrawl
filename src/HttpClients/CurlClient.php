@@ -3,6 +3,7 @@
 namespace Gyaaniguy\PCrawl\HttpClients;
 
 use Gyaaniguy\PCrawl\Response\PResponse;
+use InvalidArgumentException;
 
 class CurlClient implements InterfaceHttpClient
 {
@@ -15,12 +16,12 @@ class CurlClient implements InterfaceHttpClient
     public function __construct()
     {
         $this->res = new PResponse();
-        $this->curl_init_if();
+        $this->curlInitIf();
     }
 
     public function get(string $url, array $options = []): PResponse
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_URL, $url);
         // this function is called by curl for each header received
         curl_setopt(
@@ -36,18 +37,12 @@ class CurlClient implements InterfaceHttpClient
             }
         );
         $curlRes = curl_exec($this->ch);
-        $this->res->setRequestUrl($url);
-        $this->res->setBody($curlRes);
-        $this->res->setError(curl_error($this->ch));
-        $this->res->setHttpCode(curl_getinfo($this->ch, CURLINFO_HTTP_CODE));
-        $this->res->setLastUrl(curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL));
-        $this->res->setResponseHeaders($this->responseHeaders);
-        return $this->res;
+        return $this->setResponse($url, $curlRes);
     }
 
     public function post(string $url, $postData = []): PResponse
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_POST, 1);
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $postData);
         return $this->get($url);
@@ -55,49 +50,49 @@ class CurlClient implements InterfaceHttpClient
 
     public function setUserAgent(string $userAgent): void
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_USERAGENT, $userAgent);
     }
 
     public function setHeaders(array $headers): void
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
     }
 
     public function enableCookies(string $cookiePath): void
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         if (empty($cookiePath)) {
-            $this->cookiePath = '/tmp/' . uniqid(rand(999,99999999),true);
-        }        
+            $this->cookiePath = '/tmp/' . uniqid(rand(999, 99999999), true);
+        }
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, $cookiePath);
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, $cookiePath);
     }
 
     public function disableCookies(): void
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, '');
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
     }
 
     public function allowHttps(): void
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
     public function setRedirects(int $num): void
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_MAXREDIRS, $num);
     }
 
     public function setCustomClientOptions(array $customClientOptions): void
     {
-        $this->curl_init_if();
+        $this->curlInitIf();
         curl_setopt_array($this->ch, $customClientOptions);
     }
 
@@ -106,7 +101,7 @@ class CurlClient implements InterfaceHttpClient
         curl_close($this->ch);
     }
 
-    public function curl_init_if(): void
+    public function curlInitIf(): void
     {
         if (!$this->ch || !is_resource($this->ch)) {
             $this->ch = curl_init();
@@ -120,5 +115,43 @@ class CurlClient implements InterfaceHttpClient
     public function enableReturnTransfer(): void
     {
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+    }
+
+    /**
+     * Download a file.
+     * @param string $url Url of the file to download
+     * @param array $options 'filepath' key should have the value of the path to save the file
+     * @return PResponse
+     * @throws InvalidArgumentException
+     */
+    public function getFile(string $url, array $options = []): PResponse
+    {
+        if (empty($options) || empty($options['filepath'])) {
+            throw new InvalidArgumentException ('No filepath provided');
+        }
+        $fp = fopen($options['filepath'], 'w+');
+        if (!$fp) {
+            throw new InvalidArgumentException ('filepath is not writable');
+        }
+        $chFile = curl_copy_handle($this->ch);
+        curl_setopt($chFile, CURLOPT_FILE, $fp);
+        $curlRes = curl_exec($chFile);
+        return $this->setResponse($url, $curlRes);
+    }
+
+    /**
+     * @param string $url
+     * @param $curlRes
+     * @return PResponse
+     */
+    public function setResponse(string $url, $curlRes): PResponse
+    {
+        $this->res->setRequestUrl($url);
+        $this->res->setBody($curlRes);
+        $this->res->setError(curl_error($this->ch));
+        $this->res->setHttpCode(curl_getinfo($this->ch, CURLINFO_HTTP_CODE));
+        $this->res->setLastUrl(curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL));
+        $this->res->setResponseHeaders($this->responseHeaders);
+        return $this->res;
     }
 }
