@@ -39,8 +39,8 @@ class PRequest
         if (!empty($this->clientOptions['enable_cookies'])) {
             $this->enableCookies();
         }
-
-        $this->lastRawResponse = $this->httpClient->getFile($url, $options);
+        $this->clientOptions['file_path'] = $options['file_path'];
+        $this->lastRawResponse = $this->httpClient->get($url, $this->clientOptions);
         return $this->lastRawResponse;
     }
     public function get($url = '', array $options = []): PResponse
@@ -49,7 +49,7 @@ class PRequest
             $this->enableCookies();
         }
 
-        $this->lastRawResponse = $this->httpClient->get($url, $options);
+        $this->lastRawResponse = $this->httpClient->get($url, array_merge($this->clientOptions, $options));
         return $this->lastRawResponse;
     }
 

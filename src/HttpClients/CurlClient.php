@@ -36,6 +36,9 @@ class CurlClient implements InterfaceHttpClient
                 return $len;
             }
         );
+        if (!empty($options['custom_client_options'])) {
+            curl_setopt_array($this->ch, $options['custom_client_options']);
+        }
         $curlRes = curl_exec($this->ch);
         return $this->setResponse($url, $curlRes);
     }
@@ -88,12 +91,6 @@ class CurlClient implements InterfaceHttpClient
     {
         $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_MAXREDIRS, $num);
-    }
-
-    public function setCustomClientOptions(array $customClientOptions): void
-    {
-        $this->curlInitIf();
-        curl_setopt_array($this->ch, $customClientOptions);
     }
 
     public function close(): void

@@ -23,8 +23,5 @@ interface InterfaceHttpClient
 
     public function allowHttps();
 
-    
-    public function setCustomClientOptions(array $customClientOptions);
-
     public function setRedirects(int $num);
 }
