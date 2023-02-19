@@ -16,4 +16,17 @@ class RegexStuff
         }
         return $assocHeaders;
     }
+
+    public static function combineHeaders($headers,$headersOriginal)
+    {
+        $headersAssoc = RegexStuff::headerToAssoc($headers);
+        $OriginalHeadersAssoc = RegexStuff::headerToAssoc($headersOriginal);
+        $allHeaders = array_merge($OriginalHeadersAssoc, $headersAssoc);
+        if (!empty($allHeaders)) {
+            array_walk($allHeaders, function (&$val, $key) {
+                $val = $key . ': ' . $val;
+            });
+        }
+        return $allHeaders;
+    }
 }

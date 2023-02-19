@@ -27,10 +27,10 @@ class PResponseMods
      */
     public function tidy(): PResponseMods
     {
-        if (!class_exists('tidy')) {
+        if (!class_exists('\Tidy') ) {
             throw new \Exception("Tidy not installed");
         }
-        $tidy = new Tidy();
+        $tidy = new \Tidy();
         
         $config = array(
             'indent' => true,
