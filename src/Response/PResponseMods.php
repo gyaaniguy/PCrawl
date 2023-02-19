@@ -2,6 +2,9 @@
 
 namespace Gyaaniguy\PCrawl\Response;
 
+use Exception;
+use Tidy;
+
 class PResponseMods
 {
     public PResponse $pRes;
@@ -15,23 +18,24 @@ class PResponseMods
     {
         return $this;
     }
+
     public function addNikhil(): PResponseMods
     {
-        $this->pRes->setBody($this->pRes->getBody()."nikhil");
+        $this->pRes->setBody($this->pRes->getBody() . "nikhil");
         return $this;
     }
 
     /**
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function tidy(): PResponseMods
     {
-        if (!class_exists('\Tidy') ) {
-            throw new \Exception("Tidy not installed");
+        if (!class_exists('\Tidy')) {
+            throw new Exception("Tidy not installed");
         }
-        $tidy = new \Tidy();
-        
+        $tidy = new Tidy();
+
         $config = array(
             'indent' => true,
             'output-xhtml' => true,

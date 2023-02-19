@@ -2,9 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use GuzzleHttp\Client;
 use Gyaaniguy\PCrawl\Response\PResponse;
-use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractHttpClient
 {

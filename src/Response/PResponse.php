@@ -22,6 +22,13 @@ class PResponse
     protected string $requestUrl;
     private PParser $parser;
 
+    /**
+     * @return string
+     */
+    public function getBody(): string
+    {
+        return $this->body;
+    }
 
     /**
      * @param mixed $body
@@ -32,49 +39,11 @@ class PResponse
     }
 
     /**
-     * @return string
-     */
-    public function getBody(): string
-    {
-        return $this->body;
-    }
-
-    /**
-     * @param array $responseHeaders
-     */
-    public function setResponseHeaders(array $responseHeaders): void
-    {
-        $this->responseHeaders = $responseHeaders;
-    }
-
-    /**
-     * @param mixed $error
-     */
-    public function setError(string $error): void
-    {
-        $this->error = $error;
-    }
-
-    /**
-     * @param mixed $httpCode
-     */
-    public function setHttpCode(int $httpCode): void
-    {
-        $this->httpCode = $httpCode;
-    }
-
-    /**
      * @param mixed $requestUrl
      */
     public function setRequestUrl(string $requestUrl): void
     {
         $this->requestUrl = $requestUrl;
-    }
-
-
-    public function setLastUrl(string $lastUrl)
-    {
-        $this->lastUrl = $lastUrl;
     }
 
     /**
@@ -86,11 +55,27 @@ class PResponse
     }
 
     /**
+     * @param mixed $httpCode
+     */
+    public function setHttpCode(int $httpCode): void
+    {
+        $this->httpCode = $httpCode;
+    }
+
+    /**
      * @return array
      */
     public function getResponseHeaders(): array
     {
         return $this->responseHeaders;
+    }
+
+    /**
+     * @param array $responseHeaders
+     */
+    public function setResponseHeaders(array $responseHeaders): void
+    {
+        $this->responseHeaders = $responseHeaders;
     }
 
     /**
@@ -102,11 +87,24 @@ class PResponse
     }
 
     /**
+     * @param mixed $error
+     */
+    public function setError(string $error): void
+    {
+        $this->error = $error;
+    }
+
+    /**
      * @return string
      */
     public function getLastUrl(): string
     {
         return $this->lastUrl;
+    }
+
+    public function setLastUrl(string $lastUrl)
+    {
+        $this->lastUrl = $lastUrl;
     }
 
 

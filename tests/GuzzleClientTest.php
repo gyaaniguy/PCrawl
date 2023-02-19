@@ -17,7 +17,7 @@ class GuzzleClientTest extends TestCase
         self::assertArrayHasKey('redirect_num', $clientOptions);
         self::assertEquals(4, $clientOptions['redirect_num']);
     }
-    
+
     public function testSetUserAgent()
     {
         $req = new PRequest();
@@ -30,7 +30,8 @@ class GuzzleClientTest extends TestCase
         self::assertEquals($userAgentStr, $clientOptions['user_agent']);
         $res = $req->get('https://www.whatsmyua.info/');
         self::assertStringContainsString("user agent test", $res->getBody());
-    } 
+    }
+
     public function testSetHeaders()
     {
         $client = new GuzzleClient();
@@ -46,6 +47,7 @@ class GuzzleClientTest extends TestCase
         $res = $req->get('https://manytools.org/http-html-text/http-request-headers/');
         self::assertStringContainsString("Head2", $res->getBody());
     }
+
     public function testAddHeaders()
     {
         $client = new GuzzleClient();

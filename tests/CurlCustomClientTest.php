@@ -22,12 +22,13 @@ class CurlCustomClientTest extends TestCase
         self::assertStringContainsString("HTTP", $onlyHeadRes->getBody());
         self::assertStringNotContainsString("html", $onlyHeadRes->getBody());
     }
+
     public function testDefaultClientOptions()
     {
         $req = new PRequest();
         $req->setClient(new OnlyHeadClient());
         $onlyHeadRes = $req->get('icanhazip.com');
-        
+
         self::assertStringContainsString("HTTP", $onlyHeadRes->getBody());
         self::assertStringNotContainsString("html", $onlyHeadRes->getBody());
     }
@@ -36,9 +37,9 @@ class CurlCustomClientTest extends TestCase
 
 class OnlyHeadClient extends CurlCustomClient
 {
-    public array $customClientOptions = [
-            CURLOPT_HEADER => 1,
-            CURLOPT_NOBODY => 0,
-            CURLOPT_USERAGENT => 'only head',
+    public array $clientOptions = [
+        CURLOPT_HEADER => 1,
+        CURLOPT_NOBODY => 0,
+        CURLOPT_USERAGENT => 'only head',
     ];
 }

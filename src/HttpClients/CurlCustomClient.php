@@ -2,17 +2,13 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use Gyaaniguy\PCrawl\Response\PResponse;
-use InvalidArgumentException;
-
 class CurlCustomClient extends CurlBaseClient
 {
-    protected array $customClientOptions = [] ;
     public function __construct()
     {
         parent::__construct();
-        if (!empty($this->customClientOptions)) {
-            $this->setCustomOptions($this->customClientOptions);
+        if (!empty($this->clientOptions)) {
+            $this->setCustomOptions($this->clientOptions);
         }
     }
 
@@ -20,5 +16,6 @@ class CurlCustomClient extends CurlBaseClient
     {
         $this->curlInitIf();
         curl_setopt_array($this->ch, $customClientOptions);
+        $this->clientOptions['custom_client_options'] = $customClientOptions;
     }
 }

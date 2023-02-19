@@ -11,11 +11,13 @@ class CurlFileClientTest extends TestCase
     {
         $req = new PRequest();
 
-        $fileClient = new CurlClient();        
+        $fileClient = new CurlClient();
         $req->setClient($fileClient);
-        
 
-        $req->getFile('https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png', ['file_path' =>'/tmp/google.png']);
+        $req->getFile(
+            'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+            ['file_path' => '/tmp/google.png']
+        );
         self::assertFileExists('/tmp/google.png');
     }
 }

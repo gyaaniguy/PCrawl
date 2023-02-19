@@ -19,13 +19,6 @@ class GuzzleClient extends GuzzleBaseClient
         return $this;
     }
 
-    public function setHeaders(array $headers): GuzzleClient
-    {
-        unset($this->guzzleClient);
-        $this->clientOptions['headers'] = $headers;
-        return $this;
-    }
-
     public function setUserAgent(string $userAgent): GuzzleClient
     {
         unset($this->guzzleClient);
@@ -33,11 +26,18 @@ class GuzzleClient extends GuzzleBaseClient
         return $this;
     }
 
-    public function addHeaders(array $headers): GuzzleClient 
+    public function addHeaders(array $headers): GuzzleClient
     {
         if (!empty($headers)) {
             $this->setHeaders(RegexStuff::combineHeaders($headers, $this->clientOptions['headers']));
         }
+        return $this;
+    }
+
+    public function setHeaders(array $headers): GuzzleClient
+    {
+        unset($this->guzzleClient);
+        $this->clientOptions['headers'] = $headers;
         return $this;
     }
 

@@ -16,6 +16,31 @@ class CurlBaseClient extends AbstractHttpClient
         $this->curlInitIf();
     }
 
+    public function curlInitIf(): void
+    {
+        if (!$this->ch || !is_resource($this->ch)) {
+            $this->ch = curl_init();
+            curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
+            $this->enableReturnTransfer();
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function enableReturnTransfer(): void
+    {
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+    }
+
+    public function post(string $url, $postData = []): PResponse
+    {
+        $this->curlInitIf();
+        curl_setopt($this->ch, CURLOPT_POST, 1);
+        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $postData);
+        return $this->get($url);
+    }
+
     public function get(string $url, array $requestOptions = []): PResponse
     {
         $this->curlInitIf();
@@ -37,34 +62,20 @@ class CurlBaseClient extends AbstractHttpClient
         return $this->setResponse($url, $curlRes);
     }
 
-    public function post(string $url, $postData = []): PResponse
+    public function setResponse(string $url, $response): PResponse
     {
-        $this->curlInitIf();
-        curl_setopt($this->ch, CURLOPT_POST, 1);
-        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $postData);
-        return $this->get($url);
+        $getInfo = curl_getinfo($this->ch);
+        $this->res->setRequestUrl($url);
+        $this->res->setBody($response);
+        $this->res->setHttpCode($getInfo["http_code"]);
+        $this->res->setLastUrl(curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL) ?? $url);
+        $this->res->setResponseHeaders($this->responseHeaders ?? []);
+        return $this->res;
     }
 
     public function close(): void
     {
         curl_close($this->ch);
-    }
-
-    public function curlInitIf(): void
-    {
-        if (!$this->ch || !is_resource($this->ch)) {
-            $this->ch = curl_init();
-            curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
-            $this->enableReturnTransfer();
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function enableReturnTransfer(): void
-    {
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 
     /**
@@ -87,17 +98,6 @@ class CurlBaseClient extends AbstractHttpClient
         curl_setopt($chFile, CURLOPT_FILE, $fp);
         $curlRes = curl_exec($chFile);
         return $this->setResponse($url, $curlRes);
-    }
-
-    public function setResponse(string $url,  $response): PResponse
-    {
-        $getInfo = curl_getinfo($this->ch);
-        $this->res->setRequestUrl($url);
-        $this->res->setBody($response);
-        $this->res->setHttpCode($getInfo["http_code"]);
-        $this->res->setLastUrl(curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL) ?? $url);
-        $this->res->setResponseHeaders($this->responseHeaders ?? []);
-        return $this->res;
     }
 
     public function closeConnection(): CurlBaseClient

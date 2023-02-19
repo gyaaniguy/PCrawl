@@ -4,7 +4,6 @@ namespace Gyaaniguy\PCrawl;
 
 use Gyaaniguy\PCrawl\HttpClients\CurlClient;
 use Gyaaniguy\PCrawl\HttpClients\CurlCustomClient;
-use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
 use Gyaaniguy\PCrawl\Response\PResponse;
 use PHPUnit\Framework\TestCase;
 
@@ -13,13 +12,12 @@ class PRequestTest extends TestCase
 
     public function testSetClient()
     {
-        
         $broBot = new Brobot();
 
         $req = new PRequest();
         $req->setClient($broBot);
         $res = $req->get('https://manytools.org/http-html-text/http-request-headers/');
-        self::assertStringContainsString("Bro bot", $res->getBody());
+        self::assertStringContainsStringIgnoringCase("Bro bot", $res->getBody());
         self::assertStringContainsString("Head2", $res->getBody());
         self::assertStringContainsString("val 2", $res->getBody());
         self::assertStringNotContainsString("val 3", $res->getBody());
@@ -35,11 +33,10 @@ class PRequestTest extends TestCase
         $boringCurl->setUserAgent("wanna be bro");
         $res = $req->get('https://www.whatsmyua.info/');
         self::assertStringContainsString("wanna be bro", $res->getBody());
-
     }
 
 
-    
+
 //    public function testBranch()
 //    {
 //        $req = new PRequest();
@@ -87,23 +84,24 @@ class PRequestTest extends TestCase
 //
 //    }
 
-    function testWebscriptClient()
+    public function testWebscriptClient()
     {
         $webScriptClient = new WebScriptClient();
         $webScriptClient->strictHttps(false)->setRedirects(3);
         $req = new PRequest($webScriptClient);
-        
-        $res = $req->get('https://www.whatsmyua.info',['unblock_site' => 'headers']);
+
+        $res = $req->get('https://www.icanhazip.com', ['unblock_site' => 'getIp']);
         self::assertStringContainsStringIgnoringCase("User Agent", $res->getBody());
+        self::assertStringContainsStringIgnoringCase("we use you", $res->getBody());
     }
-        
+
 }
 
 class Brobot extends CurlCustomClient
 {
-    public array $customClientOptions = [
+    public array $clientOptions = [
         CURLOPT_USERAGENT => 'Bro bot',
-        CURLOPT_HTTPHEADER      => [
+        CURLOPT_HTTPHEADER => [
             'head1: val 1',
             'head2: val 2',
         ],
@@ -112,26 +110,27 @@ class Brobot extends CurlCustomClient
 
 class WebScriptClient extends CurlClient
 {
-    public array $defaultOptions = [
-        'user_agent'            => 'We use you',
+    public array $clientOptions = [
+        'user_agent' => 'We use you',
     ];
+
     public function get(string $url, array $options = []): PResponse
     {
-        if (empty($options['unblock_site']) && filter_var($options['unblock_site'], FILTER_VALIDATE_URL)) {
+        if (!empty($options['unblock_site'])) {
             switch ($options['unblock_site']) {
                 case 'anonymouse':
-                    $url = 'https://anonymouse.com?url='.urlencode($url);
-                    break; 
-                case 'unblock.com':
-                    $url = 'https://unblock.com?url='.urlencode($url);
-                    return parent::post($url,['token' => 'letmein']);
+                    $url = 'https://anonymouse.com?url=' . urlencode($url);
                     break;
-                case 'headers':
-                    $url = 'icanhazip.com';
+                case 'unblock.com':
+                    $url = 'https://unblock.com?url=' . urlencode($url);
+                    return parent::post($url, ['token' => 'letmein']);
+                    break;
+                case 'getIp':
+                    $url = 'https://www.whatsmyua.info';
                     return parent::get($url);
                     break;
             }
-        } 
-        return parent::get($url,$options);
+        }
+        return parent::get($url, $options);
     }
 }

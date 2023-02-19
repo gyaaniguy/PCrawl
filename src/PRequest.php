@@ -4,11 +4,9 @@ namespace Gyaaniguy\PCrawl;
 
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
-use Gyaaniguy\PCrawl\Helpers\RegexStuff;
 use Gyaaniguy\PCrawl\HttpClients\AbstractHttpClient;
 use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
 use Gyaaniguy\PCrawl\HttpClients\InterfaceHttpClient;
-use Gyaaniguy\PCrawl\HttpClients\CurlClient;
 use Gyaaniguy\PCrawl\Response\PResponse;
 use InvalidArgumentException;
 
@@ -47,10 +45,10 @@ class PRequest
         return $this->lastRawResponse;
     }
 
-    public function get($url = '', $requestOptions = []): PResponse
+    public function get($url = '', array $requestOptions = []): PResponse
     {
         try {
-            $this->lastRawResponse = $this->httpClient->get($url, $requestOptions = []);
+            $this->lastRawResponse = $this->httpClient->get($url, $requestOptions);
         } catch (GuzzleException $e) {
             $this->lastRawResponse = new PResponse();
             $this->lastRawResponse->setError($e->getMessage());

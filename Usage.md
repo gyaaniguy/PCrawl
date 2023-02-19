@@ -2,55 +2,66 @@
 
 ## PRequest
 
-We start things by creating a PRequest object 
--> set options, like the desired http client, cookies behaviour, custom headers etc
+Create PRequest object, fetch page.
 ```php
-$pRequest = PRequest([
-    'user_agent'      => 'good_bot',
-    'headers'         => ['header: value'],
-    'tidy'            => true,
-])
+$pRequest = PRequest()
 $pResponse = $pRequest->get('google.com');
 
 ```
+Optionally pass a client object. Various options can be set on the client Object. Like cookies behaviour, custom headers etc
 Alternatively chain method pattern can be used.
 ```php
-$pRequest = $pRequest->useCurl()
-    ->setUserAgent("bad bot")
-    ->setStrictHttps()
-    ->enableCookies()
-    ->setRedirects(2)
-    ->setHeaders(['accept: /*/'])
-    ->enableTidy();
+
+$client = new CurlClient();
+$client->setRedirects(4)->setUserAgent("Bro bot");
+$req = new PRequest($client);
+// $req->setClient($client); // Alternative
+$res = $req->get('google.com');
 ```
-We can also fetch the options from PRequest for reusability
+### Http Clients
+Default is GuzzleClient. 
+New clients can be created easily. Or existing clients behaviour and setting can be modified on the fly.  
+##### On The fly
+Not available with CustomClients but only with GuzzleClient and CurlClient.
 ```php
-$opts = $pRequest->getOptions();
-$anotherRequest = new PRequest($opts);
-$anotherRequest->disableCookies()->get('google.com');
+$broBot = $client->setRedirects(4)->setUserAgent("Bro bot");
+```
+##### Extended clients
+```php
+class AddPageNumClient extends CurlClient
+{
+    public function get(string $url, array $options = []): PResponse
+    {
+        if (!empty($options['page_num'])) {
+                $url = $url."?page=".$options['page_num']; 
+                return parent::get($url);
+            }
+        } 
+        return parent::get($url,$options);
+    }
+}
 ```
 
-### Http Clients
-Default is CurlClient class. A wrapper around 'curl'.
-New clients can be creatd and used very easily. 
-1. TODO:  guzzlehttp
-2. Custom clients:  
-   - Extend the CurlClient class. Set $defaultOptions=[] to set any curl options. See PRequestTest.php file for more examples.
+
+##### Custom Clients
+Thin wrappers around the underlying curl and guzzle clients. Meant to used when you need control. Don't have set functions.
+Extend the CurlCustomClient OR GuzzleCustomClient class. Set $customClientOptions=[] to set any curl options. See PRequestTest.php file for more examples.
 ```php
-class OnlyHeadClient extends CurlClient
+class OnlyHeadClient extends CurlCustomClient
 {
-    public array $defaultOptions = [
+    public array $customClientOptions = [
         'custom_client_options' => [
             CURLOPT_NOBODY => 0,
+            CURLOPT_HEADER => 1,
         ],
         'user_agent'            => 'Only Head bot',
     ];
 } 
 $req = new PRequest();
-$req->setClient(new OnlyHeadClient())->enableCookies();
+$req->setClient(new OnlyHeadClient());
 $onlyHeadRes = $req->get('icanhazip.com');
 ```  
-This is a  fairly useful feature as custom curl clients, one with different user-agents, or any other options can be created on the fly and passed around.
+This is a fairly useful feature as custom curl clients, one with different user-agents, or any other options can be created on the fly and passed around.
 
 ```php
 $onlyHeadClient=new OnlyHeadClient();

@@ -1,6 +1,7 @@
 <?php
 
 namespace Gyaaniguy\PCrawl\HttpClients;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Gyaaniguy\PCrawl\Helpers\RegexStuff;
@@ -17,11 +18,23 @@ class GuzzleBaseClient extends AbstractHttpClient
         $this->res = new PResponse();
     }
 
+    /**
+     * @param string $url
+     * @return PResponse
+     * @throws GuzzleException
+     */
+    public function get(string $url, array $requestOptions = []): PResponse
+    {
+        $this->getGuzzleClient();
+        $response = $this->guzzleClient->request('GET', $url);
+        return $this->setResponse($url, $response);
+    }
+
     public function getGuzzleClient()
     {
         if (!isset($this->guzzleClient)) {
             $requestClientOptions = [];
-            $clientOptions['allow_redirects'] = $this->setRedirectOptions();
+            $requestClientOptions['allow_redirects'] = $this->setRedirectOptions();
             if (isset($this->clientOptions['headers'])) {
                 $requestClientOptions['headers'] = RegexStuff::headerToAssoc($this->clientOptions['headers']);
             }
@@ -37,7 +50,7 @@ class GuzzleBaseClient extends AbstractHttpClient
             if (isset($this->clientOptions['user_agent'])) {
                 $requestClientOptions['headers']['User-Agent'] = $this->clientOptions['user_agent'];
             }
-            if (isset($this->clientOptions['custom_client_options']) ){
+            if (isset($this->clientOptions['custom_client_options'])) {
                 $requestClientOptions = $this->clientOptions['custom_client_options'];
             }
             $this->guzzleClient = new Client($requestClientOptions);
@@ -45,16 +58,32 @@ class GuzzleBaseClient extends AbstractHttpClient
     }
 
     /**
-     * @param string $url
-     * @return PResponse
-     * @throws GuzzleException
+     * @return array
      */
-    public function get(string $url, array $requestOptions = []): PResponse
+    public function setRedirectOptions(): array
     {
-        $this->getGuzzleClient();
-        $response = $this->guzzleClient->request('GET', $url);
-        return $this->setResponse($url, $response);
+        $redirectOptions = [
+            'strict' => true,
+            'referer' => true,
+            'protocols' => ['http', 'https'],
+            'track_redirects' => true
+        ];
+        if (isset($this->clientOptions['redirect_num'])) {
+            $redirectOptions['max'] = $this->clientOptions['redirect_num'];
+        }
+        return $redirectOptions;
     }
+
+    public function setResponse(string $url, ResponseInterface $response): PResponse
+    {
+        $this->res->setRequestUrl($url);
+        $this->res->setBody($response->getBody()->getContents());
+        $this->res->setHttpCode($response->getStatusCode());
+        $this->res->setLastUrl($response->getHeader('X-Guzzle-Redirect-History')[0] ?? $url);
+        $this->res->setResponseHeaders($response->getHeaders());
+        return $this->res;
+    }
+
     public function post(string $url, array $clientOptions = []): PResponse
     {
         $this->getGuzzleClient();
@@ -73,34 +102,5 @@ class GuzzleBaseClient extends AbstractHttpClient
             throw new InvalidArgumentException ('filepath is not writable');
         }
         // TODO 
-    }
-
-
-
-    /**
-     * @return array
-     */
-    public function setRedirectOptions(): array
-    {
-        $redirectOptions = [
-            'strict'    => true,
-            'referer'   => true,
-            'protocols' => ['http', 'https'],
-            'track_redirects' => true
-        ];
-        if (isset($this->clientOptions['redirect_num'])) {
-            $redirectOptions['max'] = $this->clientOptions['redirect_num'];
-        }
-        return $redirectOptions;
-    }
-
-    public function setResponse(string $url, ResponseInterface $response): PResponse
-    {
-        $this->res->setRequestUrl($url);
-        $this->res->setBody($response->getBody()->getContents());
-        $this->res->setHttpCode($response->getStatusCode());
-        $this->res->setLastUrl($response->getHeader('X-Guzzle-Redirect-History')[0] ?? $url);
-        $this->res->setResponseHeaders($response->getHeaders());
-        return $this->res;
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Gyaaniguy\PCrawl;
 
+use QueryPath\DOMQuery;
+
 class PParser
 {
-    private \QueryPath\DOMQuery $qp;
+    private DOMQuery $qp;
 
     public function __construct(string $body)
     {
