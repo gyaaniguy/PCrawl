@@ -1,6 +1,16 @@
-### This is tentatively final usage of some functions
+### This is the tentative usage of some functions  
 
-## PRequest
+---
+# Broad overview
+This package main function can be divided into several parts:
+1. Fetching a page 
+2. Modifying the response body
+3. Debugging the response
+4. Parsing the response body
+
+
+
+## Fetching a Page
 
 Create PRequest object, fetch page.
 ```php
@@ -42,7 +52,6 @@ class AddPageNumClient extends CurlClient
 }
 ```
 
-
 ##### Custom Clients
 Thin wrappers around the underlying curl and guzzle clients. Meant to used when you need control. Don't have set functions.
 Extend the CurlCustomClient OR GuzzleCustomClient class. Set $customClientOptions=[] to set any curl options. See PRequestTest.php file for more examples.
@@ -61,28 +70,6 @@ $req = new PRequest();
 $req->setClient(new OnlyHeadClient());
 $onlyHeadRes = $req->get('icanhazip.com');
 ```  
-This is a fairly useful feature as custom curl clients, one with different user-agents, or any other options can be created on the fly and passed around.
-
-```php
-$onlyHeadClient=new OnlyHeadClient();
-
-$req
-->setClient($onlyHeadClient)
-->enableCookies();
-->get('icanhazip.com');
-
-$req->setClient(new CurlClient())
-->setUserAgent("windows")
-->disableCookies()
-->get("site.com")
-
-$req
-->setClient($onlyHeadClient) // Sets 'defaultoptions' of this client (nobody), while keeping other options(useragent in this case) 
-->get("site.com");
-```
-
-
- - Alternatively make a new class that implements `InterfaceHttpClient` 
 
 ## PResponse
 PRequest returns a PResponse Object.
