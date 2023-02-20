@@ -27,9 +27,6 @@ class CurlClient extends CurlBaseClient
                 if (is_string($optionName) && $optionName == 'headers') {
                     $this->setHeaders($value);
                 }
-                if (is_string($optionName) && $optionName == 'strict_https') {
-                    $this->strictHttps($value);
-                }
                 if (is_string($optionName) && $optionName == 'redirect_num') {
                     $this->setRedirects($value);
                 }
@@ -53,19 +50,6 @@ class CurlClient extends CurlBaseClient
         return $this;
     }
 
-    public function strictHttps(bool $enable): CurlClient
-    {
-        $this->curlInitIf();
-        $this->clientOptions['strict_https'] = $enable;
-        if ($enable) {
-            curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, true);
-            return $this;
-        }
-        curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
-        return $this;
-    }
 
     /**
      * Set the number of redirects allowed.

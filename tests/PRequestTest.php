@@ -88,7 +88,7 @@ class PRequestTest extends TestCase
     public function testWebscriptClient()
     {
         $webScriptClient = new WebScriptClient();
-        $webScriptClient->strictHttps(false)->setRedirects(3);
+        $webScriptClient->setRedirects(3);
         $req = new PRequest($webScriptClient);
 
         $res = $req->get('https://www.icanhazip.com', ['unblock_site' => 'getIp']);
