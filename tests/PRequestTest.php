@@ -4,6 +4,7 @@ namespace Gyaaniguy\PCrawl;
 
 use Gyaaniguy\PCrawl\HttpClients\CurlClient;
 use Gyaaniguy\PCrawl\HttpClients\CurlCustomClient;
+use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
 use Gyaaniguy\PCrawl\Request\PRequest;
 use Gyaaniguy\PCrawl\Response\PResponse;
 use PHPUnit\Framework\TestCase;
@@ -95,6 +96,16 @@ class PRequestTest extends TestCase
         self::assertStringContainsStringIgnoringCase("User Agent", $res->getBody());
         self::assertStringContainsStringIgnoringCase("we use you", $res->getBody());
     }
+    public function testWebscriptGuzzleClient()
+    {
+        $gClient = new WebScriptGuzzleClient();
+        $gClient->setRedirects(3);
+        $req = new PRequest($gClient);
+
+        $res = $req->get('https://www.icanhazip.com', ['unblock_site' => 'getIp']);
+        self::assertStringContainsStringIgnoringCase("User Agent", $res->getBody());
+        self::assertStringContainsStringIgnoringCase("we use you", $res->getBody());
+    }
 
 }
 
@@ -126,6 +137,25 @@ class WebScriptClient extends CurlClient
                     $url = 'https://unblock.com?url=' . urlencode($url);
                     return parent::post($url, ['token' => 'letmein']);
                     break;
+                case 'getIp':
+                    $url = 'https://www.whatsmyua.info';
+                    return parent::get($url);
+                    break;
+            }
+        }
+        return parent::get($url, $options);
+    }
+}
+class WebScriptGuzzleClient extends GuzzleClient
+{
+    public array $clientOptions = [
+        'user_agent' => 'We use you',
+    ];
+
+    public function get(string $url, array $options = []): PResponse
+    {
+        if (!empty($options['unblock_site'])) {
+            switch ($options['unblock_site']) {
                 case 'getIp':
                     $url = 'https://www.whatsmyua.info';
                     return parent::get($url);

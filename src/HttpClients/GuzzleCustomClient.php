@@ -14,7 +14,7 @@ class GuzzleCustomClient extends GuzzleBaseClient
     }
 
     /**
-     * The param is passed as is to the guzzle client constructor. This allows setting any guzzle option not present in the library's GuzzleClient class. 
+     * The param is passed as is to the guzzle client constructor. This allows setting any guzzle option not present in the library's GuzzleClient class.
      * @param array $customClientOptions
      * @return void
      */
@@ -22,6 +22,11 @@ class GuzzleCustomClient extends GuzzleBaseClient
     {
         unset($this->guzzleClient);
         $this->clientOptions['custom_client_options'] = $customClientOptions;
+    }
+
+    public function setRawClient(\GuzzleHttp\Client $client): void
+    {
+        $this->guzzleClient = $client;
     }
 
 }
