@@ -8,10 +8,15 @@ class CurlClient extends CurlBaseClient
     public function __construct()
     {
         parent::__construct();
-        $this->setClientOptions($this->clientOptions);
+        $this->setClientOptions();
     }
 
 
+    /**
+     * Sets the default client options. Intended to make easily clients extendable.
+     * Is automatically called and used if the base $clientOptions is set.
+     * @return void
+     */
     private function setClientOptions()
     {
         if (!empty($this->clientOptions)) {
@@ -62,6 +67,11 @@ class CurlClient extends CurlBaseClient
         return $this;
     }
 
+    /**
+     * Set the number of redirects allowed.
+     * @param int $num
+     * @return $this
+     */
     public function setRedirects(int $num): CurlClient
     {
         $this->curlInitIf();

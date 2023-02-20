@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use Gyaaniguy\PCrawl\PRequest;
+use Gyaaniguy\PCrawl\Request\PRequest;
 use PHPUnit\Framework\TestCase;
 
 class GuzzleCustomClientTest extends TestCase

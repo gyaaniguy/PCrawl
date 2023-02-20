@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\Response;
 
-use Gyaaniguy\PCrawl\PParser;
+use Gyaaniguy\PCrawl\Parsing\PParser;
 
 /**
  *  A sample class

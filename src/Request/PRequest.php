@@ -1,6 +1,6 @@
 <?php
 
-namespace Gyaaniguy\PCrawl;
+namespace Gyaaniguy\PCrawl\Request;
 
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -17,7 +17,7 @@ use InvalidArgumentException;
  */
 class PRequest
 {
-//    private PResponse $lastRawResponse;
+    private PResponse $lastRawResponse;
     private AbstractHttpClient $httpClient;
 
     public function __construct(AbstractHttpClient $httpClient = null)
@@ -41,6 +41,7 @@ class PRequest
             throw new InvalidArgumentException('file_path not set in options');
         }
         $fileOptions['file_path'] = $options['file_path'];
+        // TODO - this is a hack , the response object body would be empty in case of file download. Implement after implementing guzzleclient getfile
         $this->lastRawResponse = $this->httpClient->getFile($url, $fileOptions);
         return $this->lastRawResponse;
     }
@@ -104,26 +105,11 @@ class PRequest
     }
 
     /**
-     * @return InterfaceHttpClient
+     * @return AbstractHttpClient
      */
     public function getClient(): AbstractHttpClient
     {
         return $this->httpClient;
     }
-
-    // branch clone Only needed if storing lastresponse in request obj. So remvoing to reduce complexity. Maybe will have a subclass for that purpose. Base class will be clean, lean.
-//    public function branch(): PRequest
-//    {
-//        return clone $this;
-//    }
-
-//    public function __clone()
-//    {
-//        foreach (get_object_vars($this) as $name => $value) {
-//            if (is_object($value)) {
-//                $this->{$name} = clone $value;
-//            }
-//        }
-//    }
 
 }

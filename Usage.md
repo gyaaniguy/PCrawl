@@ -110,6 +110,4 @@ if ($debug->isFail()){
       $res = $req->setProxy($priceProxy)->get($url);
   }
 }
-
-
 ```

@@ -19,7 +19,9 @@ class GuzzleBaseClient extends AbstractHttpClient
     }
 
     /**
+     * 
      * @param string $url
+     * @param array $requestOptions
      * @return PResponse
      * @throws GuzzleException
      */
@@ -30,6 +32,10 @@ class GuzzleBaseClient extends AbstractHttpClient
         return $this->setResponse($url, $response);
     }
 
+    /**
+     * Creates a guzzle client if required.
+     * @return void
+     */
     public function getGuzzleClient()
     {
         if (!isset($this->guzzleClient)) {
@@ -58,9 +64,10 @@ class GuzzleBaseClient extends AbstractHttpClient
     }
 
     /**
+     * handles setting the redirection object for guzzleclient. 
      * @return array
      */
-    public function setRedirectOptions(): array
+    private function setRedirectOptions(): array
     {
         $redirectOptions = [
             'strict' => true,
@@ -74,6 +81,12 @@ class GuzzleBaseClient extends AbstractHttpClient
         return $redirectOptions;
     }
 
+    /**
+     * Sets the library response object, and its various fields from the values of the guzzles response.
+     * @param string $url
+     * @param ResponseInterface $response
+     * @return PResponse
+     */
     public function setResponse(string $url, ResponseInterface $response): PResponse
     {
         $this->res->setRequestUrl($url);

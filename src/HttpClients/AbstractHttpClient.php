@@ -17,12 +17,4 @@ abstract class AbstractHttpClient
     abstract public function get(string $url, array $requestOptions = []): PResponse;
 
     abstract public function post(string $url): PResponse;
-
-    /**
-     * @param string $url
-     * @param $curlRes
-     * @return PResponse
-     */
-
-
 }

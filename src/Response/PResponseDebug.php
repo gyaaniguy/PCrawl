@@ -9,20 +9,24 @@ class PResponseDebug implements InterfaceResponseDebug
     public PResponse $res;
     public bool $resFail;
 
-    public array $badStrings;
-    private int $goodResponseHttpCode;
-    private array $goodStrings;
-    private array $goodRegex;
-    private array $badRegex;
+    public array $mustNotExistStrings;
+    private int $mustBeHttpCode;
+    private array $mustNotExistHttpCodes;
+    private array $mustExistStrings;
+    private array $mustExistRegex;
+    private array $mustNotExistRegex;
     private array $expectedHeaders;
     private array $analysis;
     private array $customFailCallbacks;
 
 
-    public function getFailDetail()
+    /**
+     * Shows which of the criteria's added caused a match.
+     * @return array
+     */
+    public function getFailDetail(): array
     {
         return $this->analysis;
-        // TODO: Implement getFailDetail() method.
     }
 
     public function setResponse(PResponse $res): PResponseDebug
@@ -31,87 +35,99 @@ class PResponseDebug implements InterfaceResponseDebug
         return $this;
     }
 
-    public function appendBadStrings(array $strings): PResponseDebug
+    public function appendToMustNotExistStrings(array $strings): PResponseDebug
     {
-        $this->badStrings = array_merge($this->badStrings, $strings);
+        $this->mustNotExistStrings = array_merge($this->mustNotExistStrings, $strings);
         return $this;
     }
 
-    public function setBadStrings(array $strings): PResponseDebug
+    public function setMustNotExistStrings(array $strings): PResponseDebug
     {
-        $this->badStrings = $strings;
+        $this->mustNotExistStrings = $strings;
         return $this;
     }
 
-    public function unsetBadStrings(): PResponseDebug
+    public function unsetMustNotExistStrings(): PResponseDebug
     {
-        $this->badStrings = [];
+        $this->mustNotExistStrings = [];
         return $this;
     }
 
-    public function setGoodHttpCode(int $int): PResponseDebug
+    public function setMustNotExistHttpCodes(array $httpCodes): PResponseDebug
     {
-        $this->goodResponseHttpCode = $int;
+        $this->mustNotExistHttpCodes = $httpCodes;
+        return $this;
+    }
+
+    public function unsetMustNotExistHttpCodes(): PResponseDebug
+    {
+        $this->mustNotExistHttpCodes = [];
+        return $this;
+    }
+
+    public function setMustBeHttpCode(int $int): PResponseDebug
+    {
+        $this->mustBeHttpCode = $int;
         return $this;
     }
 
     public function unsetGoodHttpCode(): PResponseDebug
     {
-        $this->goodResponseHttpCode = -1;
+        $this->mustBeHttpCode = -1;
         return $this;
     }
 
-    public function appendGoodStrings(array $strings): PResponseDebug
+    public function appendToMustExistStrings(array $strings): PResponseDebug
     {
-        $this->goodStrings = array_merge($this->goodStrings, $strings);
+        $this->mustExistStrings = array_merge($this->mustExistStrings, $strings);
         return $this;
     }
 
-    public function setGoodStrings(array $strings): PResponseDebug
+    public function setMustExistStrings(array $strings): PResponseDebug
     {
-        $this->goodStrings = $strings;
+        $this->mustExistStrings = $strings;
         return $this;
     }
 
-    public function unsetGoodStrings(): PResponseDebug
+    public function unsetMustExistStrings(): PResponseDebug
     {
-        $this->goodStrings = [];
+        $this->mustExistStrings = [];
         return $this;
     }
 
-    public function appendGoodRegex(array $strings): PResponseDebug
+    public function appendToMustExistRegex(array $strings): PResponseDebug
     {
-        $this->goodRegex = array_merge($this->goodRegex, $strings);
+        $this->mustExistRegex = array_merge($this->mustExistRegex, $strings);
         return $this;
     }
 
-    public function setGoodRegex(array $strings): PResponseDebug
+    public function setMustExistRegex(array $strings): PResponseDebug
     {
-        $this->goodRegex = $strings;
+        $this->mustExistRegex = $strings;
         return $this;
     }
 
-    public function unsetGoodRegex(): PResponseDebug
+    public function unsetMustExistRegex(): PResponseDebug
     {
-        $this->goodRegex = [];
+        $this->mustExistRegex = [];
         return $this;
     }
 
-    public function appendBadRegex(array $strings): PResponseDebug
+    public function appendToMustNotExistRegex(array $strings): PResponseDebug
     {
-        $this->badRegex = array_merge($this->badRegex, $strings);
+        $this->mustNotExistRegex = array_merge($this->mustNotExistRegex, $strings);
         return $this;
     }
 
-    public function setBadRegex(array $strings): PResponseDebug
+    public function setMustNotExistRegex(array $strings): PResponseDebug
     {
-        $this->badRegex = $strings;
+        $this->mustNotExistRegex = $strings;
         return $this;
     }
 
-    public function unsetBadRegex(): PResponseDebug
+    public function unsetRegexMustNotExist(): PResponseDebug
     {
-        $this->badRegex = [];
+        $this->mustNotExistRegex = [];
         return $this;
     }
 
@@ -131,11 +147,12 @@ class PResponseDebug implements InterfaceResponseDebug
     {
         $this->resFail = false;
         $this->analysis = [];
-        $this->compareGoodStrings();
-        $this->compareBadStrings();
-        $this->compareGoodRegex();
-        $this->compareBadRegex();
-        $this->compareHttpCode();
+        $this->compareMustExistStrings();
+        $this->compareMustNotExistStrings();
+        $this->compareMustExistRegex();
+        $this->compareMustNotExistRegex();
+        $this->compareGoodHttpCode();
+        $this->compareMustNotExistHttpCodes();
         $this->compareHeaders();
         $this->runCustomFailCallbacks();
 
@@ -145,20 +162,20 @@ class PResponseDebug implements InterfaceResponseDebug
     /**
      * @return void
      */
-    private function compareGoodStrings(): void
+    private function compareMustExistStrings(): void
 
     {
-        if (!empty($this->goodStrings)) {
+        if (!empty($this->mustExistStrings)) {
             array_map(function ($str) {
-                $stristr = stristr($this->res->getBody(), $str);
-                return $this->compareSetComparisonResult($stristr, $str, 'good_string', true);
-            }, $this->goodStrings);
+                $strExistsRes = stristr($this->res->getBody(), $str);
+                return $this->compareSetComparisonResult($strExistsRes, $str, 'good_string', true);
+            }, $this->mustExistStrings);
         }
     }
 
-    private function compareSetComparisonResult($stristr, $str, $key, $successIsGood): bool
+    private function compareSetComparisonResult($comparisonFound, $str, $key, $successIsGood): bool
     {
-        if (($stristr && $successIsGood === false) || (!$stristr && $successIsGood === true)) {
+        if (($comparisonFound && $successIsGood === false) || (!$comparisonFound && $successIsGood === true)) {
             $this->analysis[$key][$str] = ($successIsGood === true ? ' not ' : '') . ' found';
             $this->resFail = true;
             return false;
@@ -169,56 +186,72 @@ class PResponseDebug implements InterfaceResponseDebug
     /**
      * @return void
      */
-    private function compareBadStrings(): void
+    private function compareMustNotExistStrings(): void
     {
-        if (!empty($this->badStrings)) {
+        if (!empty($this->mustNotExistStrings)) {
             array_map(function ($str) {
-                $stristr = stristr($this->res->getBody(), $str);
-                return $this->compareSetComparisonResult($stristr, $str, 'bad_string', false);
-            }, $this->badStrings);
+                $strExistsRes = stristr($this->res->getBody(), $str);
+                return $this->compareSetComparisonResult($strExistsRes, $str, 'bad_string', false);
+            }, $this->mustNotExistStrings);
         }
     }
 
     /**
      * @return void
      */
-    private function compareGoodRegex(): void
+    private function compareMustExistRegex(): void
     {
-        if (!empty($this->goodRegex)) {
+        if (!empty($this->mustExistRegex)) {
             array_map(function ($str) {
-                $stristr = preg_match($str, $this->res->getBody());
-                return $this->compareSetComparisonResult($stristr, $str, 'good_regex', true);
-            }, $this->goodRegex);
+                $strExistsRes = preg_match($str, $this->res->getBody());
+                return $this->compareSetComparisonResult($strExistsRes, $str, 'good_regex', true);
+            }, $this->mustExistRegex);
         }
     }
 
     /**
      * @return void
      */
-    private function compareBadRegex(): void
+    private function compareMustNotExistRegex(): void
     {
-        if (!empty($this->badRegex)) {
+        if (!empty($this->mustNotExistRegex)) {
             array_map(function ($str) {
-                $stristr = preg_match($str, $this->res->getBody());
-                return $this->compareSetComparisonResult($stristr, $str, 'bad_regex', false);
-            }, $this->badRegex);
+                $strExistsRes = preg_match($str, $this->res->getBody());
+                return $this->compareSetComparisonResult($strExistsRes, $str, 'bad_regex', false);
+            }, $this->mustNotExistRegex);
         }
     }
 
     /**
      * @return void
      */
-    private function compareHttpCode(): void
+    private function compareGoodHttpCode(): void
     {
-        if (!empty($this->goodResponseHttpCode) && $this->goodResponseHttpCode != -1 && $this->res->getHttpCode(
-            ) != $this->goodResponseHttpCode) {
-            $this->analysis['expected_httpcode'][$this->goodResponseHttpCode] = ' not found';
+        if (!empty($this->mustBeHttpCode) && $this->mustBeHttpCode != -1 && $this->res->getHttpCode(
+            ) != $this->mustBeHttpCode) {
+            $this->analysis['expected_httpcode'][$this->mustBeHttpCode] = ' not found';
             $this->resFail = true;
         }
     }
 
     /**
-     * @param array $resHeaders
+     * @return void
+     */
+    private function compareMustNotExistHttpCodes(): void
+    {
+        if (!empty($this->mustNotExistHttpCodes)) {
+            array_map(function ($httpCode) {
+                return $this->compareSetComparisonResult(
+                    $this->res->getHttpCode() === $httpCode,
+                    $httpCode,
+                    'bad_http_code',
+                    false
+                );
+            }, $this->mustNotExistHttpCodes);
+        }
+    }
+
+    /**
      * @return void
      */
     private function compareHeaders(): void

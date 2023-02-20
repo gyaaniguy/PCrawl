@@ -4,6 +4,7 @@ namespace Gyaaniguy\PCrawl;
 
 use Gyaaniguy\PCrawl\HttpClients\CurlClient;
 use Gyaaniguy\PCrawl\HttpClients\CurlCustomClient;
+use Gyaaniguy\PCrawl\Request\PRequest;
 use Gyaaniguy\PCrawl\Response\PResponse;
 use PHPUnit\Framework\TestCase;
 

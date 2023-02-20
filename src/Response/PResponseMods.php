@@ -14,18 +14,8 @@ class PResponseMods
         $this->pRes = $pRes;
     }
 
-    public function toAbsoluteUrls(): PResponseMods
-    {
-        return $this;
-    }
-
-    public function addNikhil(): PResponseMods
-    {
-        $this->pRes->setBody($this->pRes->getBody() . "nikhil");
-        return $this;
-    }
-
     /**
+     * Cleans html through the tidy extension. 
      * @return $this
      * @throws Exception
      */
@@ -48,6 +38,11 @@ class PResponseMods
     }
 
 
+    /**
+     * Modifying the body of the response using callbacks
+     * @param array $callbacks
+     * @return void
+     */
     public function modBody(array $callbacks)
     {
         foreach ($callbacks as $middleware) {

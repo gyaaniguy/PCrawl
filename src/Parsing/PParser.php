@@ -1,6 +1,6 @@
 <?php
 
-namespace Gyaaniguy\PCrawl;
+namespace Gyaaniguy\PCrawl\Parsing;
 
 use QueryPath\DOMQuery;
 

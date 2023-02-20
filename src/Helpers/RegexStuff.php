@@ -4,7 +4,7 @@ namespace Gyaaniguy\PCrawl\Helpers;
 
 class RegexStuff
 {
-    public static function combineHeaders($headers, $headersOriginal)
+    public static function combineHeaders($headers, $headersOriginal): array
     {
         $headersAssoc = RegexStuff::headerToAssoc($headers);
         $OriginalHeadersAssoc = RegexStuff::headerToAssoc($headersOriginal);

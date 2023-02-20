@@ -12,16 +12,20 @@ class PResponseTest extends TestCase
     {
         return strtoupper($body);
     }
+    public function removeSpaces($body): string
+    {
+        return preg_replace('/\s+/','',$body);
+    }
 
     public function testModBody()
     {
         $res = new PResponse();
         $res->setBody("up this");
         $pResponseMods = new PResponseMods($res);
-        $pResponseMods->tidy()->toAbsoluteUrls()->addNikhil();
-        self::assertStringContainsString("nikhil", $res->getBody());
+        $pResponseMods->tidy();
+        self::assertStringContainsString("up this", $res->getBody());
 
-        $pResponseMods->modBody([[$this, 'uppercase']]);
-        self::assertStringContainsString("UP THIS", $res->getBody());
+        $pResponseMods->modBody([[$this, 'uppercase'], [$this, 'removeSpaces']]);
+        self::assertStringContainsString("UPTHIS", $res->getBody());
     }
 }

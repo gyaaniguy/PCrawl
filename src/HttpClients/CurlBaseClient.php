@@ -8,7 +8,7 @@ use InvalidArgumentException;
 class CurlBaseClient extends AbstractHttpClient
 {
     public $ch;
-    private $responseHeaders;
+    private array $responseHeaders;
 
     public function __construct()
     {
@@ -16,6 +16,10 @@ class CurlBaseClient extends AbstractHttpClient
         $this->curlInitIf();
     }
 
+    /**
+     * Create curl_instance if none exists.
+     * Set some basic options.
+     */
     public function curlInitIf(): void
     {
         if (!$this->ch || !is_resource($this->ch)) {
@@ -62,6 +66,12 @@ class CurlBaseClient extends AbstractHttpClient
         return $this->setResponse($url, $curlRes);
     }
 
+    /**
+     * Set various fields of the response object.
+     * @param string $url
+     * @param $response
+     * @return PResponse
+     */
     public function setResponse(string $url, $response): PResponse
     {
         $getInfo = curl_getinfo($this->ch);
