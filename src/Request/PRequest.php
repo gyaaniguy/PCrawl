@@ -3,7 +3,6 @@
 namespace Gyaaniguy\PCrawl\Request;
 
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
 use Gyaaniguy\PCrawl\HttpClients\AbstractHttpClient;
 use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
 use Gyaaniguy\PCrawl\HttpClients\InterfaceHttpClient;
@@ -50,7 +49,7 @@ class PRequest
     {
         try {
             $this->lastRawResponse = $this->httpClient->get($url, $requestOptions);
-        } catch (GuzzleException $e) {
+        } catch (Exception $e) {
             $this->lastRawResponse = new PResponse();
             $this->lastRawResponse->setError($e->getMessage());
         }

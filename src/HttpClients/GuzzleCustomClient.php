@@ -20,13 +20,13 @@ class GuzzleCustomClient extends GuzzleBaseClient
      */
     public function setCustomOptions(array $customClientOptions): void
     {
-        unset($this->guzzleClient);
+        unset($this->baseClient);
         $this->clientOptions['custom_client_options'] = $customClientOptions;
     }
 
     public function setRawClient(\GuzzleHttp\Client $client): void
     {
-        $this->guzzleClient = $client;
+        $this->baseClient = $client;
     }
 
 }

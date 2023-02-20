@@ -68,4 +68,44 @@ class GuzzleClientTest extends TestCase
         self::assertStringContainsString("Head1", $res->getBody());
         self::assertStringNotContainsString("Head4", $res->getBody());
     }
+
+    public function testCookies()
+    {
+        $g = new GuzzleClient();
+        $g->cookies(true);
+        $req = new PRequest($g);
+        $res = $req->get('https://www.myhttpheader.com/');
+        self::assertStringNOTContainsString("PHPSESSID", $res->getBody());
+        $res = $req->get('https://www.myhttpheader.com/');
+        self::assertStringContainsString("PHPSESSID", $res->getBody());
+        $g->cookies(false);
+        $res = $req->get('https://www.myhttpheader.com/');
+        self::assertStringNotContainsString("PHPSESSID", $res->getBody());
+    }
+
+    public function testClearCookies()
+    {
+        $g = new GuzzleClient();
+        $this->_testClearCookiesForClient($g);
+        $c = new CurlClient();
+        $this->_testClearCookiesForClient($c);
+    }
+
+    public function _testClearCookiesForClient($g)
+    {
+        $g->cookies(true);
+        $req = new PRequest($g);
+        $res = $req->get('https://www.myhttpheader.com/');
+        self::assertStringNOTContainsString("PHPSESSID", $res->getBody());
+        $res = $req->get('https://www.myhttpheader.com/');
+        self::assertStringContainsString("PHPSESSID", $res->getBody());
+
+        $g->clearCookies();
+        $res = $req->get('https://www.myhttpheader.com/');
+        self::assertStringNotContainsString("PHPSESSID", $res->getBody());
+        $res = $req->get('https://www.myhttpheader.com/');
+        self::assertStringContainsString("PHPSESSID", $res->getBody());
+    }
+
+
 }

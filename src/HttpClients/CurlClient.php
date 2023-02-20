@@ -30,6 +30,9 @@ class CurlClient extends CurlBaseClient
                 if (is_string($optionName) && $optionName == 'redirect_num') {
                     $this->setRedirects($value);
                 }
+                if (is_string($optionName) && $optionName == 'cookies') {
+                    $this->cookies($value);
+                }
             }
         }
     }
@@ -64,22 +67,37 @@ class CurlClient extends CurlBaseClient
         return $this;
     }
 
-    public function enableCookies(string $cookiePath): CurlClient
+    public function cookies(bool $enable): CurlClient
     {
         $this->curlInitIf();
-        if (empty($cookiePath)) {
-            $this->cookiePath = '/tmp/' . uniqid(rand(999, 99999999), true);
+        $this->clientOptions['cookies'] = $enable;
+        if ($enable) {
+            if (empty($this->cookiePath)) {
+                $this->cookiePath = '/tmp/' . uniqid(rand(999, 99999999), true);
+            }
+            curl_setopt($this->ch, CURLOPT_COOKIEJAR, $this->cookiePath);
+            curl_setopt($this->ch, CURLOPT_COOKIEFILE, $this->cookiePath);
+            return $this;
         }
-        curl_setopt($this->ch, CURLOPT_COOKIEJAR, $cookiePath);
-        curl_setopt($this->ch, CURLOPT_COOKIEFILE, $cookiePath);
-        return $this;
+        return $this->disableCookies();
     }
-
-    public function disableCookies(): CurlClient
+    protected function disableCookies(): CurlClient
     {
         $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, '');
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
+        return $this;
+    }
+    public function clearCookies(): CurlClient
+    {
+        $this->curlInitIf();
+        if (!empty($this->cookiePath) ) {
+            $this->closeConnection();
+            if (file_exists($this->cookiePath)) {
+                unlink($this->cookiePath);
+                $this->setClientOptions();
+            }
+        }
         return $this;
     }
 

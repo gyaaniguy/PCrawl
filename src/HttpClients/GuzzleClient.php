@@ -14,14 +14,14 @@ class GuzzleClient extends GuzzleBaseClient
 
     public function setRedirects(int $num): GuzzleClient
     {
-        unset($this->guzzleClient);
+        unset($this->baseClient);
         $this->clientOptions['redirect_num'] = $num;
         return $this;
     }
 
     public function setUserAgent(string $userAgent): GuzzleClient
     {
-        unset($this->guzzleClient);
+        unset($this->baseClient);
         $this->clientOptions['user_agent'] = $userAgent;
         return $this;
     }
@@ -36,8 +36,21 @@ class GuzzleClient extends GuzzleBaseClient
 
     public function setHeaders(array $headers): GuzzleClient
     {
-        unset($this->guzzleClient);
+        unset($this->baseClient);
         $this->clientOptions['headers'] = $headers;
+        return $this;
+    }
+
+    public function cookies(bool $status): GuzzleClient
+    {
+        $this->clientOptions['cookies'] = $status;
+        unset($this->baseClient);
+        return $this;
+    }
+
+    public function clearCookies(): GuzzleClient
+    {
+        unset($this->baseClient);
         return $this;
     }
 

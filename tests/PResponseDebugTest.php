@@ -207,7 +207,7 @@ class PResponseDebugTest extends TestCase
         self::assertIsArray($debug->getFailDetail());
     }
 
-    function testComsethingCustom()
+    public function testComsethingCustom()
     {
         $res = $this->getRes(400, "Logged In. But you got blocked by cloudflare");
 

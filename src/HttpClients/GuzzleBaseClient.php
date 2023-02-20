@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class GuzzleBaseClient extends AbstractHttpClient
 {
-    public Client $guzzleClient;
+    public Client $baseClient;
 
     public function __construct()
     {
@@ -19,7 +19,7 @@ class GuzzleBaseClient extends AbstractHttpClient
     }
 
     /**
-     * 
+     *
      * @param string $url
      * @param array $requestOptions
      * @return PResponse
@@ -27,8 +27,8 @@ class GuzzleBaseClient extends AbstractHttpClient
      */
     public function get(string $url, array $requestOptions = []): PResponse
     {
-        $this->getGuzzleClient();
-        $response = $this->guzzleClient->request('GET', $url);
+        $this->getBaseClient();
+        $response = $this->baseClient->request('GET', $url);
         return $this->setResponse($url, $response);
     }
 
@@ -36,22 +36,16 @@ class GuzzleBaseClient extends AbstractHttpClient
      * Creates a guzzle client if required.
      * @return void
      */
-    public function getGuzzleClient()
+    private function getBaseClient()
     {
-        if (!isset($this->guzzleClient)) {
+        if (!isset($this->baseClient)) {
             $requestClientOptions = [];
             $requestClientOptions['allow_redirects'] = $this->setRedirectOptions();
             if (isset($this->clientOptions['headers'])) {
                 $requestClientOptions['headers'] = RegexStuff::headerToAssoc($this->clientOptions['headers']);
             }
-            if (!empty($this->clientOptions['enable_cookies'])) {
-                $requestClientOptions['cookies'] = true;
-            }
-            if (!empty($this->clientOptions['disable_cookies'])) {
-                $requestClientOptions['cookies'] = false;
-            }
-            if (isset($this->clientOptions['https'])) {
-                $requestClientOptions['verify'] = $this->clientOptions['https'];
+            if (!empty($this->clientOptions['cookies'])) {
+                $requestClientOptions['cookies'] = $this->clientOptions['cookies'];
             }
             if (isset($this->clientOptions['user_agent'])) {
                 $requestClientOptions['headers']['User-Agent'] = $this->clientOptions['user_agent'];
@@ -59,12 +53,12 @@ class GuzzleBaseClient extends AbstractHttpClient
             if (isset($this->clientOptions['custom_client_options'])) {
                 $requestClientOptions = $this->clientOptions['custom_client_options'];
             }
-            $this->guzzleClient = new Client($requestClientOptions);
+            $this->baseClient = new Client($requestClientOptions);
         }
     }
 
     /**
-     * handles setting the redirection object for guzzleclient. 
+     * handles setting the redirection object for guzzleclient.
      * @return array
      */
     private function setRedirectOptions(): array
@@ -99,8 +93,8 @@ class GuzzleBaseClient extends AbstractHttpClient
 
     public function post(string $url, array $clientOptions = []): PResponse
     {
-        $this->getGuzzleClient();
-        $response = $this->guzzleClient->request('POST', $url);
+        $this->getBaseClient();
+        $response = $this->baseClient->request('POST', $url);
         return $this->setResponse($url, $response);
         // TODO: Implement post() method.
     }

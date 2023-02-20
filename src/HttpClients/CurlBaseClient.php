@@ -112,7 +112,7 @@ class CurlBaseClient extends AbstractHttpClient
 
     public function closeConnection(): CurlBaseClient
     {
-        if (!$this->ch || !is_resource($this->ch)) {
+        if ($this->ch && is_resource($this->ch)) {
             curl_close($this->ch);
         }
         return $this;

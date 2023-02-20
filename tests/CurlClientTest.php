@@ -47,6 +47,10 @@ class CurlClientTest extends TestCase
         $clientOptions = $client->getOptions();
         self::assertArrayHasKey('redirect_num', $clientOptions);
         self::assertEquals(4, $clientOptions['redirect_num']);
+        $client->setUserAgent("after change");
+        $res = $req->get('http://whatsmyua.info/');
+        self::assertStringContainsStringIgnoringCase("after change", $res->getBody());
+        
 
 
         $req = new PRequest();
