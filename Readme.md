@@ -29,5 +29,6 @@ This package functions can be divided into parts:
 * [Debugging the response](Usage/Debugging_Response.md)  
 * [Parsing the response body](Usage/Parse_Response.md)  
 
-
-Check Usage/fetching.md for details 
+### Installation
+Ideally be installed via composer. But that's some way off.
+Explore manual installation? maybe unnecessary effort... TODO
