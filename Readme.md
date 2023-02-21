@@ -24,10 +24,10 @@ Leverage guzzlehttp asynchronous support.
 
 ### Usage 
 This package functions can be divided into parts:
-* [Fetching a page](#Usage/Fetching.md)  
-* [Modifying the response body](#modifying_the_response_body)  
-* [Debugging the response](Usage/DebuggingResponse.md)  
-* [Parsing the response body](#parsing_the_response_body)  
+* [Fetching a page](Usage/Fetching.md)  
+* [Modifying the response body](Usage/Modify_Response.md)  
+* [Debugging the response](Usage/Debugging_Response.md)  
+* [Parsing the response body](Usage/Parse_Response.md)  
 
 
 Check Usage/fetching.md for details 
