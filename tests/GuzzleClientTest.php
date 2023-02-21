@@ -16,6 +16,11 @@ class GuzzleClientTest extends TestCase
         $clientOptions = $client->getOptions();
         self::assertArrayHasKey('redirect_num', $clientOptions);
         self::assertEquals(4, $clientOptions['redirect_num']);
+
+        $client->setRedirects(0);
+        $res = $req->get('http://whatsmyua.info/');
+        self::assertEquals(301, $res->getHttpCode());
+
     }
 
     public function testSetUserAgent()

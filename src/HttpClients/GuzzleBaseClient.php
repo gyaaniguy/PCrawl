@@ -71,6 +71,10 @@ class GuzzleBaseClient extends AbstractHttpClient
         ];
         if (isset($this->clientOptions['redirect_num'])) {
             $redirectOptions['max'] = $this->clientOptions['redirect_num'];
+            $redirectOptions['track_redirects'] = true;
+            if ($this->clientOptions['redirect_num'] === 0) {
+                $redirectOptions['track_redirects'] = false;
+            }
         }
         return $redirectOptions;
     }
