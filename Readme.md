@@ -32,3 +32,7 @@ This package functions can be divided into parts:
 ### Installation
 Ideally be installed via composer. But that's some way off.
 Explore manual installation? maybe unnecessary effort... TODO
+
+
+### Full Example
+* [Parsing the response body](Usage/full_example.php)  
