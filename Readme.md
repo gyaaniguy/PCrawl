@@ -34,7 +34,14 @@ This package functions can be divided into parts:
 ### Installation
 via github:
 Clone this repo. Run composer update. Move dir to desired location. Included the autoload.php file in your project.
-```php
+
+```
+git clone git@github.com:gyaaniguy/PCrawl.git
+cd PCrawl
+composer update
+mv ../PCrawl /desired/location
+
+//In php code:
 require __DIR__ . '../PCrawl/vendor/autoload.php';
 
 ```
