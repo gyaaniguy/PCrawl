@@ -1,9 +1,9 @@
 <?php
 
 
-use Gyaaniguy\PCrawl\HttpClients\CurlClient;
-use Gyaaniguy\PCrawl\HttpClients\CurlCustomClient;
-use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
+use Gyaaniguy\PCrawl\HttpClients\PCurlClient;
+use Gyaaniguy\PCrawl\HttpClients\PCurlCustomClient;
+use Gyaaniguy\PCrawl\HttpClients\PGuzzleClient;
 use Gyaaniguy\PCrawl\Request\PRequest;
 use Gyaaniguy\PCrawl\Response\PResponse;
 use Gyaaniguy\PCrawl\Response\PResponseDebug;
@@ -15,12 +15,12 @@ require __DIR__ . '/vendor/pc1/vendor/autoload.php';
 // Search  government database website for different keywords and make a list of all the datasets available. do some pagination
 
 // Lets make some  clients
-$ch = new CurlClient();
-$gu = new GuzzleClient();
-$uptightNoRedirectClient = new CurlClient();
+$ch = new PCurlClient();
+$gu = new PGuzzleClient();
+$uptightNoRedirectClient = new PCurlClient();
 $uptightNoRedirectClient->setRedirects(0); // disable redirects
 
-class ConvertToHttpsClient extends CurlCustomClient
+class ConvertToHttpsClient extends PCurlCustomClient
 {
     public function get(string $url, array $options = []): PResponse
     {
@@ -43,8 +43,6 @@ $req = new PRequest();
 //-------------------------------------------------------------
 // Fetch page > set debugger to detect 301. modifying client to follow 301. Fetch page again.
 $url = "http://www.whatsmyua.info";
-
-
 $res = $req->setClient($uptightNoRedirectClient);
 
 $count = 0;

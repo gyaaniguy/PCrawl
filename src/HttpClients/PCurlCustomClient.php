@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-class CurlCustomClient extends CurlBaseClient
+class PCurlCustomClient extends CurlBaseClient
 {
     public function __construct()
     {

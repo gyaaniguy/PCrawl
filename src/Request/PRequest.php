@@ -4,7 +4,7 @@ namespace Gyaaniguy\PCrawl\Request;
 
 use Exception;
 use Gyaaniguy\PCrawl\HttpClients\AbstractHttpClient;
-use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
+use Gyaaniguy\PCrawl\HttpClients\PGuzzleClient;
 use Gyaaniguy\PCrawl\HttpClients\InterfaceHttpClient;
 use Gyaaniguy\PCrawl\Response\PResponse;
 use InvalidArgumentException;
@@ -22,7 +22,7 @@ class PRequest
     public function __construct(AbstractHttpClient $httpClient = null)
     {
         if ($httpClient === null) {
-            $this->httpClient = new GuzzleClient();
+            $this->httpClient = new PGuzzleClient();
             return;
         }
         $this->httpClient = $httpClient;

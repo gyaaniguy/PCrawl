@@ -10,7 +10,7 @@ class PParser
 
     public function __construct(string $body)
     {
-        $this->qp = qp($body);
+        //todo
     }
 
 

@@ -32,7 +32,15 @@ This package functions can be divided into parts:
 * [Parsing the response body](Usage/Parse_Response.md)  
 
 ### Installation
-Ideally be installed via composer. But that's some way off.
-Explore manual installation? maybe unnecessary effort... TODO
+via github:
+Clone this repo. Run composer update. Move dir to desired location. Included the autoload.php file in your project.
+```php
+require __DIR__ . '../PCrawl/vendor/autoload.php';
 
-  
+```
+
+via composer: 
+todo
+
+
+

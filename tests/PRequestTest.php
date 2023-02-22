@@ -2,9 +2,9 @@
 
 namespace Gyaaniguy\PCrawl;
 
-use Gyaaniguy\PCrawl\HttpClients\CurlClient;
-use Gyaaniguy\PCrawl\HttpClients\CurlCustomClient;
-use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
+use Gyaaniguy\PCrawl\HttpClients\PCurlClient;
+use Gyaaniguy\PCrawl\HttpClients\PCurlCustomClient;
+use Gyaaniguy\PCrawl\HttpClients\PGuzzleClient;
 use Gyaaniguy\PCrawl\Request\PRequest;
 use Gyaaniguy\PCrawl\Response\PResponse;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ class PRequestTest extends TestCase
 
 
         // Bro bot user agent.
-        $boringCurl = new CurlClient();
+        $boringCurl = new PCurlClient();
         $boringCurl->setUserAgent("boring curl");
         $options = $req->setClient($boringCurl);
         $res = $req->get('https://manytools.org/http-html-text/http-request-headers/');
@@ -88,7 +88,7 @@ class PRequestTest extends TestCase
 
     public function testWebscriptClient()
     {
-        $webScriptClient = new WebScriptClient();
+        $webScriptClient = new PWebScriptClient();
         $webScriptClient->setRedirects(3);
         $req = new PRequest($webScriptClient);
 
@@ -109,7 +109,7 @@ class PRequestTest extends TestCase
 
 }
 
-class Brobot extends CurlCustomClient
+class Brobot extends PCurlCustomClient
 {
     public array $clientOptions = [
         CURLOPT_USERAGENT => 'Bro bot',
@@ -120,7 +120,7 @@ class Brobot extends CurlCustomClient
     ];
 }
 
-class WebScriptClient extends CurlClient
+class PWebScriptClient extends PCurlClient
 {
     public array $clientOptions = [
         'user_agent' => 'We use you',
@@ -146,7 +146,7 @@ class WebScriptClient extends CurlClient
         return parent::get($url, $options);
     }
 }
-class WebScriptGuzzleClient extends GuzzleClient
+class WebScriptGuzzleClient extends PGuzzleClient
 {
     public array $clientOptions = [
         'user_agent' => 'We use you',

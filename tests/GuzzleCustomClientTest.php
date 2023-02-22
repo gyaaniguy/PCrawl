@@ -15,7 +15,7 @@ class GuzzleCustomClientTest extends TestCase
                 'head5' => 'value',
             ],
         ];
-        $client = new GuzzleCustomClient();
+        $client = new PGuzzleCustomClient();
         $client->setCustomOptions($guzzleClientOptions);
 
         $req = new PRequest($client);
@@ -34,7 +34,7 @@ class GuzzleCustomClientTest extends TestCase
     {
         $myGuzzle = new Client(['base_uri' => 'https://manytools.org/', 'headers' => ['User-Agent' => "raw guzzle"]]);
         
-        $guzzleCustom = new GuzzleCustomClient();
+        $guzzleCustom = new PGuzzleCustomClient();
         $guzzleCustom->setRawClient($myGuzzle);
 
         $req = new PRequest();
@@ -46,7 +46,7 @@ class GuzzleCustomClientTest extends TestCase
 }
 
 
-class OnlyHeadGuzzleClient extends GuzzleCustomClient
+class OnlyHeadGuzzleClient extends PGuzzleCustomClient
 {
     public array $clientOptions = [
         'headers' => [

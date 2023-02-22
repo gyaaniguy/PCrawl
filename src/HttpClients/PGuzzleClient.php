@@ -4,7 +4,7 @@ namespace Gyaaniguy\PCrawl\HttpClients;
 
 use Gyaaniguy\PCrawl\Helpers\RegexStuff;
 
-class GuzzleClient extends GuzzleBaseClient
+class PGuzzleClient extends GuzzleBaseClient
 {
 
     public function __construct()
@@ -12,21 +12,21 @@ class GuzzleClient extends GuzzleBaseClient
         parent::__construct();
     }
 
-    public function setRedirects(int $num): GuzzleClient
+    public function setRedirects(int $num): PGuzzleClient
     {
         unset($this->baseClient);
         $this->clientOptions['redirect_num'] = $num;
         return $this;
     }
 
-    public function setUserAgent(string $userAgent): GuzzleClient
+    public function setUserAgent(string $userAgent): PGuzzleClient
     {
         unset($this->baseClient);
         $this->clientOptions['user_agent'] = $userAgent;
         return $this;
     }
 
-    public function addHeaders(array $headers): GuzzleClient
+    public function addHeaders(array $headers): PGuzzleClient
     {
         if (!empty($headers)) {
             $this->setHeaders(RegexStuff::combineHeaders($headers, $this->clientOptions['headers']));
@@ -34,21 +34,21 @@ class GuzzleClient extends GuzzleBaseClient
         return $this;
     }
 
-    public function setHeaders(array $headers): GuzzleClient
+    public function setHeaders(array $headers): PGuzzleClient
     {
         unset($this->baseClient);
         $this->clientOptions['headers'] = $headers;
         return $this;
     }
 
-    public function cookies(bool $status): GuzzleClient
+    public function cookies(bool $status): PGuzzleClient
     {
         $this->clientOptions['cookies'] = $status;
         unset($this->baseClient);
         return $this;
     }
 
-    public function clearCookies(): GuzzleClient
+    public function clearCookies(): PGuzzleClient
     {
         unset($this->baseClient);
         return $this;

@@ -34,14 +34,14 @@ class CurlClientTest extends TestCase
     public function testSetRedirects()
     {
         $req = new PRequest();
-        $client = new CurlClient();
+        $client = new PCurlClient();
         $client->setRedirects(4);
         $req->setClient($client);
         $res = $req->get('http://whatsmyua.info/');
         self::assertStringContainsStringIgnoringCase("user agent", $res->getBody());
 
         $req = new PRequest();
-        $client = new CurlClient();
+        $client = new PCurlClient();
         $client->setRedirects(4);
         $req->setClient($client);
         $clientOptions = $client->getOptions();

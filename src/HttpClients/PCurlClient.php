@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-class CurlClient extends CurlBaseClient
+class PCurlClient extends CurlBaseClient
 {
 
     public function __construct()
@@ -37,7 +37,7 @@ class CurlClient extends CurlBaseClient
         }
     }
 
-    public function setUserAgent(string $userAgent): CurlClient
+    public function setUserAgent(string $userAgent): PCurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['user_agent'] = $userAgent;
@@ -45,7 +45,7 @@ class CurlClient extends CurlBaseClient
         return $this;
     }
 
-    public function setHeaders(array $headers): CurlClient
+    public function setHeaders(array $headers): PCurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['headers'] = $headers;
@@ -59,7 +59,7 @@ class CurlClient extends CurlBaseClient
      * @param int $num
      * @return $this
      */
-    public function setRedirects(int $num): CurlClient
+    public function setRedirects(int $num): PCurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['redirect_num'] = $num;
@@ -67,7 +67,7 @@ class CurlClient extends CurlBaseClient
         return $this;
     }
 
-    public function cookies(bool $enable): CurlClient
+    public function cookies(bool $enable): PCurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['cookies'] = $enable;
@@ -81,14 +81,14 @@ class CurlClient extends CurlBaseClient
         }
         return $this->disableCookies();
     }
-    protected function disableCookies(): CurlClient
+    protected function disableCookies(): PCurlClient
     {
         $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, '');
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
         return $this;
     }
-    public function clearCookies(): CurlClient
+    public function clearCookies(): PCurlClient
     {
         $this->curlInitIf();
         if (!empty($this->cookiePath) ) {
