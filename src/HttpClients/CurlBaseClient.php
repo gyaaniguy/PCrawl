@@ -51,7 +51,8 @@ class CurlBaseClient extends AbstractHttpClient
         curl_setopt($this->ch, CURLOPT_URL, $url);
         // this function is called by curl for each header received
         curl_setopt(
-            $this->ch, CURLOPT_HEADERFUNCTION,
+            $this->ch,
+            CURLOPT_HEADERFUNCTION,
             function ($curl, $header) {
                 $len = strlen($header);
                 $header = explode(':', $header, 2);
@@ -98,11 +99,11 @@ class CurlBaseClient extends AbstractHttpClient
     public function getFile(string $url, array $options = []): PResponse
     {
         if (empty($options) || empty($options['file_path'])) {
-            throw new InvalidArgumentException ('No file_path provided');
+            throw new InvalidArgumentException('No file_path provided');
         }
         $fp = fopen($options['file_path'], 'w+');
         if (!$fp) {
-            throw new InvalidArgumentException ('filepath is not writable');
+            throw new InvalidArgumentException('filepath is not writable');
         }
         $chFile = curl_copy_handle($this->ch);
         curl_setopt($chFile, CURLOPT_FILE, $fp);

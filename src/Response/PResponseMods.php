@@ -15,7 +15,7 @@ class PResponseMods
     }
 
     /**
-     * Cleans html through the tidy extension. 
+     * Cleans html through the tidy extension.
      * @return $this
      * @throws Exception
      */

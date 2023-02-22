@@ -4,7 +4,6 @@ namespace Gyaaniguy\PCrawl\HttpClients;
 
 class PCurlClient extends CurlBaseClient
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -91,7 +90,7 @@ class PCurlClient extends CurlBaseClient
     public function clearCookies(): PCurlClient
     {
         $this->curlInitIf();
-        if (!empty($this->cookiePath) ) {
+        if (!empty($this->cookiePath)) {
             $this->closeConnection();
             if (file_exists($this->cookiePath)) {
                 unlink($this->cookiePath);
@@ -100,6 +99,4 @@ class PCurlClient extends CurlBaseClient
         }
         return $this;
     }
-
-
 }

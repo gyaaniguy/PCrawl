@@ -110,5 +110,4 @@ class PRequest
     {
         return $this->httpClient;
     }
-
 }

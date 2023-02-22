@@ -163,7 +163,6 @@ class PResponseDebug implements InterfaceResponseDebug
      * @return void
      */
     private function compareMustExistStrings(): void
-
     {
         if (!empty($this->mustExistStrings)) {
             array_map(function ($str) {
@@ -227,8 +226,10 @@ class PResponseDebug implements InterfaceResponseDebug
      */
     private function compareGoodHttpCode(): void
     {
-        if (!empty($this->mustBeHttpCode) && $this->mustBeHttpCode != -1 && $this->res->getHttpCode(
-            ) != $this->mustBeHttpCode) {
+        if (
+            !empty($this->mustBeHttpCode) && $this->mustBeHttpCode != -1 && $this->res->getHttpCode(
+            ) != $this->mustBeHttpCode
+        ) {
             $this->analysis['expected_httpcode'][$this->mustBeHttpCode] = ' not found';
             $this->resFail = true;
         }
@@ -264,8 +265,8 @@ class PResponseDebug implements InterfaceResponseDebug
                         $found = true;
                     }
                 }, $resHeaders);
-                
-              
+
+
                 if (!$found) {
                     $this->analysis['expected_header'][$expectedHeader] = ' not found';
                     $this->resFail = true;

@@ -6,7 +6,6 @@ use Gyaaniguy\PCrawl\Helpers\RegexStuff;
 
 class PGuzzleClient extends GuzzleBaseClient
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -53,5 +52,4 @@ class PGuzzleClient extends GuzzleBaseClient
         unset($this->baseClient);
         return $this;
     }
-
 }

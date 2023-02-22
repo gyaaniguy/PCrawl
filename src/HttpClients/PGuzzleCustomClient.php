@@ -4,7 +4,6 @@ namespace Gyaaniguy\PCrawl\HttpClients;
 
 class PGuzzleCustomClient extends GuzzleBaseClient
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -28,5 +27,4 @@ class PGuzzleCustomClient extends GuzzleBaseClient
     {
         $this->baseClient = $client;
     }
-
 }

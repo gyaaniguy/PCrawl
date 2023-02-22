@@ -13,7 +13,7 @@ class PCurlCustomClient extends CurlBaseClient
     }
 
     /**
-     * Passes the param to the curl_setopt_array function. 
+     * Passes the param to the curl_setopt_array function.
      * Allows setting any curl option not present in the library's CurlClient class.
      * @param array $customClientOptions
      * @return void

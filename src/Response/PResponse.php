@@ -106,6 +106,4 @@ class PResponse
     {
         $this->lastUrl = $lastUrl;
     }
-
-
 }
