@@ -1,6 +1,6 @@
 {
-    "name": "gyaaniguy/php-crawly",
-    "description": "Library to assist to common carwling, scraping tasks",
+    "name": "gyaaniguy/p-crawl",
+    "description": "Library to assist to common crawling, scraping tasks",
     "keywords": ["scraping", "php"],
     "authors": [
         {
@@ -13,11 +13,9 @@
 		"php": ">=7.4",
         "guzzlehttp/guzzle": "^7.5",
         "gravitypdf/querypath": "^3.0",
-        "spatie/url": "^1.3",
         "ext-curl": "*",
         "ext-json": "*",
-        "illuminate/collections": "^8.83",
-      "ext-tidy": "*"
+        "ext-tidy": "*"
     },
     "require-dev": {
 		"phpunit/phpunit": "7.*"

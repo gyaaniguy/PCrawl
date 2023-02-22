@@ -259,9 +259,13 @@ class PResponseDebug implements InterfaceResponseDebug
         if (!empty($this->expectedHeaders)) {
             $resHeaders = $this->res->getResponseHeaders();
             array_map(function ($expectedHeader) use ($resHeaders) {
-                $found = collect($resHeaders)->contains(function ($resHeader) use ($expectedHeader) {
-                    return stristr($resHeader, $expectedHeader);
-                });
+                array_map(function ($resHeader) use ($expectedHeader, &$found) {
+                    if (stristr($resHeader, $expectedHeader)) {
+                        $found = true;
+                    }
+                }, $resHeaders);
+                
+              
                 if (!$found) {
                     $this->analysis['expected_header'][$expectedHeader] = ' not found';
                     $this->resFail = true;

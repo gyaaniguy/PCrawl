@@ -6,21 +6,23 @@ PHPUnit tests
 
 ## A PHP scraping library.
 #### Some salient features. Some in TODO: 
-- Flexible , fluent API with Method cascading design pattern
+- Flexible, fluent API with Method cascading design pattern
 - Support multiple client - curl, guzzle. 
-- Easily make more variants of the same clients, on the fly or by extending the existing clients. Variants can have different settings. Such as user-agents,
-- Optional custom clients. Providing a lot more control over the underlying client.
-- Modify Response body using reusable callback functions
-- Debug Response using several different criteria's to determine if the request was successful. Criteria's can be reused and set on the fly.
+- Easily make variants of clients, on the fly or by extending existing clients. Variants can have different settings. Such as user-agents,
+- Custom clients. Thin wrapper around curl, guzzle. So you are not restricted by library provided functions.
+- Modify Responses using reusable callback functions
+- Debug Responses using different criteria's. Determine  failiure. Criteria's can be reused and set on the fly.
 - Quickly parse html pages using querypath (TODO)
 
 #### Immediate TODO list
-Exception handling  
 Querypath parser
-Function comments
 
-#### Some More planned
+#### Future TODO list
 Leverage guzzlehttp asynchronous support.
+
+
+### Full Example
+* [Full example](Usage/full_example.php)
 
 ### Usage 
 This package functions can be divided into parts:
@@ -33,6 +35,4 @@ This package functions can be divided into parts:
 Ideally be installed via composer. But that's some way off.
 Explore manual installation? maybe unnecessary effort... TODO
 
-
-### Full Example
-* [Parsing the response body](Usage/full_example.php)  
+  
