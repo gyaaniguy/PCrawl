@@ -95,10 +95,10 @@ class GuzzleBaseClient extends AbstractHttpClient
         return $this->res;
     }
 
-    public function post(string $url, array $clientOptions = []): PResponse
+    public function post(string $url, $postData): PResponse
     {
         $this->getBaseClient();
-        $response = $this->baseClient->request('POST', $url);
+        $response = $this->baseClient->request('POST', $url, $postData);
         return $this->setResponse($url, $response);
         // TODO: Implement post() method.
     }

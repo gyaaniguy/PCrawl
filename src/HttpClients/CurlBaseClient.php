@@ -37,7 +37,7 @@ class CurlBaseClient extends AbstractHttpClient
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 
-    public function post(string $url, $postData = []): PResponse
+    public function post(string $url, $postData ): PResponse
     {
         $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_POST, 1);
