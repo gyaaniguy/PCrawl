@@ -25,6 +25,7 @@ class CurlBaseClient extends AbstractHttpClient
         if (!$this->ch || !is_resource($this->ch)) {
             $this->ch = curl_init();
             curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($this->ch, CURLOPT_ENCODING , '');
             $this->enableReturnTransfer();
         }
     }
