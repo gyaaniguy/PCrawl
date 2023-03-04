@@ -14,10 +14,10 @@ use Gyaaniguy\PCrawl\Parsing\PParser;
  */
 class PResponse
 {
-    protected string $body;
+    protected string $body = '';
     protected array $responseHeaders;
     protected string $error;
-    protected string $httpCode;
+    protected int $httpCode = 0;
     protected string $lastUrl;
     protected string $requestUrl;
     private PParser $parser;
