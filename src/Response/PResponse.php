@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\Response;
 
-use Gyaaniguy\PCrawl\Parsing\PParser;
+use Gyaaniguy\PCrawl\Parsing\PParserBase;
 
 /**
  *  A sample class
@@ -20,7 +20,15 @@ class PResponse
     protected int $httpCode = 0;
     protected string $lastUrl;
     protected string $requestUrl;
-    private PParser $parser;
+    private PParserBase $parser;
+
+    /**
+     * @param string $body
+     */
+    public function __construct(string $body)
+    {
+        $this->body = $body;
+    }
 
     /**
      * @return string

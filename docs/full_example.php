@@ -38,13 +38,10 @@ $fullPageDetector->setMustExistRegex(['#</html>#']);
 
 // Set up requests
 $req = new PRequest();
-
 // Start some bad fetching
-//-------------------------------------------------------------
 // Fetch page > set debugger to detect 301. modifying client to follow 301. Fetch page again.
 $url = "http://www.whatsmyua.info";
 $res = $req->setClient($uptightNoRedirectClient);
-
 $count = 0;
 do {
     $res = $req->get($url);
