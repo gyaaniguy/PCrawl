@@ -3,6 +3,7 @@
 namespace Gyaaniguy\PCrawl\Response;
 
 use Closure;
+use InvalidArgumentException;
 
 class PResponseDebug implements InterfaceResponseDebug
 {
@@ -31,6 +32,9 @@ class PResponseDebug implements InterfaceResponseDebug
 
     public function setResponse(PResponse $res): PResponseDebug
     {
+        if (empty($res)) {
+            throw new InvalidArgumentException('PResponseDebug::setResponse() requires a PResponse object.');
+        }
         $this->res = $res;
         return $this;
     }

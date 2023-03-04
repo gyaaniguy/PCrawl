@@ -27,6 +27,9 @@ class PResponse
      */
     public function getBody(): string
     {
+        if ($this->body === null) {
+            throw new \InvalidArgumentException('PResponse::getBody() requires a body to be set.');
+        }
         return $this->body;
     }
 

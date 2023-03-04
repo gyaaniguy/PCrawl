@@ -5,7 +5,6 @@ namespace Gyaaniguy\PCrawl\Request;
 use Exception;
 use Gyaaniguy\PCrawl\HttpClients\AbstractHttpClient;
 use Gyaaniguy\PCrawl\HttpClients\PGuzzleClient;
-use Gyaaniguy\PCrawl\HttpClients\InterfaceHttpClient;
 use Gyaaniguy\PCrawl\Response\PResponse;
 use InvalidArgumentException;
 
@@ -61,7 +60,12 @@ class PRequest
         if (is_array($postData)) {
             $postData = http_build_query($postData);
         }
-        $this->lastRawResponse = $this->httpClient->post($url, $postData);
+        try {
+            $this->lastRawResponse = $this->httpClient->post($url, $postData);
+        } catch (Exception $e) {
+            $this->lastRawResponse = new PResponse();
+            $this->lastRawResponse->setError($e->getMessage());
+        }
         return $this->lastRawResponse;
     }
 
