@@ -110,7 +110,7 @@ class PGuzzleBaseClient extends AbstractHttpClient
      * @param string $url
      * @param $postData
      * @return PResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function post(string $url, $postData): PResponse
     {
@@ -118,7 +118,7 @@ class PGuzzleBaseClient extends AbstractHttpClient
         try {
             $response = $this->baseClient->request('POST', $url, ['body' => $postData]);
         } catch (GuzzleException $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
         return $this->setResponse($url, $response);
     }

@@ -54,6 +54,7 @@ class PGuzzleClient extends PGuzzleBaseClient
         unset($this->baseClient);
         return $this;
     }
+
     public function setTimeout(int $timeout): PGuzzleClient
     {
         $this->clientOptions['timeout'] = $timeout;

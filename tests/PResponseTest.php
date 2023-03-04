@@ -12,9 +12,10 @@ class PResponseTest extends TestCase
     {
         return strtoupper($body);
     }
+
     public function removeSpaces($body): string
     {
-        return preg_replace('/\s+/','',$body);
+        return preg_replace('/\s+/', '', $body);
     }
 
     public function testModBody()

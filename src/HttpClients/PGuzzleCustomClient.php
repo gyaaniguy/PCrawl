@@ -2,6 +2,8 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
+use GuzzleHttp\Client;
+
 class PGuzzleCustomClient extends PGuzzleBaseClient
 {
     public function __construct()
@@ -23,7 +25,7 @@ class PGuzzleCustomClient extends PGuzzleBaseClient
         $this->clientOptions['custom_client_options'] = $customClientOptions;
     }
 
-    public function setRawClient(\GuzzleHttp\Client $client): void
+    public function setRawClient(Client $client): void
     {
         $this->baseClient = $client;
     }

@@ -6,16 +6,20 @@ PCrawl is a PHP library for crawling and scraping web pages.
 It supports multiple clients: curl, guzzle. Options to debug, modify and parse responses.
 
 ## Features
-- Rapidly create custom clients. Fluently make changes to clients and client options, with method chaining.
-- Responses can be modified using reusable callback functions. Modification, debugger objects can be swapped on the fly and reused.
-- Debug Responses using different criterias - httpcode, regex etc.  
-- Fluent API. Different debugger, clients and response objects can be be changed on the fly ! 
 
+- Rapidly create custom clients. Fluently make changes to clients and client options, with method chaining.
+- Responses can be modified using reusable callback functions. Modification, debugger objects can be swapped on the fly
+  and reused.
+- Debug Responses using different criterias - httpcode, regex etc.
+- Fluent API. Different debugger, clients and response objects can be be changed on the fly !
 
 ### Full Example
-Search a government database website for different keywords and make a list of all the datasets available. Do some pagination
+
+Search a government database website for different keywords and make a list of all the datasets available. Do some
+pagination
 
 - Setup up some clients
+
 ```php
 // simple clients.
 $ch = new PCurlClient();
@@ -35,7 +39,9 @@ class ConvertToHttpsClient extends PCurlCustomClient
     }
 }
 ```
+
 - Lets make some debugger classes
+
 ```php
 $redirectDetector = new PResponseDebug();
 $redirectDetector->setMustNotExistHttpCodes([301, 302, 303, 307, 308]);
@@ -43,8 +49,12 @@ $redirectDetector->setMustNotExistHttpCodes([301, 302, 303, 307, 308]);
 $fullPageDetector = new PResponseDebug();
 $fullPageDetector->setMustExistRegex(['#</html>#']);
 ```
+
 ##### Start fetching!
-For testing, we will fetch page with a client that does not support redirects, then use the redirectDetector to detect 301. If so we change client option to support redirects and fetch again.
+
+For testing, we will fetch page with a client that does not support redirects, then use the redirectDetector to detect
+301. If so we change client option to support redirects and fetch again.
+
 ```php
 $req = new PRequest();
 // Start some bad fetching
@@ -63,15 +73,17 @@ do {
 } while ($redirectDetector->isFail() && $count++ < 1);
 ```
 
-
 ### Detailed Usage
+
 Usage of functions can be divided into parts:
+
 * [Fetching a page](Usage/Fetching.md)
 * [Modifying the response body](Usage/Modify_Response.md)
 * [Debugging the response](Usage/Debugging_Response.md)
 * [Parsing the response body](Usage/Parse_Response.md)
 
 ## Installation
+
 via github:  
 Clone this repo. Run composer update. Move dir to desired location. Included the autoload.php file in your project.
 
@@ -88,9 +100,8 @@ require __DIR__ . '../PCrawl/vendor/autoload.php';
 via composer:
 todo
 
-
-
 ### TODO list
+
 Parser
 Leverage guzzlehttp asynchronous support.
 composer support

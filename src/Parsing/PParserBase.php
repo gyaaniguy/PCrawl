@@ -15,13 +15,13 @@ class PParserBase
     public function __construct(string $body, array $options = [])
     {
         $this->body = $body;
-        $this->qp = QueryPath::withHTML5($body,'',$options);
+        $this->qp = QueryPath::withHTML5($body, '', $options);
     }
 
     public function setResponse(string $body, array $options = [])
     {
         $this->body = $body;
-        $this->qp = QueryPath::withXML($body,'',$options);
+        $this->qp = QueryPath::withXML($body, '', $options);
     }
 
     /**
@@ -42,14 +42,6 @@ class PParserBase
     }
 
     /**
-     * @throws ParseException
-     */
-    public function children(string $query = null)
-    {
-        return $this->qp->children($query);
-    }
-
-    /**
      * @return void
      */
     public function getQuerypathXMLObject(string $body = ''): void
@@ -57,6 +49,14 @@ class PParserBase
         if (empty($this->qpXML)) {
             $this->qpXML = QueryPath::withXML($body ?: $this->body);
         }
+    }
+
+    /**
+     * @throws ParseException
+     */
+    public function children(string $query = null)
+    {
+        return $this->qp->children($query);
     }
 
 

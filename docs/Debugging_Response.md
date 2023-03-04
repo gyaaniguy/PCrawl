@@ -1,10 +1,14 @@
-#### 
-This is a quick fluid way of settings various criterias to analyze a response object.  
+####  
 
-These can be used to narrow down  why a request failed. Whether the login failed, or if the http codes or headers matched to what we were expecting.
+This is a quick fluid way of settings various criterias to analyze a response object.
+
+These can be used to narrow down why a request failed. Whether the login failed, or if the http codes or headers matched
+to what we were expecting.
 
 ### Usage
+
 Make different criteria's:
+
 ```php
 $loggedInCriteria = new PResponseDebug();
 $loggedInCriteria->setMustExistRegex(['/Logged In/']); 
@@ -16,6 +20,7 @@ $fourHundredsDetector->setMustNotExistHttpCodes([400,404]);
 ```
 
 Pass any response object/s to different criteria's for seamless checking..
+
 ```php
 $res = $req->get('https://site.com');
 if ($fourHundredsDetector->setResponse($res)->isFail())){

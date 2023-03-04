@@ -80,6 +80,7 @@ class PCurlClient extends CurlBaseClient
         }
         return $this->disableCookies();
     }
+
     protected function disableCookies(): PCurlClient
     {
         $this->curlInitIf();
@@ -87,6 +88,7 @@ class PCurlClient extends CurlBaseClient
         curl_setopt($this->ch, CURLOPT_COOKIEFILE, '');
         return $this;
     }
+
     public function clearCookies(): PCurlClient
     {
         $this->curlInitIf();
@@ -105,14 +107,15 @@ class PCurlClient extends CurlBaseClient
     {
         $this->curlInitIf();
         $this->clientOptions['connect_timeout'] = $timeout;
-        curl_setopt($this->ch,CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         return $this;
     }
+
     public function setTimeout(int $timeout): PCurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['timeout'] = $timeout;
-        curl_setopt($this->ch,CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($this->ch, CURLOPT_TIMEOUT, $timeout);
         return $this;
     }
 }

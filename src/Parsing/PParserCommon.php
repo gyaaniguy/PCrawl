@@ -4,7 +4,7 @@ namespace Gyaaniguy\PCrawl\Parsing;
 
 use QueryPath\CSS\ParseException;
 
-class PParserCommonBlocks extends PParserBase
+class PParserCommon extends PParserBase
 {
     /**
      * @throws ParseException
@@ -13,7 +13,7 @@ class PParserCommonBlocks extends PParserBase
     {
         $links = [];
         foreach ($this->qp->find('a') as $l) {
-            $links[] = ['href' => $l->attr('href'), 'text' => $l->text() ] ;
+            $links[] = ['href' => $l->attr('href'), 'text' => $l->text()];
         }
         return $links;
     }
@@ -25,7 +25,7 @@ class PParserCommonBlocks extends PParserBase
     {
         $images = [];
         foreach ($this->qp->find('img') as $l) {
-            $images[] = ['src' => $l->attr('src'), 'alt' => $l->attr('alt') ] ;
+            $images[] = ['src' => $l->attr('src'), 'alt' => $l->attr('alt')];
         }
         return $images;
     }
@@ -40,9 +40,13 @@ class PParserCommonBlocks extends PParserBase
             $inputs = [];
             $row = ['action' => $f->attr('action'), 'method' => $f->attr('method')];
             $formInputs = $f->find('input');
-            if (count($formInputs) > 0  ) {
+            if (count($formInputs) > 0) {
                 foreach ($formInputs as $formInput) {
-                    $inputs[] = [ 'name' => $formInput->attr('name'), 'value' => $formInput->attr('value'), 'type' => $formInput->attr('type')];
+                    $inputs[] = [
+                        'name' => $formInput->attr('name'),
+                        'value' => $formInput->attr('value'),
+                        'type' => $formInput->attr('type')
+                    ];
                 }
                 if (!empty($inputs)) {
                     $row['inputs'] = $inputs;

@@ -25,7 +25,7 @@ class CurlBaseClient extends AbstractHttpClient
         if (!$this->ch || !is_resource($this->ch)) {
             $this->ch = curl_init();
             curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($this->ch, CURLOPT_ENCODING , '');
+            curl_setopt($this->ch, CURLOPT_ENCODING, '');
             $this->enableReturnTransfer();
         }
     }
@@ -38,7 +38,7 @@ class CurlBaseClient extends AbstractHttpClient
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 
-    public function post(string $url, $postData ): PResponse
+    public function post(string $url, $postData): PResponse
     {
         $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_POST, 1);

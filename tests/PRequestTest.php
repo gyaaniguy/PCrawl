@@ -96,6 +96,7 @@ class PRequestTest extends TestCase
         self::assertStringContainsStringIgnoringCase("User Agent", $res->getBody());
         self::assertStringContainsStringIgnoringCase("we use you", $res->getBody());
     }
+
     public function testWebscriptGuzzleClient()
     {
         $gClient = new WebScriptGuzzleClient();
@@ -146,6 +147,7 @@ class PWebScriptClient extends PCurlClient
         return parent::get($url, $options);
     }
 }
+
 class WebScriptGuzzleClient extends PGuzzleClient
 {
     public array $clientOptions = [
