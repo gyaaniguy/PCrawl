@@ -2,6 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Gyaaniguy\PCrawl\Helpers\RegexStuff;
@@ -23,12 +24,16 @@ class GuzzleBaseClient extends AbstractHttpClient
      * @param string $url
      * @param array $requestOptions
      * @return PResponse
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function get(string $url, array $requestOptions = []): PResponse
     {
         $this->getBaseClient();
-        $response = $this->baseClient->request('GET', $url);
+        try {
+            $response = $this->baseClient->request('GET', $url);
+        } catch (GuzzleException $e) {
+            throw new Exception($e->getMessage());
+        }
         return $this->setResponse($url, $response);
     }
 
@@ -41,6 +46,9 @@ class GuzzleBaseClient extends AbstractHttpClient
         if (!isset($this->baseClient)) {
             $requestClientOptions = [];
             $requestClientOptions['allow_redirects'] = $this->setRedirectOptions();
+            if (isset($this->clientOptions['connect_timeout'])) {
+                $requestClientOptions['connect_timeout'] = $this->clientOptions['connect_timeout'];
+            }
             if (isset($this->clientOptions['headers'])) {
                 $requestClientOptions['headers'] = RegexStuff::headerToAssoc($this->clientOptions['headers']);
             }
@@ -95,12 +103,21 @@ class GuzzleBaseClient extends AbstractHttpClient
         return $this->res;
     }
 
+    /**
+     * @param string $url
+     * @param $postData
+     * @return PResponse
+     * @throws \Exception
+     */
     public function post(string $url, $postData): PResponse
     {
         $this->getBaseClient();
-        $response = $this->baseClient->request('POST', $url, ['body' => $postData]);
+        try {
+            $response = $this->baseClient->request('POST', $url, ['body' => $postData]);
+        } catch (GuzzleException $e) {
+            throw new \Exception($e->getMessage());
+        }
         return $this->setResponse($url, $response);
-        // TODO: Implement post() method.
     }
 
     public function getFile(string $url, array $options = []): PResponse
