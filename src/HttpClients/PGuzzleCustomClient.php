@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-class PPGuzzleCustomClient extends PGuzzleBaseClient
+class PGuzzleCustomClient extends PGuzzleBaseClient
 {
     public function __construct()
     {
