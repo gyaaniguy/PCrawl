@@ -99,4 +99,20 @@ class PCurlClient extends CurlBaseClient
         }
         return $this;
     }
+
+
+    public function setConnectTimeout(int $timeout): PCurlClient
+    {
+        $this->curlInitIf();
+        $this->clientOptions['connect_timeout'] = $timeout;
+        curl_setopt($this->ch,CURLOPT_CONNECTTIMEOUT, $timeout);
+        return $this;
+    }
+    public function setTimeout(int $timeout): PCurlClient
+    {
+        $this->curlInitIf();
+        $this->clientOptions['timeout'] = $timeout;
+        curl_setopt($this->ch,CURLOPT_TIMEOUT, $timeout);
+        return $this;
+    }
 }

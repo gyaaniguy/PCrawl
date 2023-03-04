@@ -34,28 +34,34 @@ class PPGuzzleClient extends PGuzzleBaseClient
         return $this;
     }
 
-    public function setHeaders(array $headers): PPGuzzleClient
+    public function setHeaders(array $headers): PGuzzleClient
     {
         unset($this->baseClient);
         $this->clientOptions['headers'] = $headers;
         return $this;
     }
 
-    public function cookies(bool $status): PPGuzzleClient
+    public function cookies(bool $status): PGuzzleClient
     {
         $this->clientOptions['cookies'] = $status;
         unset($this->baseClient);
         return $this;
     }
 
-    public function setConnectTimeout(int $timeout): PPGuzzleClient
+    public function setConnectTimeout(int $timeout): PGuzzleClient
     {
         $this->clientOptions['connect_timeout'] = $timeout;
         unset($this->baseClient);
         return $this;
     }
+    public function setTimeout(int $timeout): PGuzzleClient
+    {
+        $this->clientOptions['timeout'] = $timeout;
+        unset($this->baseClient);
+        return $this;
+    }
 
-    public function clearCookies(): PPGuzzleClient
+    public function clearCookies(): PGuzzleClient
     {
         unset($this->baseClient);
         return $this;

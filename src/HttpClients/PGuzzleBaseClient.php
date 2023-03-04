@@ -49,6 +49,9 @@ class GuzzleBaseClient extends AbstractHttpClient
             if (isset($this->clientOptions['connect_timeout'])) {
                 $requestClientOptions['connect_timeout'] = $this->clientOptions['connect_timeout'];
             }
+            if (isset($this->clientOptions['timeout'])) {
+                $requestClientOptions['timeout'] = $this->clientOptions['timeout'];
+            }
             if (isset($this->clientOptions['headers'])) {
                 $requestClientOptions['headers'] = RegexStuff::headerToAssoc($this->clientOptions['headers']);
             }
