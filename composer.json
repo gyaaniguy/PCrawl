@@ -17,7 +17,7 @@
     }
   ],
   "type": "library",
-  "license": "proprietary",
+  "license": "BSD-4-Clause",
   "require": {
     "php": ">=7.4",
     "guzzlehttp/guzzle": "^7.5",
