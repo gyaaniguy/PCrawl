@@ -26,7 +26,7 @@ class PResponse
     /**
      * @param string $body
      */
-    public function __construct(string $body)
+    public function __construct(string $body = '')
     {
         $this->body = $body;
     }

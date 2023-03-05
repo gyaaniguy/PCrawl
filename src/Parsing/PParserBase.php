@@ -10,18 +10,21 @@ class PParserBase
 {
     public DOMQuery $qp;
     public DOMQuery $qpXML;
-    private string $body;
+    private string $body = '';
 
-    public function __construct(string $body, array $options = [])
+    public function __construct(string $body = '', array $options = [])
+    {
+        if (!empty($body)) {
+            $this->body = $body;
+            $this->qp = QueryPath::withHTML5($body, '', $options);
+        }
+    }
+
+    public function setResponse(string $body, array $options = []): PParserBase
     {
         $this->body = $body;
         $this->qp = QueryPath::withHTML5($body, '', $options);
-    }
-
-    public function setResponse(string $body, array $options = [])
-    {
-        $this->body = $body;
-        $this->qp = QueryPath::withXML($body, '', $options);
+        return $this;
     }
 
     /**
@@ -29,6 +32,7 @@ class PParserBase
      */
     public function find(string $query)
     {
+        $this->isBodyEmpty();
         return $this->qp->find($query);
     }
 
@@ -56,7 +60,18 @@ class PParserBase
      */
     public function children(string $query = null)
     {
+        $this->isBodyEmpty();
         return $this->qp->children($query);
+    }
+
+    /**
+     * @throws ParseException
+     */
+    private function isBodyEmpty()
+    {
+        if (empty($this->qp)) {
+            throw new ParseException('Body is empty');
+        }
     }
 
 
