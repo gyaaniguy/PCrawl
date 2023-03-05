@@ -90,26 +90,27 @@ Usage of functions can be divided into parts:
 
 ## Installation
 
-via github:  
-Clone this repo. Run composer update. Move dir to desired location. Included the autoload.php file in your project.
-
-```
-git clone git@github.com:gyaaniguy/PCrawl.git
-cd PCrawl
+- Composer:
+```bash
+composer init   # for new projects. 
+composer config minimum-stability dev # Will be removed once stable.
+composer require gyaaniguy/pcrawl
 composer update
-mv ../PCrawl /desired/location
-
-//In php code:
-require __DIR__ . '../PCrawl/vendor/autoload.php';
+include __DIR__ . '/vendor/autoload.php'; #in PHP
 ```
+-  github:  
 
-via composer:
-todo
+```bash
+git clone git@github.com:gyaaniguy/PCrawl.git # clone repo 
+cd PCrawl 
+composer update # update composer 
+mv ../PCrawl /desired/location # Move dir to desired location.
+require __DIR__ . '../PCrawl/vendor/autoload.php'; #in PHP
+```
 
 ### TODO list
 
 - Leverage guzzlehttp asynchronous support 
-- composer support
 
 ### Standards
 
