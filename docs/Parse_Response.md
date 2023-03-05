@@ -10,7 +10,7 @@ First we create a parser object with a html string.
 ```php
 // Create a parser object
 $parser = new PParserBase($body);
-// change the html  
+// optional: change the html  
 $body1 = 'some html'
 $parser->setResponse($body1);
 ```
@@ -32,13 +32,14 @@ $parser->xpath();
 
 # PParserCommon
 
-TO get common blocks like links and forms, we have a convience lib
+Convenience library to get common blocks like links and forms
 
 ```php
-        $parser = PParserCommon($body ?: $this->body);
-        $links = $parser->getAllLinks();
-        $images = $parser->getAllImages();
-        $forms = $parser->getAllFormInputDetails();
-
+$parser = PParserCommon($body ?: $this->body);
+$links = $parser->getAllLinks();
+$images = $parser->getAllImages();
+$forms = $parser->getAllFormInputDetails();
 ```
+
+# Querypath usage
 

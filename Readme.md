@@ -7,22 +7,20 @@ It supports multiple clients: curl, guzzle. Options to debug, modify and parse r
 
 ## Features
 
-- Rapidly create custom clients. Fluently make changes to clients and client options, with method chaining.
-- Responses can be modified using reusable callback functions. Modification, debugger objects can be swapped on the fly
-  and reused.
+- Rapidly create custom clients. Fluently change clients and client options like user-agent, with method chaining.
+- Responses can be modified using reusable callback functions. 
 - Debug Responses using different criterias - httpcode, regex etc.
-- Fluent API. Different debugger, clients and response objects can be be changed on the fly !
+- Parse responses using querypath library. Several convenience functions are provided.
+- Fluent API. Different debuggers, clients and response mod objects can be be changed on the fly !
 
 ### Full Example
 
-Search a government database website for different keywords and make a list of all the datasets available. Do some
-pagination
+We'll try to fetch a bad page, then detect using a debugger and finally change client options to fetch the page correctly.
 
 - Setup up some clients
 
 ```php
 // simple clients.
-$ch = new PCurlClient();
 $gu = new PGuzzleClient();
 
 // Custom Client, that does not allow redirects.
@@ -40,12 +38,10 @@ class ConvertToHttpsClient extends PCurlCustomClient
 }
 ```
 
-- Lets make some debugger classes
-
+- Lets make some debugger objects
 ```php
 $redirectDetector = new PResponseDebug();
 $redirectDetector->setMustNotExistHttpCodes([301, 302, 303, 307, 308]);
-
 $fullPageDetector = new PResponseDebug();
 $fullPageDetector->setMustExistRegex(['#</html>#']);
 ```
@@ -57,10 +53,8 @@ For testing, we will fetch page with a client that does not support redirects, t
 
 ```php
 $req = new PRequest();
-// Start some bad fetching
-
 $url = "http://www.whatsmyua.info";
-$res = $req->setClient($uptightNoRedirectClient);
+$req->setClient($uptightNoRedirectClient);
 $count = 0;
 do {
     $res = $req->get($url);
@@ -72,6 +66,18 @@ do {
     }
 } while ($redirectDetector->isFail() && $count++ < 1);
 ```
+Use the fullPageDetector to detect if the page is proper.   
+Then parse the response body using PParser
+```php
+if ($fullPageDetector->setResponse($res)->isFail()) {
+    var_dump($redirectDetector->getFailDetail());
+} else {
+    $h1 = $parser->setResponse($res->getBody())->find('h1')->text();
+    $htmlClass = $parser->find('html')->attr('class');
+}
+```
+
+> Note: the debuggers, clients, parsers can be reused.
 
 ### Detailed Usage
 
@@ -102,9 +108,8 @@ todo
 
 ### TODO list
 
-Parser
-Leverage guzzlehttp asynchronous support.
-composer support
+- Leverage guzzlehttp asynchronous support 
+- composer support
 
 ### Standards
 
