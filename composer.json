@@ -17,6 +17,7 @@
     }
   ],
   "type": "library",
+  "license": "proprietary",
   "require": {
     "php": ">=7.4",
     "guzzlehttp/guzzle": "^7.5",
