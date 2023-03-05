@@ -21,7 +21,7 @@ class PResponseMods
      */
     public function tidy(): PResponseMods
     {
-        if (!class_exists('\Tidy')) {
+        if (!extension_loaded('tidy')) {
             throw new Exception("Tidy not installed");
         }
         $tidy = new Tidy();

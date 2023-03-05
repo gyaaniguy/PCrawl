@@ -22,8 +22,7 @@
     "guzzlehttp/guzzle": "^7.5",
     "gravitypdf/querypath": "^3.0",
     "ext-curl": "*",
-    "ext-json": "*",
-    "ext-tidy": "*"
+    "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "7.*"
