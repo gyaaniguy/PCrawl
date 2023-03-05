@@ -13,7 +13,7 @@ It supports multiple clients: curl, guzzle. Options to debug, modify and parse r
 - Parse responses using querypath library. Several convenience functions are provided.
 - Fluent API. Different debuggers, clients and response mod objects can be be changed on the fly !
 
-### Full Example
+## Full Example
 
 We'll try to fetch a bad page, then detect using a debugger and finally change client options to fetch the page correctly.
 

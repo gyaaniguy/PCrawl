@@ -1,9 +1,14 @@
 {
-  "name": "gyaaniguy/p-crawl",
-  "description": "Library to assist to common crawling, scraping tasks",
+  "name": "gyaaniguy/pcrawl",
+  "description": "PHP web scraping and crawling library. With support for multiple clients, fast parsing, debugging and on the fly changes to various options",
   "keywords": [
     "scraping",
-    "php"
+    "php",
+    "web scraping",
+    "crawler",
+    "web crawler",
+    "web scraping library",
+    "php web scraping",
   ],
   "authors": [
     {
