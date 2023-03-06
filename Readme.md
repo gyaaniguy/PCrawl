@@ -83,10 +83,10 @@ if ($fullPageDetector->setResponse($res)->isFail()) {
 
 Usage of functions can be divided into parts:
 
-* [Fetching a page](Usage/Fetching.md)
-* [Modifying the response body](Usage/Modify_Response.md)
-* [Debugging the response](Usage/Debugging_Response.md)
-* [Parsing the response body](Usage/Parse_Response.md)
+* [Fetching a page](docs/Fetching.md)
+* [Modifying the response body](docs/Modify_Response.md)
+* [Debugging the response](docs/Debugging_Response.md)
+* [Parsing the response body](docs/Parse_Response.md)
 
 ## Installation
 
