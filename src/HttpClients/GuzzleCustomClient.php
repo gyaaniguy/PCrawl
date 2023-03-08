@@ -4,7 +4,7 @@ namespace Gyaaniguy\PCrawl\HttpClients;
 
 use GuzzleHttp\Client;
 
-class PGuzzleCustomClient extends PGuzzleBaseClient
+class GuzzleCustomClient extends GuzzleBaseClient
 {
     public function __construct()
     {

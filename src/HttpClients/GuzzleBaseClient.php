@@ -10,7 +10,7 @@ use Gyaaniguy\PCrawl\Response\PResponse;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
-class PGuzzleBaseClient extends AbstractHttpClient
+class GuzzleBaseClient extends AbstractHttpClient
 {
     public Client $baseClient;
 

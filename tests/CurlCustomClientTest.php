@@ -12,7 +12,7 @@ class CurlCustomClientTest extends TestCase
     public function testSetCustomClientOptions()
     {
         $req = new PRequest();
-        $client = new PCurlCustomClient();
+        $client = new CurlCustomClient();
         $client->setCustomOptions([
             CURLOPT_HEADER => 1,
             CURLOPT_NOBODY => 1,
@@ -35,7 +35,7 @@ class CurlCustomClientTest extends TestCase
 }
 
 
-class OnlyHeadClient extends PCurlCustomClient
+class OnlyHeadClient extends CurlCustomClient
 {
     public array $clientOptions = [
         CURLOPT_HEADER => 1,

@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-class PCurlClient extends CurlBaseClient
+class CurlClient extends CurlBaseClient
 {
     public function __construct()
     {
@@ -36,7 +36,7 @@ class PCurlClient extends CurlBaseClient
         }
     }
 
-    public function setUserAgent(string $userAgent): PCurlClient
+    public function setUserAgent(string $userAgent): CurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['user_agent'] = $userAgent;
@@ -44,7 +44,7 @@ class PCurlClient extends CurlBaseClient
         return $this;
     }
 
-    public function setHeaders(array $headers): PCurlClient
+    public function setHeaders(array $headers): CurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['headers'] = $headers;
@@ -58,7 +58,7 @@ class PCurlClient extends CurlBaseClient
      * @param int $num
      * @return $this
      */
-    public function setRedirects(int $num): PCurlClient
+    public function setRedirects(int $num): CurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['redirect_num'] = $num;
@@ -66,7 +66,7 @@ class PCurlClient extends CurlBaseClient
         return $this;
     }
 
-    public function cookies(bool $enable): PCurlClient
+    public function cookies(bool $enable): CurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['cookies'] = $enable;
@@ -81,7 +81,7 @@ class PCurlClient extends CurlBaseClient
         return $this->disableCookies();
     }
 
-    protected function disableCookies(): PCurlClient
+    protected function disableCookies(): CurlClient
     {
         $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, '');
@@ -89,7 +89,7 @@ class PCurlClient extends CurlBaseClient
         return $this;
     }
 
-    public function clearCookies(): PCurlClient
+    public function clearCookies(): CurlClient
     {
         $this->curlInitIf();
         if (!empty($this->cookiePath)) {
@@ -103,7 +103,7 @@ class PCurlClient extends CurlBaseClient
     }
 
 
-    public function setConnectTimeout(int $timeout): PCurlClient
+    public function setConnectTimeout(int $timeout): CurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['connect_timeout'] = $timeout;
@@ -111,7 +111,7 @@ class PCurlClient extends CurlBaseClient
         return $this;
     }
 
-    public function setTimeout(int $timeout): PCurlClient
+    public function setTimeout(int $timeout): CurlClient
     {
         $this->curlInitIf();
         $this->clientOptions['timeout'] = $timeout;

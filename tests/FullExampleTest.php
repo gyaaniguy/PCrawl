@@ -2,9 +2,9 @@
 
 namespace Gyaaniguy\PCrawl;
 
-use Gyaaniguy\PCrawl\HttpClients\PCurlClient;
-use Gyaaniguy\PCrawl\HttpClients\PCurlCustomClient;
-use Gyaaniguy\PCrawl\HttpClients\PGuzzleClient;
+use Gyaaniguy\PCrawl\HttpClients\CurlClient;
+use Gyaaniguy\PCrawl\HttpClients\CurlCustomClient;
+use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
 use Gyaaniguy\PCrawl\Parsing\PParserCommon;
 use Gyaaniguy\PCrawl\Request\PRequest;
 use Gyaaniguy\PCrawl\Response\PResponse;
@@ -16,11 +16,11 @@ class FullExampleTest extends TestCase
     public function testFull()
     {
         // simple clients.
-        $ch = new PCurlClient();
-        $gu = new PGuzzleClient();
+        $ch = new CurlClient();
+        $gu = new GuzzleClient();
 
         // Custom Client, that does not allow redirects.
-        $uptightNoRedirectClient = new PCurlClient();
+        $uptightNoRedirectClient = new CurlClient();
         $uptightNoRedirectClient->setRedirects(0); // disable redirects
 
         //Makes debuggers
@@ -58,7 +58,7 @@ class FullExampleTest extends TestCase
 }
 
 
-class ConvertToHttpsClient extends PCurlCustomClient
+class ConvertToHttpsClient extends CurlCustomClient
 {
     public function get(string $url, array $options = []): PResponse
     {

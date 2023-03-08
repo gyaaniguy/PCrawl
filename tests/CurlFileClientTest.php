@@ -11,7 +11,7 @@ class CurlFileClientTest extends TestCase
     {
         $req = new PRequest();
 
-        $fileClient = new PCurlClient();
+        $fileClient = new CurlClient();
         $req->setClient($fileClient);
 
         $req->getFile(

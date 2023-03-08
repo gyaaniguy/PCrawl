@@ -10,7 +10,7 @@ class GuzzleClientTest extends TestCase
     public function testSetRedirects()
     {
         $req = new PRequest();
-        $client = new PGuzzleClient();
+        $client = new GuzzleClient();
         $client->setRedirects(4);
         $req->setClient($client);
         $clientOptions = $client->getOptions();
@@ -25,7 +25,7 @@ class GuzzleClientTest extends TestCase
     public function testSetUserAgent()
     {
         $req = new PRequest();
-        $client = new PGuzzleClient();
+        $client = new GuzzleClient();
         $userAgentStr = "user agent test";
         $client->setUserAgent($userAgentStr);
         $req->setClient($client);
@@ -38,7 +38,7 @@ class GuzzleClientTest extends TestCase
 
     public function testSetHeaders()
     {
-        $client = new PGuzzleClient();
+        $client = new GuzzleClient();
         $headers = [
             'head1: val 1',
             'head2: val 2',
@@ -54,7 +54,7 @@ class GuzzleClientTest extends TestCase
 
     public function testAddHeaders()
     {
-        $client = new PGuzzleClient();
+        $client = new GuzzleClient();
         $headers = [
             'head1: val 1',
         ];
@@ -75,7 +75,7 @@ class GuzzleClientTest extends TestCase
 
     public function testCookies()
     {
-        $g = new PGuzzleClient();
+        $g = new GuzzleClient();
         $g->cookies(true);
         $req = new PRequest($g);
         $res = $req->get('https://www.myhttpheader.com/');
@@ -89,9 +89,9 @@ class GuzzleClientTest extends TestCase
 
     public function testClearCookies()
     {
-        $g = new PGuzzleClient();
+        $g = new GuzzleClient();
         $this->_testClearCookiesForClient($g);
-        $c = new PCurlClient();
+        $c = new CurlClient();
         $this->_testClearCookiesForClient($c);
     }
 
