@@ -12,7 +12,7 @@ class ParserCommon extends ParserBase
     public function getAllLinks(): array
     {
         $links = [];
-        foreach ($this->qp->find('a') as $l) {
+        foreach ($this->querypath->find('a') as $l) {
             $links[] = ['href' => $l->attr('href'), 'text' => $l->text()];
         }
         return $links;
@@ -24,7 +24,7 @@ class ParserCommon extends ParserBase
     public function getAllImages(): array
     {
         $images = [];
-        foreach ($this->qp->find('img') as $l) {
+        foreach ($this->querypath->find('img') as $l) {
             $images[] = ['src' => $l->attr('src'), 'alt' => $l->attr('alt')];
         }
         return $images;
@@ -36,7 +36,7 @@ class ParserCommon extends ParserBase
     public function getAllFormInputDetails(): array
     {
         $forms = [];
-        foreach ($this->qp->find('form') as $f) {
+        foreach ($this->querypath->find('form') as $f) {
             $inputs = [];
             $row = ['action' => $f->attr('action'), 'method' => $f->attr('method')];
             $formInputs = $f->find('input');

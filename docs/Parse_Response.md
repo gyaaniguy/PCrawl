@@ -18,8 +18,8 @@ $parser->setResponse($body1);
 querypath functions can be directly used:
 
 ```php
-$parser->qp->find();
-$parser->qp->children();
+$parser->querypath->find();
+$parser->querypath->children();
 ```
 
 Or we have some convenience functions:

@@ -8,7 +8,7 @@ use QueryPath\QueryPath;
 
 class ParserBase
 {
-    public DOMQuery $qp;
+    public DOMQuery $querypath;
     public DOMQuery $qpXML;
     private string $body = '';
 
@@ -16,14 +16,14 @@ class ParserBase
     {
         if (!empty($body)) {
             $this->body = $body;
-            $this->qp = QueryPath::withHTML5($body, '', $options);
+            $this->querypath = QueryPath::withHTML5($body, '', $options);
         }
     }
 
     public function setResponse(string $body, array $options = []): ParserBase
     {
         $this->body = $body;
-        $this->qp = QueryPath::withHTML5($body, '', $options);
+        $this->querypath = QueryPath::withHTML5($body, '', $options);
         return $this;
     }
 
@@ -33,7 +33,7 @@ class ParserBase
     public function find(string $query)
     {
         $this->isBodyEmpty();
-        return $this->qp->find($query);
+        return $this->querypath->find($query);
     }
 
     /**
@@ -61,7 +61,7 @@ class ParserBase
     public function children(string $query = null)
     {
         $this->isBodyEmpty();
-        return $this->qp->children($query);
+        return $this->querypath->children($query);
     }
 
     /**
@@ -69,10 +69,8 @@ class ParserBase
      */
     private function isBodyEmpty()
     {
-        if (empty($this->qp)) {
+        if (empty($this->querypath)) {
             throw new ParseException('Body is empty');
         }
     }
-
-
 }
