@@ -118,4 +118,20 @@ class CurlClient extends CurlBaseClient
         curl_setopt($this->ch, CURLOPT_TIMEOUT, $timeout);
         return $this;
     }
+
+    /**
+     * Set the proxy to use by the client. 
+     * @param string $proxyPort - host:port - '1.1.1.1:8080' OR 'bestproxy:8080'  
+     * @param string $proxyAuth - username:password
+     * @return $this
+     */
+    public function setProxy(string $proxyPort, string $proxyAuth = ''): CurlClient
+    {
+        $this->curlInitIf();
+        curl_setopt($this->ch, CURLOPT_PROXY, $proxyPort);
+        if (!empty($proxyAuth)) {
+            curl_setopt($this->ch, CURLOPT_PROXYUSERPWD, $proxyAuth);
+        }
+        return $this;
+    }
 }

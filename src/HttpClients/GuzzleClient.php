@@ -67,4 +67,20 @@ class GuzzleClient extends GuzzleBaseClient
         unset($this->baseClient);
         return $this;
     }
+
+
+    /**
+     * Set proxy to be used by the client
+     * @param string $proxyPort - host:port - '1.1.1.1:8080' OR 'bestproxy:8080'
+     * @param string $proxyAuth - username:password optional
+     * @return $this
+     */
+    public function setProxy(string $proxyPort, string $proxyAuth = ''): GuzzleClient
+    {
+        $this->clientOptions['proxyPort'] = $proxyPort;
+        if (!empty($proxyAuth)) {
+            $this->clientOptions['proxyAuth'] = $proxyAuth;
+        }
+        return $this;
+    }
 }

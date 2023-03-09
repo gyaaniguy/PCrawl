@@ -61,6 +61,9 @@ class GuzzleBaseClient extends AbstractHttpClient
             if (isset($this->clientOptions['user_agent'])) {
                 $requestClientOptions['headers']['User-Agent'] = $this->clientOptions['user_agent'];
             }
+            if (isset($this->clientOptions['proxyPort'])) {
+                $requestClientOptions['proxy'] = $this->getProxyStr();
+            }
             if (isset($this->clientOptions['custom_client_options'])) {
                 $requestClientOptions = $this->clientOptions['custom_client_options'];
             }
@@ -133,5 +136,18 @@ class GuzzleBaseClient extends AbstractHttpClient
             throw new InvalidArgumentException('filepath is not writable');
         }
         // TODO
+    }
+
+    /**
+     * @return string
+     */
+    public function getProxyStr(): string
+    {
+        $proxyStr = '';
+        if (!empty($this->clientOptions['proxyAuth'])) {
+            $proxyStr .= $this->clientOptions['proxyAuth'] . '@';
+        }
+        $proxyStr .= $this->clientOptions['proxyPort'];
+        return $proxyStr;
     }
 }
