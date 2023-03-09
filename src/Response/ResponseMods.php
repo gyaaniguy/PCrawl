@@ -5,11 +5,11 @@ namespace Gyaaniguy\PCrawl\Response;
 use Exception;
 use Tidy;
 
-class PResponseMods
+class ResponseMods
 {
-    public PResponse $pRes;
+    public Response $pRes;
 
-    public function __construct(PResponse $pRes)
+    public function __construct(Response $pRes)
     {
         $this->pRes = $pRes;
     }
@@ -19,7 +19,7 @@ class PResponseMods
      * @return $this
      * @throws Exception
      */
-    public function tidy(): PResponseMods
+    public function tidy(): ResponseMods
     {
         if (!extension_loaded('tidy')) {
             throw new Exception("Tidy not installed");

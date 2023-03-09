@@ -5,10 +5,10 @@ namespace Gyaaniguy\PCrawl;
 use Gyaaniguy\PCrawl\HttpClients\CurlClient;
 use Gyaaniguy\PCrawl\HttpClients\CurlCustomClient;
 use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
-use Gyaaniguy\PCrawl\Parsing\PParserCommon;
-use Gyaaniguy\PCrawl\Request\PRequest;
-use Gyaaniguy\PCrawl\Response\PResponse;
-use Gyaaniguy\PCrawl\Response\PResponseDebug;
+use Gyaaniguy\PCrawl\Parsing\ParserCommon;
+use Gyaaniguy\PCrawl\Request\Request;
+use Gyaaniguy\PCrawl\Response\Response;
+use Gyaaniguy\PCrawl\Response\ResponseDebug;
 use PHPUnit\Framework\TestCase;
 
 class FullExampleTest extends TestCase
@@ -24,16 +24,16 @@ class FullExampleTest extends TestCase
         $uptightNoRedirectClient->setRedirects(0); // disable redirects
 
         //Makes debuggers
-        $redirectDetector = new PResponseDebug();
+        $redirectDetector = new ResponseDebug();
         $redirectDetector->setMustNotExistHttpCodes([301, 302, 303, 307, 308]);
-        $fullPageDetector = new PResponseDebug();
+        $fullPageDetector = new ResponseDebug();
         $fullPageDetector->setMustExistRegex(['#</html>#']);
 
         // Make parser
-        $parser = new PParserCommon();
+        $parser = new ParserCommon();
 
         // Start some bad fetching
-        $req = new PRequest();
+        $req = new Request();
         $url = "http://www.whatsmyua.info";
         $req->setClient($uptightNoRedirectClient);
         $count = 0;
@@ -60,7 +60,7 @@ class FullExampleTest extends TestCase
 
 class ConvertToHttpsClient extends CurlCustomClient
 {
-    public function get(string $url, array $options = []): PResponse
+    public function get(string $url, array $options = []): Response
     {
         $url = str_replace('http://', 'https://', $url);
         return parent::get($url, $options);

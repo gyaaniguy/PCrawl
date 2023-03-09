@@ -2,19 +2,20 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use Gyaaniguy\PCrawl\Response\PResponse;
+use Gyaaniguy\PCrawl\Response\Response;
 
 abstract class AbstractHttpClient
 {
-    public PResponse $res;
-    public array $clientOptions = [];
+    protected Response $res;
+    protected array $clientOptions = [];
 
     public function getOptions(): array
     {
         return $this->clientOptions;
     }
 
-    abstract public function get(string $url, array $requestOptions = []): PResponse;
+    abstract public function get(string $url): Response;
 
-    abstract public function post(string $url, $postData): PResponse;
+    abstract public function post(string $url, $postData): Response;
+    abstract public function getFile(string $url, array $options = []): Response;
 }

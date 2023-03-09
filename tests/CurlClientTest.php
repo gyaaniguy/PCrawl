@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use Gyaaniguy\PCrawl\Request\PRequest;
+use Gyaaniguy\PCrawl\Request\Request;
 use PHPUnit\Framework\TestCase;
 
 class CurlClientTest extends TestCase
@@ -10,7 +10,7 @@ class CurlClientTest extends TestCase
 
     public function testGet()
     {
-        $req = new PRequest();
+        $req = new Request();
         $res = $req->get('http://www.whatsmyua.info/');
         self::assertIsInt($res->getHttpCode());
         self::assertEquals(200, $res->getHttpCode());
@@ -23,7 +23,7 @@ class CurlClientTest extends TestCase
 
     public function testErrors()
     {
-        $req = new PRequest();
+        $req = new Request();
         $res = $req->get('fake.notExiststhisthingshere');
         $errors = $res->getError();
         $this->assertNotEmpty($errors);
@@ -33,14 +33,14 @@ class CurlClientTest extends TestCase
 
     public function testSetRedirects()
     {
-        $req = new PRequest();
+        $req = new Request();
         $client = new CurlClient();
         $client->setRedirects(4);
         $req->setClient($client);
         $res = $req->get('http://whatsmyua.info/');
         self::assertStringContainsStringIgnoringCase("user agent", $res->getBody());
 
-        $req = new PRequest();
+        $req = new Request();
         $client = new CurlClient();
         $client->setRedirects(4);
         $req->setClient($client);

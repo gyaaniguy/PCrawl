@@ -3,7 +3,7 @@
 namespace Gyaaniguy\PCrawl\HttpClients;
 
 use GuzzleHttp\Client;
-use Gyaaniguy\PCrawl\Request\PRequest;
+use Gyaaniguy\PCrawl\Request\Request;
 use PHPUnit\Framework\TestCase;
 
 class GuzzleCustomClientTest extends TestCase
@@ -18,14 +18,14 @@ class GuzzleCustomClientTest extends TestCase
         $client = new GuzzleCustomClient();
         $client->setCustomOptions($guzzleClientOptions);
 
-        $req = new PRequest($client);
+        $req = new Request($client);
         $res = $req->get('https://manytools.org/http-html-text/http-request-headers/');
         self::assertStringContainsString("Head5", $res->getBody());
     }
 
     public function testDefaultClientOptions()
     {
-        $req = new PRequest();
+        $req = new Request();
         $req->setClient(new OnlyHeadGuzzleClient());
         $onlyHeadRes = $req->get('https://manytools.org/http-html-text/http-request-headers');
         self::assertStringContainsString("Head5", $onlyHeadRes->getBody());
@@ -38,7 +38,7 @@ class GuzzleCustomClientTest extends TestCase
         $guzzleCustom = new GuzzleCustomClient();
         $guzzleCustom->setRawClient($myGuzzle);
 
-        $req = new PRequest();
+        $req = new Request();
         $req->setClient($guzzleCustom);
 
         $res = $req->get('http-html-text/http-request-headers');

@@ -6,27 +6,27 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Gyaaniguy\PCrawl\Helpers\RegexStuff;
-use Gyaaniguy\PCrawl\Response\PResponse;
+use Gyaaniguy\PCrawl\Response\Response;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
 class GuzzleBaseClient extends AbstractHttpClient
 {
-    public Client $baseClient;
+    protected Client $baseClient;
 
     public function __construct()
     {
-        $this->res = new PResponse();
+        $this->res = new Response();
     }
 
     /**
      *
      * @param string $url
      * @param array $requestOptions
-     * @return PResponse
+     * @return Response
      * @throws Exception
      */
-    public function get(string $url, array $requestOptions = []): PResponse
+    public function get(string $url): Response
     {
         $this->getBaseClient();
         try {
@@ -94,9 +94,9 @@ class GuzzleBaseClient extends AbstractHttpClient
      * Sets the library response object, and its various fields from the values of the guzzles response.
      * @param string $url
      * @param ResponseInterface $response
-     * @return PResponse
+     * @return Response
      */
-    public function setResponse(string $url, ResponseInterface $response): PResponse
+    public function setResponse(string $url, ResponseInterface $response): Response
     {
         $this->res->setRequestUrl($url);
         $this->res->setBody($response->getBody()->getContents());
@@ -109,10 +109,10 @@ class GuzzleBaseClient extends AbstractHttpClient
     /**
      * @param string $url
      * @param $postData
-     * @return PResponse
+     * @return Response
      * @throws Exception
      */
-    public function post(string $url, $postData): PResponse
+    public function post(string $url, $postData): Response
     {
         $this->getBaseClient();
         try {
@@ -123,7 +123,7 @@ class GuzzleBaseClient extends AbstractHttpClient
         return $this->setResponse($url, $response);
     }
 
-    public function getFile(string $url, array $options = []): PResponse
+    public function getFile(string $url, array $options = []): Response
     {
         if (empty($options) || empty($options['file_path'])) {
             throw new InvalidArgumentException('No file_path provided');

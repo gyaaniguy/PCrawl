@@ -4,11 +4,11 @@ namespace Gyaaniguy\PCrawl\Helpers;
 
 class RegexStuff
 {
-    public static function combineHeaders($headers, $headersOriginal): array
+    public static function combineHeaders(array $headers, array $headersOriginal): array
     {
-        $headersAssoc = RegexStuff::headerToAssoc($headers);
-        $OriginalHeadersAssoc = RegexStuff::headerToAssoc($headersOriginal);
-        $allHeaders = array_merge($OriginalHeadersAssoc, $headersAssoc);
+        $headersAssoc = self::headerToAssoc($headers);
+        $originalHeadersAssoc = self::headerToAssoc($headersOriginal);
+        $allHeaders = array_merge($originalHeadersAssoc, $headersAssoc);
         if (!empty($allHeaders)) {
             array_walk($allHeaders, function (&$val, $key) {
                 $val = $key . ': ' . $val;

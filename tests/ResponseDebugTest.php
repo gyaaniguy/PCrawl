@@ -2,17 +2,17 @@
 
 namespace Gyaaniguy\PCrawl\Loggers;
 
-use Gyaaniguy\PCrawl\Response\PResponse;
-use Gyaaniguy\PCrawl\Response\PResponseDebug;
+use Gyaaniguy\PCrawl\Response\Response;
+use Gyaaniguy\PCrawl\Response\ResponseDebug;
 use PHPUnit\Framework\TestCase;
 
-class PResponseDebugTest extends TestCase
+class ResponseDebugTest extends TestCase
 {
 
     public function testHttpCode()
     {
-        $debug = new PResponseDebug();
-        $res = new PResponse();
+        $debug = new ResponseDebug();
+        $res = new Response();
         $res->setBody("test body");
         $res->setHttpCode(99);
         $debug->setResponse($res);
@@ -47,21 +47,21 @@ class PResponseDebugTest extends TestCase
 
     public function testBadHttpCode()
     {
-        $res = new PResponse();
+        $res = new Response();
         $res->setBody("test body");
         $res->setHttpCode(200);
 
-        $debug = new PResponseDebug();
+        $debug = new ResponseDebug();
         $debug->setMustNotExistHttpCodes([400, 404]);
         $debug->setResponse($res);
         self::assertFalse($debug->isFail());
         self::assertIsArray($debug->getFailDetail());
         self::assertArrayNotHasKey('expected_httpcode', $debug->getFailDetail());
 
-        $res = new PResponse();
+        $res = new Response();
         $res->setBody("test body");
         $res->setHttpCode(404);
-        $debug = new PResponseDebug();
+        $debug = new ResponseDebug();
         $debug->setMustNotExistHttpCodes([400, 404]);
         $debug->setResponse($res);
         self::assertTrue($debug->isFail());
@@ -70,8 +70,8 @@ class PResponseDebugTest extends TestCase
 
     public function testExpectedHeaders()
     {
-        $debug = new PResponseDebug();
-        $res = new PResponse();
+        $debug = new ResponseDebug();
+        $res = new Response();
         $res->setResponseHeaders(['content-type: html', 'content-size: 99']);
         $debug->setResponse($res);
 
@@ -99,8 +99,8 @@ class PResponseDebugTest extends TestCase
 
     public function testCompareMustExistRegex()
     {
-        $debug = new PResponseDebug();
-        $res = new PResponse();
+        $debug = new ResponseDebug();
+        $res = new Response();
         $res->setBody("test body");
         $debug->setMustExistRegex(['/test/']);
         $debug->setResponse($res);
@@ -129,8 +129,8 @@ class PResponseDebugTest extends TestCase
 
     public function testBadRegex()
     {
-        $debug = new PResponseDebug();
-        $res = new PResponse();
+        $debug = new ResponseDebug();
+        $res = new Response();
 
         $res->setBody("test body");
         $debug->setResponse($res);
@@ -156,8 +156,8 @@ class PResponseDebugTest extends TestCase
 
     public function testHasGoodString()
     {
-        $debug = new PResponseDebug();
-        $res = new PResponse();
+        $debug = new ResponseDebug();
+        $res = new Response();
         $res->setBody("test body");
         $debug->setResponse($res);
 
@@ -189,12 +189,12 @@ class PResponseDebugTest extends TestCase
 
     public function testCallbackFail()
     {
-        $debug = new PResponseDebug();
-        $res = new PResponse();
+        $debug = new ResponseDebug();
+        $res = new Response();
         $res->setBody("test body");
         $debug->setResponse($res);
 
-        $debug->setCustomFailCondition(function (PResponse $res) {
+        $debug->setCustomFailCondition(function (Response $res) {
             if (strlen($res->getBody()) < 10) {
                 return false;
             }
@@ -211,12 +211,12 @@ class PResponseDebugTest extends TestCase
     {
         $res = $this->getRes(400, "Logged In. But you got blocked by cloudflare");
 
-        $loggedInCriteria = new PResponseDebug();
+        $loggedInCriteria = new ResponseDebug();
         $loggedInCriteria->setMustExistRegex(['/Logged In/']);
         $loggedInCriteria->setMustNotExistRegex(['/cloudflare/i']);
         $loggedInCriteria->setResponse($res);
 
-        $fourHundredsDetector = new PResponseDebug();
+        $fourHundredsDetector = new ResponseDebug();
         $fourHundredsDetector->setMustNotExistHttpCodes([400, 404]);
 
         self::assertTrue($loggedInCriteria->setResponse($res)->isFail());
@@ -225,21 +225,21 @@ class PResponseDebugTest extends TestCase
         // NEXT !
         $res = $this->getRes(400, "Logged In. We don't CLOUD FLARE. But you in particular are not welcome");
 
-        $loggedInCriteria = new PResponseDebug();
+        $loggedInCriteria = new ResponseDebug();
         $loggedInCriteria->setMustExistRegex(['/Logged In/']);
         $loggedInCriteria->setMustNotExistRegex(['/cloudflare/i']);
         $loggedInCriteria->setResponse($res);
 
-        $fourHundredsDetector = new PResponseDebug();
+        $fourHundredsDetector = new ResponseDebug();
         $fourHundredsDetector->setMustNotExistHttpCodes([400, 404]);
 
         self::assertFalse($loggedInCriteria->setResponse($res)->isFail());
         self::assertTrue($fourHundredsDetector->setResponse($res)->isFail());
     }
 
-    public function getRes($httpCode, $body): PResponse
+    public function getRes($httpCode, $body): Response
     {
-        $res = new PResponse();
+        $res = new Response();
         $res->setBody($body);
         $res->setHttpCode($httpCode);
         return $res;

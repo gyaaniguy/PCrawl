@@ -5,9 +5,9 @@ namespace Gyaaniguy\PCrawl\Response;
 use Closure;
 use InvalidArgumentException;
 
-class PResponseDebug implements InterfaceResponseDebug
+class ResponseDebug implements InterfaceResponseDebug
 {
-    public PResponse $res;
+    public Response $res;
     public bool $resFail;
 
     public array $mustNotExistStrings;
@@ -30,7 +30,7 @@ class PResponseDebug implements InterfaceResponseDebug
         return $this->analysis;
     }
 
-    public function setResponse(PResponse $res): PResponseDebug
+    public function setResponse(Response $res): ResponseDebug
     {
         if (empty($res)) {
             throw new InvalidArgumentException('PResponseDebug::setResponse() requires a PResponse object.');
@@ -39,109 +39,109 @@ class PResponseDebug implements InterfaceResponseDebug
         return $this;
     }
 
-    public function appendToMustNotExistStrings(array $strings): PResponseDebug
+    public function appendToMustNotExistStrings(array $strings): ResponseDebug
     {
         $this->mustNotExistStrings = array_merge($this->mustNotExistStrings, $strings);
         return $this;
     }
 
-    public function setMustNotExistStrings(array $strings): PResponseDebug
+    public function setMustNotExistStrings(array $strings): ResponseDebug
     {
         $this->mustNotExistStrings = $strings;
         return $this;
     }
 
-    public function unsetMustNotExistStrings(): PResponseDebug
+    public function unsetMustNotExistStrings(): ResponseDebug
     {
         $this->mustNotExistStrings = [];
         return $this;
     }
 
-    public function setMustNotExistHttpCodes(array $httpCodes): PResponseDebug
+    public function setMustNotExistHttpCodes(array $httpCodes): ResponseDebug
     {
         $this->mustNotExistHttpCodes = $httpCodes;
         return $this;
     }
 
-    public function unsetMustNotExistHttpCodes(): PResponseDebug
+    public function unsetMustNotExistHttpCodes(): ResponseDebug
     {
         $this->mustNotExistHttpCodes = [];
         return $this;
     }
 
-    public function setMustBeHttpCode(int $int): PResponseDebug
+    public function setMustBeHttpCode(int $int): ResponseDebug
     {
         $this->mustBeHttpCode = $int;
         return $this;
     }
 
-    public function unsetGoodHttpCode(): PResponseDebug
+    public function unsetGoodHttpCode(): ResponseDebug
     {
         $this->mustBeHttpCode = -1;
         return $this;
     }
 
-    public function appendToMustExistStrings(array $strings): PResponseDebug
+    public function appendToMustExistStrings(array $strings): ResponseDebug
     {
         $this->mustExistStrings = array_merge($this->mustExistStrings, $strings);
         return $this;
     }
 
-    public function setMustExistStrings(array $strings): PResponseDebug
+    public function setMustExistStrings(array $strings): ResponseDebug
     {
         $this->mustExistStrings = $strings;
         return $this;
     }
 
-    public function unsetMustExistStrings(): PResponseDebug
+    public function unsetMustExistStrings(): ResponseDebug
     {
         $this->mustExistStrings = [];
         return $this;
     }
 
-    public function appendToMustExistRegex(array $strings): PResponseDebug
+    public function appendToMustExistRegex(array $strings): ResponseDebug
     {
         $this->mustExistRegex = array_merge($this->mustExistRegex, $strings);
         return $this;
     }
 
-    public function setMustExistRegex(array $strings): PResponseDebug
+    public function setMustExistRegex(array $strings): ResponseDebug
     {
         $this->mustExistRegex = $strings;
         return $this;
     }
 
-    public function unsetMustExistRegex(): PResponseDebug
+    public function unsetMustExistRegex(): ResponseDebug
     {
         $this->mustExistRegex = [];
         return $this;
     }
 
-    public function appendToMustNotExistRegex(array $strings): PResponseDebug
+    public function appendToMustNotExistRegex(array $strings): ResponseDebug
     {
         $this->mustNotExistRegex = array_merge($this->mustNotExistRegex, $strings);
         return $this;
     }
 
-    public function setMustNotExistRegex(array $strings): PResponseDebug
+    public function setMustNotExistRegex(array $strings): ResponseDebug
     {
         $this->mustNotExistRegex = $strings;
         return $this;
     }
 
-    public function unsetRegexMustNotExist(): PResponseDebug
+    public function unsetRegexMustNotExist(): ResponseDebug
     {
         $this->mustNotExistRegex = [];
         return $this;
     }
 
-    public function setContainExpectedHeaders(array $strings): PResponseDebug
+    public function setContainExpectedHeaders(array $strings): ResponseDebug
     {
         $this->expectedHeaders = $strings;
         return $this;
     }
 
-    public function unsetContainExpectedHeaders(): PResponseDebug
+    public function unsetContainExpectedHeaders(): ResponseDebug
     {
         $this->expectedHeaders = [];
         return $this;

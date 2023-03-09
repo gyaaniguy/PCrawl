@@ -6,7 +6,7 @@ use QueryPath\CSS\ParseException;
 use QueryPath\DOMQuery;
 use QueryPath\QueryPath;
 
-class PParserBase
+class ParserBase
 {
     public DOMQuery $qp;
     public DOMQuery $qpXML;
@@ -20,7 +20,7 @@ class PParserBase
         }
     }
 
-    public function setResponse(string $body, array $options = []): PParserBase
+    public function setResponse(string $body, array $options = []): ParserBase
     {
         $this->body = $body;
         $this->qp = QueryPath::withHTML5($body, '', $options);

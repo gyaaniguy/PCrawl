@@ -5,7 +5,7 @@ namespace Gyaaniguy\PCrawl\Request;
 use Exception;
 use Gyaaniguy\PCrawl\HttpClients\AbstractHttpClient;
 use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
-use Gyaaniguy\PCrawl\Response\PResponse;
+use Gyaaniguy\PCrawl\Response\Response;
 use InvalidArgumentException;
 
 /**
@@ -13,24 +13,20 @@ use InvalidArgumentException;
  *
  * @author Nikhil Jain
  */
-class PRequest
+class Request
 {
-    private PResponse $lastRawResponse;
+    private Response $lastRawResponse;
     private AbstractHttpClient $httpClient;
 
     public function __construct(AbstractHttpClient $httpClient = null)
     {
-        if ($httpClient === null) {
-            $this->httpClient = new GuzzleClient();
-            return;
-        }
-        $this->httpClient = $httpClient;
+        $this->httpClient = $httpClient ?? (new GuzzleClient());
     }
 
     /**
      * @throws Exception
      */
-    public function getFile($url = '', array $options = []): PResponse
+    public function getFile(string $url = '', array $options = []): Response
     {
         if (method_exists($this->httpClient, 'getFile') === false) {
             throw new InvalidArgumentException('getFile() method not implemented in ' . get_class($this->httpClient));
@@ -44,18 +40,18 @@ class PRequest
         return $this->lastRawResponse;
     }
 
-    public function get($url = '', array $requestOptions = []): PResponse
+    public function get(string $url, array $requestOptions = []): Response
     {
         try {
             $this->lastRawResponse = $this->httpClient->get($url, $requestOptions);
         } catch (Exception $e) {
-            $this->lastRawResponse = new PResponse();
+            $this->lastRawResponse = new Response();
             $this->lastRawResponse->setError($e->getMessage());
         }
         return $this->lastRawResponse;
     }
 
-    public function post($url, $postData): PResponse
+    public function post(string $url, $postData): Response
     {
         if (is_array($postData)) {
             $postData = http_build_query($postData);
@@ -63,45 +59,14 @@ class PRequest
         try {
             $this->lastRawResponse = $this->httpClient->post($url, $postData);
         } catch (Exception $e) {
-            $this->lastRawResponse = new PResponse();
+            $this->lastRawResponse = new Response();
             $this->lastRawResponse->setError($e->getMessage());
         }
         return $this->lastRawResponse;
     }
 
 
-
-//    public function enableCookies(): PRequest
-//    {
-//        $this->clientOptions['enable_cookies'] = true;
-//        if (empty($this->cookiePath)) {
-//            $this->cookiePath = '/tmp/cook-prequest-' . uniqid();
-//        }
-//        if (method_exists($this->httpClient,'enableCookies')) {
-//            $this->httpClient->enableCookies($this->cookiePath);
-//        }
-//        return $this;
-//    }
-
-//    public function disableCookies(): PRequest
-//    {
-//        $this->clientOptions['enable_cookies'] = false;
-//        if (method_exists($this->httpClient,'disableCookies')) {
-//            $this->httpClient->disableCookies();
-//        }
-//        return $this;
-//    }
-//
-//    public function clearCookies(): PRequest
-//    {
-//        if (!empty($this->cookiePath)) {
-//            unlink($this->cookiePath);
-//        }
-//        return $this;
-//    }
-
-
-    public function setClient($client): PRequest
+    public function setClient(AbstractHttpClient $client): Request
     {
         $this->httpClient = $client;
         return $this;

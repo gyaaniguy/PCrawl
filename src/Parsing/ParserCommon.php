@@ -4,7 +4,7 @@ namespace Gyaaniguy\PCrawl\Parsing;
 
 use QueryPath\CSS\ParseException;
 
-class PParserCommon extends PParserBase
+class ParserCommon extends ParserBase
 {
     /**
      * @throws ParseException

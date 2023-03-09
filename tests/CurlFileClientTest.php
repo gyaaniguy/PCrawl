@@ -2,14 +2,14 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use Gyaaniguy\PCrawl\Request\PRequest;
+use Gyaaniguy\PCrawl\Request\Request;
 use PHPUnit\Framework\TestCase;
 
 class CurlFileClientTest extends TestCase
 {
     public function testGetFile()
     {
-        $req = new PRequest();
+        $req = new Request();
 
         $fileClient = new CurlClient();
         $req->setClient($fileClient);

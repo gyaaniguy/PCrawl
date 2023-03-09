@@ -2,14 +2,14 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use Gyaaniguy\PCrawl\Request\PRequest;
+use Gyaaniguy\PCrawl\Request\Request;
 use PHPUnit\Framework\TestCase;
 
 class GuzzleClientTest extends TestCase
 {
     public function testSetRedirects()
     {
-        $req = new PRequest();
+        $req = new Request();
         $client = new GuzzleClient();
         $client->setRedirects(4);
         $req->setClient($client);
@@ -24,7 +24,7 @@ class GuzzleClientTest extends TestCase
 
     public function testSetUserAgent()
     {
-        $req = new PRequest();
+        $req = new Request();
         $client = new GuzzleClient();
         $userAgentStr = "user agent test";
         $client->setUserAgent($userAgentStr);
@@ -44,7 +44,7 @@ class GuzzleClientTest extends TestCase
             'head2: val 2',
         ];
         $client->setHeaders($headers);
-        $req = new PRequest($client);
+        $req = new Request($client);
         $clientOptions = $client->getOptions();
         self::assertArrayHasKey('headers', $clientOptions);
         self::assertEquals($headers, $clientOptions['headers']);
@@ -59,7 +59,7 @@ class GuzzleClientTest extends TestCase
             'head1: val 1',
         ];
         $client->setHeaders($headers);
-        $req = new PRequest($client);
+        $req = new Request($client);
         $clientOptions = $client->getOptions();
         self::assertArrayHasKey('headers', $clientOptions);
         self::assertEquals($headers, $clientOptions['headers']);
@@ -77,7 +77,7 @@ class GuzzleClientTest extends TestCase
     {
         $g = new GuzzleClient();
         $g->cookies(true);
-        $req = new PRequest($g);
+        $req = new Request($g);
         $res = $req->get('https://www.myhttpheader.com/');
         self::assertStringNOTContainsString("PHPSESSID", $res->getBody());
         $res = $req->get('https://www.myhttpheader.com/');
@@ -98,7 +98,7 @@ class GuzzleClientTest extends TestCase
     public function _testClearCookiesForClient($g)
     {
         $g->cookies(true);
-        $req = new PRequest($g);
+        $req = new Request($g);
         $res = $req->get('https://www.myhttpheader.com/');
         self::assertStringNOTContainsString("PHPSESSID", $res->getBody());
         $res = $req->get('https://www.myhttpheader.com/');

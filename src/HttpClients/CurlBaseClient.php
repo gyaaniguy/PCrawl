@@ -2,17 +2,17 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use Gyaaniguy\PCrawl\Response\PResponse;
+use Gyaaniguy\PCrawl\Response\Response;
 use InvalidArgumentException;
 
 class CurlBaseClient extends AbstractHttpClient
 {
-    public $ch;
+    protected $ch;
     private array $responseHeaders;
 
     public function __construct()
     {
-        $this->res = new PResponse();
+        $this->res = new Response();
         $this->curlInitIf();
     }
 
@@ -38,7 +38,7 @@ class CurlBaseClient extends AbstractHttpClient
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     }
 
-    public function post(string $url, $postData): PResponse
+    public function post(string $url, $postData): Response
     {
         $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_POST, 1);
@@ -46,7 +46,7 @@ class CurlBaseClient extends AbstractHttpClient
         return $this->get($url);
     }
 
-    public function get(string $url, array $requestOptions = []): PResponse
+    public function get(string $url): Response
     {
         $this->curlInitIf();
         curl_setopt($this->ch, CURLOPT_URL, $url);
@@ -72,9 +72,9 @@ class CurlBaseClient extends AbstractHttpClient
      * Set various fields of the response object.
      * @param string $url
      * @param $response
-     * @return PResponse
+     * @return Response
      */
-    public function setResponse(string $url, $response): PResponse
+    public function setResponse(string $url, $response): Response
     {
         $getInfo = curl_getinfo($this->ch);
         $this->res->setRequestUrl($url);
@@ -94,10 +94,10 @@ class CurlBaseClient extends AbstractHttpClient
      * Download a file.
      * @param string $url Url of the file to download
      * @param array $options 'filepath' key should have the value of the path to save the file
-     * @return PResponse
+     * @return Response
      * @throws InvalidArgumentException
      */
-    public function getFile(string $url, array $options = []): PResponse
+    public function getFile(string $url, array $options = []): Response
     {
         if (empty($options) || empty($options['file_path'])) {
             throw new InvalidArgumentException('No file_path provided');

@@ -2,11 +2,12 @@
 
 namespace Gyaaniguy\PCrawl;
 
+use Gyaaniguy\PCrawl\HttpClients\AbstractHttpClient;
 use Gyaaniguy\PCrawl\HttpClients\CurlClient;
 use Gyaaniguy\PCrawl\HttpClients\CurlCustomClient;
 use Gyaaniguy\PCrawl\HttpClients\GuzzleClient;
-use Gyaaniguy\PCrawl\Request\PRequest;
-use Gyaaniguy\PCrawl\Response\PResponse;
+use Gyaaniguy\PCrawl\Request\Request;
+use Gyaaniguy\PCrawl\Response\Response;
 use PHPUnit\Framework\TestCase;
 
 class PRequestTest extends TestCase
@@ -15,9 +16,11 @@ class PRequestTest extends TestCase
     public function testSetClient()
     {
         $broBot = new Brobot();
-
-        $req = new PRequest();
+        $req = new Request();
+        self::assertInstanceOf(AbstractHttpClient::class, $req->getClient());
         $req->setClient($broBot);
+        self::assertInstanceOf(Brobot::class, $req->getClient());
+        self::assertInstanceOf(AbstractHttpClient::class, $req->getClient());
         $res = $req->get('https://manytools.org/http-html-text/http-request-headers/');
         self::assertStringContainsStringIgnoringCase("Bro bot", $res->getBody());
         self::assertStringContainsString("Head2", $res->getBody());
@@ -90,7 +93,7 @@ class PRequestTest extends TestCase
     {
         $webScriptClient = new WebScriptClient();
         $webScriptClient->setRedirects(3);
-        $req = new PRequest($webScriptClient);
+        $req = new Request($webScriptClient);
 
         $res = $req->get('https://www.icanhazip.com', ['unblock_site' => 'getIp']);
         self::assertStringContainsStringIgnoringCase("User Agent", $res->getBody());
@@ -101,7 +104,7 @@ class PRequestTest extends TestCase
     {
         $gClient = new WebScriptGuzzleClient();
         $gClient->setRedirects(3);
-        $req = new PRequest($gClient);
+        $req = new Request($gClient);
 
         $res = $req->get('https://www.icanhazip.com', ['unblock_site' => 'getIp']);
         self::assertStringContainsStringIgnoringCase("User Agent", $res->getBody());
@@ -127,7 +130,7 @@ class WebScriptClient extends CurlClient
         'user_agent' => 'We use you',
     ];
 
-    public function get(string $url, array $options = []): PResponse
+    public function get(string $url, array $options = []): Response
     {
         if (!empty($options['unblock_site'])) {
             switch ($options['unblock_site']) {
@@ -154,7 +157,7 @@ class WebScriptGuzzleClient extends GuzzleClient
         'user_agent' => 'We use you',
     ];
 
-    public function get(string $url, array $options = []): PResponse
+    public function get(string $url, array $options = []): Response
     {
         if (!empty($options['unblock_site'])) {
             switch ($options['unblock_site']) {

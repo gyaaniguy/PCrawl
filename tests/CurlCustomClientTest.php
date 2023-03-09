@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\HttpClients;
 
-use Gyaaniguy\PCrawl\Request\PRequest;
+use Gyaaniguy\PCrawl\Request\Request;
 use PHPUnit\Framework\TestCase;
 
 class CurlCustomClientTest extends TestCase
@@ -11,7 +11,7 @@ class CurlCustomClientTest extends TestCase
 
     public function testSetCustomClientOptions()
     {
-        $req = new PRequest();
+        $req = new Request();
         $client = new CurlCustomClient();
         $client->setCustomOptions([
             CURLOPT_HEADER => 1,
@@ -25,7 +25,7 @@ class CurlCustomClientTest extends TestCase
 
     public function testDefaultClientOptions()
     {
-        $req = new PRequest();
+        $req = new Request();
         $req->setClient(new OnlyHeadClient());
         $onlyHeadRes = $req->get('icanhazip.com');
 

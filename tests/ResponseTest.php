@@ -2,11 +2,11 @@
 
 namespace Gyaaniguy\PCrawl;
 
-use Gyaaniguy\PCrawl\Response\PResponse;
-use Gyaaniguy\PCrawl\Response\PResponseMods;
+use Gyaaniguy\PCrawl\Response\Response;
+use Gyaaniguy\PCrawl\Response\ResponseMods;
 use PHPUnit\Framework\TestCase;
 
-class PResponseTest extends TestCase
+class ResponseTest extends TestCase
 {
     public function uppercase($body): string
     {
@@ -20,9 +20,9 @@ class PResponseTest extends TestCase
 
     public function testModBody()
     {
-        $res = new PResponse();
+        $res = new Response();
         $res->setBody("up this");
-        $pResponseMods = new PResponseMods($res);
+        $pResponseMods = new ResponseMods($res);
         $pResponseMods->tidy();
         self::assertStringContainsString("up this", $res->getBody());
 

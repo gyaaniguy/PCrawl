@@ -2,7 +2,7 @@
 
 namespace Gyaaniguy\PCrawl\Response;
 
-use Gyaaniguy\PCrawl\Parsing\PParserBase;
+use Gyaaniguy\PCrawl\Parsing\ParserBase;
 use InvalidArgumentException;
 
 /**
@@ -13,7 +13,7 @@ use InvalidArgumentException;
  *
  * @author yourname
  */
-class PResponse
+class Response
 {
     protected string $body = '';
     protected array $responseHeaders;
@@ -21,7 +21,7 @@ class PResponse
     protected int $httpCode = 0;
     protected string $lastUrl;
     protected string $requestUrl;
-    private PParserBase $parser;
+    private ParserBase $parser;
 
     /**
      * @param string $body
