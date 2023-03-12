@@ -12,8 +12,8 @@ class CurlClient extends CurlBaseClient
 
 
     /**
-     * Sets the default client options. Intended to make easily clients extendable.
-     * Is automatically called and used if the base $clientOptions is set.
+     * Sets the default client options. Intended to make clients extendable.
+     * Is automatically called and used if $this->clientOptions is set.
      * @return void
      */
     private function setClientOptions()

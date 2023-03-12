@@ -22,6 +22,7 @@ class CurlCustomClient extends CurlBaseClient
     {
         $this->curlInitIf();
         curl_setopt_array($this->ch, $customClientOptions);
+        // Below doesn't 'do' anything right now.
         $this->clientOptions['custom_client_options'] = $customClientOptions;
     }
 }
