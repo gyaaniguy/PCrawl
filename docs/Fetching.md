@@ -5,8 +5,8 @@
 Create PRequest object, fetch page.
 
 ```php
-$pRequest = PRequest()
-$pResponse = $pRequest->get('google.com');
+$request = Request()
+$response = $request->get('google.com');
 ```
 
 Optionally pass a client object. Various options can be set on the client Object. Like cookies behaviour, custom headers
@@ -17,7 +17,7 @@ Alternatively chain method pattern can be used.
 
 $client = new CurlClient();
 $client->setRedirects(4)->setUserAgent("Bro bot");
-$req = new PRequest($client);
+$req = new Request($client);
 // $req->setClient($client); // Alternative
 $res = $req->get('google.com');
 ```
@@ -40,7 +40,7 @@ $broBot = $client->setRedirects(4)->setUserAgent("Bro bot");
 ```php
 class AddPageNumClient extends CurlClient
 {
-    public function get(string $url, array $options = []): PResponse
+    public function get(string $url, array $options = []): Response
     {
         if (!empty($options['page_num'])) {
                 $url = $url."?page=".$options['page_num']; 
@@ -70,7 +70,7 @@ class OnlyHeadClient extends CurlCustomClient
         'user_agent'            => 'Only Head bot',
     ];
 } 
-$req = new PRequest();
+$req = new Request();
 $req->setClient(new OnlyHeadClient());
 $onlyHeadRes = $req->get('icanhazip.com');
 ```  
@@ -83,9 +83,9 @@ This object contains the response body, and other fields like response headers, 
 This object accepts callbacks to manipulate response body
 
 ```php
-$pResponse = $pRequest->get('google.com');
-$pResponse->modBody(['toabs','tidy']);
-$body      = $pResponse->getBody();
+$response = $request->get('google.com');
+$response->modBody(['toabs','tidy']);
+$body      = $response->getBody();
 ```
 
 `TODO: add common modifications, like toabsurls`
@@ -99,7 +99,7 @@ This can be used to detect:
 - unexpected outputs. No set-cookie header. unexpected JS redirects .
 
 ```php
-$req = new PRequest();
+$req = new Request();
 $res = $req->enableCookies()->get($url);
 
 //Create Response Debug Obj. Set some failure conditions
@@ -131,7 +131,7 @@ So there are several ways in which it can be used
 ```php
 $goodBotClient = new GuzzleClient();
 $goodBotClient->setRedirects(4)->setUserAgent("Good bot");
-$req = new PRequest($client);
+$req = new Request($client);
 // $req->setClient($client); // Alternative
 $res = $req->get('google.com');
 ```
@@ -154,7 +154,7 @@ class AddPageNumClient extends GuzzleClient
 }
 
 $goodBotClient = new AddPageNumClient();
-$req = new PRequest($goodBotClient);
+$req = new Request($goodBotClient);
 $res = $req->get('google.com',['page_num' => 2]); // Fetches google.com?page_num=2 
 ```
 
@@ -172,7 +172,7 @@ class OnlyHeadGuzzleClient extends GuzzleCustomClient
         ],
     ];
 }
-$req = new PRequest();
+$req = new Request();
 $req->setClient(new OnlyHeadGuzzleClient());
 $onlyHeadRes = $req->get('https://manytools.org/http-html-text/http-request-headers');
 ```
@@ -190,7 +190,7 @@ $guzzleCustom = new GuzzleCustomClient();
 $guzzleCustom->setRawClient($myGuzzle);
 
 // Attach the customClient to a request
-$req = new PRequest();
+$req = new Request();
 $req->setClient($guzzleCustom);
 
 // Get

@@ -21,14 +21,14 @@ We'll try to fetch a bad page, then detect using a debugger and finally change c
 
 ```php
 // simple clients.
-$gu = new PGuzzleClient();
+$gu = new GuzzleClient();
 
 // Custom Client, that does not allow redirects.
-$uptightNoRedirectClient = new PCurlClient();
+$uptightNoRedirectClient = new CurlClient();
 $uptightNoRedirectClient->setRedirects(0); // disable redirects
 
 // Custom client - thin wrapper around curl
-class ConvertToHttpsClient extends PCurlCustomClient
+class ConvertToHttpsClient extends CurlCustomClient
 {
     public function get(string $url, array $options = []): PResponse
     {
@@ -40,9 +40,9 @@ class ConvertToHttpsClient extends PCurlCustomClient
 
 - Lets make some debugger objects
 ```php
-$redirectDetector = new PResponseDebug();
+$redirectDetector = new ResponseDebug();
 $redirectDetector->setMustNotExistHttpCodes([301, 302, 303, 307, 308]);
-$fullPageDetector = new PResponseDebug();
+$fullPageDetector = new ResponseDebug();
 $fullPageDetector->setMustExistRegex(['#</html>#']);
 ```
 
@@ -52,7 +52,7 @@ For testing, we will fetch page with a client that does not support redirects, t
 301. If so we change client option to support redirects and fetch again.
 
 ```php
-$req = new PRequest();
+$req = new Request();
 $url = "http://www.whatsmyua.info";
 $req->setClient($uptightNoRedirectClient);
 $count = 0;

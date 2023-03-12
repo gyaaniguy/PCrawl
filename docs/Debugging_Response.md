@@ -10,12 +10,12 @@ to what we were expecting.
 Make different criteria's:
 
 ```php
-$loggedInCriteria = new PResponseDebug();
+$loggedInCriteria = new ResponseDebug();
 $loggedInCriteria->setMustExistRegex(['/Logged In/']); 
 $loggedInCriteria->setMustNotExistRegex(['/cloudflare/i']); 
 $loggedInCriteria->setResponse($res);
 
-$fourHundredsDetector = new PResponseDebug();
+$fourHundredsDetector = new ResponseDebug();
 $fourHundredsDetector->setMustNotExistHttpCodes([400,404]);
 ```
 

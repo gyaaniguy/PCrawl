@@ -1,4 +1,4 @@
-# PParsers
+# Parsers
 
 A DOM parser - querypath library is used. Both css selectors and xpaths can be used.
 
@@ -9,7 +9,7 @@ First we create a parser object with a html string.
 
 ```php
 // Create a parser object
-$parser = new PParserBase($body);
+$parser = new ParserBase($body);
 // optional: change the html  
 $body1 = 'some html'
 $parser->setResponse($body1);
@@ -35,7 +35,7 @@ $parser->xpath();
 Convenience library to get common blocks like links and forms
 
 ```php
-$parser = PParserCommon($body ?: $this->body);
+$parser = ParserCommon($body ?: $this->body);
 $links = $parser->getAllLinks();
 $images = $parser->getAllImages();
 $forms = $parser->getAllFormInputDetails();

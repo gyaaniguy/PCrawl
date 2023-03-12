@@ -6,9 +6,9 @@ This object contains the response body, and other fields like response headers, 
 This object accepts callbacks to manipulate response body
 
 ```php
-$pResponse = $pRequest->get('google.com');
-$pResponse->modBody(['toabs','tidy']);
-$body      = $pResponse->getBody();
+$response = $request->get('google.com');
+$response->modBody(['toabs','tidy']);
+$body      = $response->getBody();
 ```
 
 `TODO: add common modifications, like toabsurls`
@@ -22,7 +22,7 @@ This can be used to detect:
 - unexpected outputs. No set-cookie header. unexpected JS redirects .
 
 ```php
-$req = new PRequest();
+$req = new Request();
 $res = $req->enableCookies()->get($url);
 
 //Create Response Debug Obj. Set some failiure conditions
