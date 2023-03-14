@@ -8,7 +8,19 @@ use PHPUnit\Framework\TestCase;
 class CurlCustomClientTest extends TestCase
 {
 
+    public function testCustomClientRaw()
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_USERAGENT, "raw curl");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $curlCustom = new CurlCustomClient();
+        $curlCustom->setRawClient($ch);
 
+        $req = new Request($curlCustom);
+
+        $res = $req->get('https://manytools.org/http-html-text/http-request-headers');
+        self::assertStringContainsStringIgnoringCase("raw curl", $res->getBody());
+    }
     public function testSetCustomClientOptions()
     {
         $req = new Request();
@@ -23,7 +35,7 @@ class CurlCustomClientTest extends TestCase
         self::assertStringNotContainsString("html", $onlyHeadRes->getBody());
     }
 
-    public function testDefaultClientOptions()
+    public function testDefaultCustomClientOptions()
     {
         $req = new Request();
         $req->setClient(new OnlyHeadClient());
@@ -32,12 +44,13 @@ class CurlCustomClientTest extends TestCase
         self::assertStringContainsString("HTTP", $onlyHeadRes->getBody());
         self::assertStringNotContainsString("html", $onlyHeadRes->getBody());
     }
+
 }
 
 
 class OnlyHeadClient extends CurlCustomClient
 {
-    public array $clientOptions = [
+    public array $customClientOptions = [
         CURLOPT_HEADER => 1,
         CURLOPT_NOBODY => 0,
         CURLOPT_USERAGENT => 'only head',

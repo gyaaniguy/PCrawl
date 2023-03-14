@@ -115,7 +115,7 @@ class PRequestTest extends TestCase
 
 class Brobot extends CurlCustomClient
 {
-    public array $clientOptions = [
+    public array $customClientOptions = [
         CURLOPT_USERAGENT => 'Bro bot',
         CURLOPT_HTTPHEADER => [
             'head1: val 1',

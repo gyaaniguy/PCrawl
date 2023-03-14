@@ -58,3 +58,4 @@ class CurlClientTest extends TestCase
         self::assertEquals(301, $res->getHttpCode());
     }
 }
+
