@@ -9,6 +9,13 @@ $request = Request()
 $response = $request->get('google.com');
 ```
 
+With Factory
+
+```php
+$req = RequestFactory::create(new GuzzleClient());
+$res = $req->get('google.com');
+````
+
 Optionally pass a client object. Various options can be set on the client Object. Like cookies behaviour, custom headers
 etc
 Alternatively chain method pattern can be used.

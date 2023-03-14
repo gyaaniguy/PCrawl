@@ -13,6 +13,23 @@ It supports multiple clients: curl, guzzle. Options to debug, modify and parse r
 - Parse responses using querypath library. Several convenience functions are provided.
 - Fluent API. Different debuggers, clients and response mod objects can be be changed on the fly !
 
+## Quick Example
+
+```php
+// Oneliner with factory
+$response = RequestFactory::create()->getClient()->setUserAgent('good bot')->get('site.com');
+
+// supply client to factory:
+$req = RequestFactory::create(new GuzzleClient());
+$req->getClient()->setUserAgent('good bot')->get('site.com');
+// Change client on the fly
+$req->setClient(new CurlClient())->get('site.com');
+// Get the client and change options.
+$client = $req->getClient();
+$client->setUserAgent('another bot');
+$res = $req->get('site.com');
+```
+
 ## Full Example
 
 We'll try to fetch a bad page, then detect using a debugger and finally change client options to fetch the page correctly.

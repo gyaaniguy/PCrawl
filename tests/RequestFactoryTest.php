@@ -26,7 +26,18 @@ class RequestFactoryTest extends TestCase
 
     public function testFetchWithFactory()
     {
-        $req = RequestFactory::create()->get('http://www.whatsmyua.info/');
-        $this->assertStringContainsStringIgnoringCase('my user agent', $req->getBody());
+        $res = RequestFactory::create()->get('http://www.whatsmyua.info/');
+        $this->assertStringContainsStringIgnoringCase('my user agent', $res->getBody());
+    }
+    
+    public function testGetClient()
+    {
+        // supply client to factory:
+        $req = RequestFactory::create();
+        $client = $req->getClient();
+        $client->setUserAgent('another bot');
+        $res = $req->get('http://www.whatsmyua.info');
+        $this->assertStringContainsStringIgnoringCase('another bot', $res->getBody());
+
     }
 }
