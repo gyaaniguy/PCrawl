@@ -51,6 +51,11 @@ class Request
         return $this->lastRawResponse;
     }
 
+    /**
+     * @param string $url
+     * @param string|array $postData - if array, it will be converted to query string
+     * @return Response
+     */
     public function post(string $url, $postData): Response
     {
         if (is_array($postData)) {
