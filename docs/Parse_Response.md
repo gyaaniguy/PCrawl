@@ -35,7 +35,7 @@ $parser->xpath();
 Convenience library to get common blocks like links and forms
 
 ```php
-$parser = ParserCommon($body ?: $this->body);
+$parser = new ParserCommon($body ?: $this->body);
 $links = $parser->getAllLinks();
 $images = $parser->getAllImages();
 $forms = $parser->getAllFormInputDetails();
@@ -43,3 +43,4 @@ $forms = $parser->getAllFormInputDetails();
 
 # Querypath usage
 
+https://github.com/gyaaniguy/querypath_guide

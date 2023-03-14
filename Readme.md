@@ -67,12 +67,13 @@ do {
 } while ($redirectDetector->isFail() && $count++ < 1);
 ```
 Use the fullPageDetector to detect if the page is proper.   
-Then parse the response body using PParser
+Then parse the response body using Parser
 ```php
 if ($fullPageDetector->setResponse($res)->isFail()) {
     var_dump($redirectDetector->getFailDetail());
 } else {
-    $h1 = $parser->setResponse($res->getBody())->find('h1')->text();
+    $parser = new ParserCommon($res->getBody()); 
+    $h1 = $parser->find('h1')->text();
     $htmlClass = $parser->find('html')->attr('class');
 }
 ```
