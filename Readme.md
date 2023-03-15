@@ -28,7 +28,7 @@ $uptightNoRedirectClient = new CurlClient();
 $uptightNoRedirectClient->setRedirects(0); // disable redirects
 
 // Custom client - thin wrapper around curl
-class ConvertToHttpsClient extends CurlCustomClient
+class ConvertToHttpsClient extends CurlClient
 {
     public function get(string $url, array $options = []): PResponse
     {
