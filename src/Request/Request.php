@@ -35,7 +35,6 @@ class Request
             throw new InvalidArgumentException('file_path not set in options');
         }
         $fileOptions['file_path'] = $options['file_path'];
-        // TODO - this is a hack , the response object body would be empty in case of file download. Implement after implementing guzzleclient getfile
         $this->lastRawResponse = $this->httpClient->getFile($url, $fileOptions);
         return $this->lastRawResponse;
     }
