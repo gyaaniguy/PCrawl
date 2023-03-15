@@ -120,8 +120,8 @@ class CurlClient extends CurlBaseClient
     }
 
     /**
-     * Set the proxy to use by the client. 
-     * @param string $proxyPort - host:port - '1.1.1.1:8080' OR 'bestproxy:8080'  
+     * Set the proxy to use by the client.
+     * @param string $proxyPort - host:port - '1.1.1.1:8080' OR 'bestproxy:8080'
      * @param string $proxyAuth - username:password
      * @return $this
      */
