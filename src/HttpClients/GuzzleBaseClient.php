@@ -131,11 +131,11 @@ class GuzzleBaseClient extends AbstractHttpClient
         if (empty($options) || empty($options['file_path'])) {
             throw new InvalidArgumentException('No file_path provided');
         }
-        $fp = fopen($options['file_path'], 'w+');
-        if (!$fp) {
-            throw new InvalidArgumentException('filepath is not writable');
-        }
-        // TODO
+        $this->getBaseClient();
+        $response = $this->baseClient->request('GET', $url, [
+            'sink' => $options['file_path']
+        ]);
+        return $this->setResponse($url, $response);
     }
 
     /**
