@@ -6,11 +6,13 @@ use GuzzleHttp\Client;
 
 class GuzzleCustomClient extends GuzzleBaseClient
 {
+    protected array $customClientOptions = [];
+
     public function __construct()
     {
         parent::__construct();
-        if (!empty($this->clientOptions)) {
-            $this->setCustomOptions($this->clientOptions);
+        if (!empty($this->customClientOptions)) {
+            $this->setCustomOptions($this->customClientOptions);
         }
     }
 

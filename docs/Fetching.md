@@ -2,15 +2,14 @@
 
 ## Fetching a Page
 
-Create PRequest object, fetch page.
+Create Request object, fetch page.
 
 ```php
 $request = Request()
 $response = $request->get('google.com');
 ```
 
-Optionally pass a client object. Various options can be set on the client Object. Like cookies behaviour, custom headers
-etc
+Optionally pass a client object. Various options can be set on the client Object. Like cookie behaviour, custom headers etc.  
 Alternatively chain method pattern can be used.
 
 ```php
@@ -27,16 +26,17 @@ $res = $req->get('google.com');
 Default is GuzzleClient.
 New clients can be created easily. Or existing clients behaviour and setting can be modified on the fly.
 
-##### On The fly
+##### On the fly settings
+Create a client, then modify its options.
 
-Not available with CustomClients but only with GuzzleClient and CurlClient.
+>Not available with CustomClients but only with GuzzleClient and CurlClient.
 
 ```php
 $broBot = $client->setRedirects(4)->setUserAgent("Bro bot");
 ```
 
-##### Extended clients
-
+##### Extend clients
+For more advanced functionality. Here we need to modify the url based on some options.
 ```php
 class AddPageNumClient extends CurlClient
 {
@@ -47,37 +47,44 @@ class AddPageNumClient extends CurlClient
                 return parent::get($url);
             }
         } 
-        return parent::get($url,$options);
+        return parent::get($url);
     }
 }
 ```
+Other use cases could be: modify https, 
 
 ##### Custom Clients
 
-Thin wrappers around the underlying curl and guzzle clients. Meant to used when you need control. Don't have set
-functions.
-Extend the CurlCustomClient OR GuzzleCustomClient class. Set $customClientOptions=[] to set any curl options. See
-PRequestTest.php file for more examples.
-
+Thin wrappers around the underlying curl and guzzle clients. Use when you need control. Don't have ->set..() functions.  
+3 ways of using these:
 ```php
+// Pass 'raw' client
+$ch = curl_init();
+$curlCustom = new CurlCustomClient();
+$curlCustom->setRawClient($ch);
+
+// Pass full configuration
+$client = new CurlCustomClient();
+$client->setCustomOptions([
+    CURLOPT_HEADER => 1,
+    CURLOPT_NOBODY => 1,
+]);
+
+// Extend the CurlCustomClient OR GuzzleCustomClient class and set $customClientOptions 
 class OnlyHeadClient extends CurlCustomClient
 {
     public array $customClientOptions = [
-        'custom_client_options' => [
-            CURLOPT_NOBODY => 0,
-            CURLOPT_HEADER => 1,
-        ],
-        'user_agent'            => 'Only Head bot',
+        CURLOPT_HEADER => 1,
+        CURLOPT_NOBODY => 0,
+        CURLOPT_USERAGENT => 'only head',
     ];
-} 
-$req = new Request();
-$req->setClient(new OnlyHeadClient());
-$onlyHeadRes = $req->get('icanhazip.com');
-```  
+}
 
-## PResponse
+```
 
-PRequest returns a PResponse Object.
+## Response
+
+Request returns a Response Object.
 This object contains the response body, and other fields like response headers, http code.
 `TODO: add 'nodebug/light' mode to skip extra data like httpcode`
 This object accepts callbacks to manipulate response body
@@ -142,7 +149,7 @@ $res = $req->get('google.com');
 
 class AddPageNumClient extends GuzzleClient
 {
-    public function get(string $url, array $options = []): PResponse
+    public function get(string $url, array $options = []): Response
     {
         if (!empty($options['page_num'])) {
                 $url = $url."?page=".$options['page_num']; 

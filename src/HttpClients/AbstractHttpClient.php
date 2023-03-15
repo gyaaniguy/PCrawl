@@ -17,5 +17,6 @@ abstract class AbstractHttpClient
     abstract public function get(string $url): Response;
 
     abstract public function post(string $url, $postData): Response;
+
     abstract public function getFile(string $url, array $options = []): Response;
 }

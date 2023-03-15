@@ -94,6 +94,19 @@ class GuzzleBaseClient extends AbstractHttpClient
     }
 
     /**
+     * @return string
+     */
+    public function getProxyStr(): string
+    {
+        $proxyStr = '';
+        if (!empty($this->clientOptions['proxyAuth'])) {
+            $proxyStr .= $this->clientOptions['proxyAuth'] . '@';
+        }
+        $proxyStr .= $this->clientOptions['proxyPort'];
+        return $proxyStr;
+    }
+
+    /**
      * Sets the library response object, and its various fields from the values of the guzzles response.
      * @param string $url
      * @param ResponseInterface $response
@@ -136,18 +149,5 @@ class GuzzleBaseClient extends AbstractHttpClient
             'sink' => $options['file_path']
         ]);
         return $this->setResponse($url, $response);
-    }
-
-    /**
-     * @return string
-     */
-    public function getProxyStr(): string
-    {
-        $proxyStr = '';
-        if (!empty($this->clientOptions['proxyAuth'])) {
-            $proxyStr .= $this->clientOptions['proxyAuth'] . '@';
-        }
-        $proxyStr .= $this->clientOptions['proxyPort'];
-        return $proxyStr;
     }
 }
