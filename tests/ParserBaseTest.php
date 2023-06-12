@@ -36,11 +36,12 @@ class ParserBaseTest extends TestCase
     {
         $body = '<html lang="en"><body><a href="http://www.google.com">Google</a></body></html>';
         $pParserBase = $this->makePParserBase($body);
-        $links = $pParserBase->xpath('//a');
+        $links = $pParserBase->xpathObj('//a');
         $this->assertInstanceOf(ParserBase::class, $pParserBase);
         $this->assertInstanceOf(DOMQuery::class, $links);
-
-        $this->assertEquals(1, count($links));
+        $this->assertCount(1, $links);
+        $title = $pParserBase->xpathText('//html/@lang');
+        $this->assertEquals("en", $title);
     }
 
     public function testChildren()

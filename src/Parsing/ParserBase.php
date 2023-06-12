@@ -36,13 +36,16 @@ class ParserBase
         return $this->querypath->find($query);
     }
 
+    public function xpathObj(string $query)
+    {
+        return $this->querypath->xpath($query);
+    }
     /**
      * @throws ParseException
      */
-    public function xpath(string $query)
+    public function xpathText(string $query)
     {
-        $this->getQuerypathXMLObject();
-        return $this->qpXML->xpath($query);
+        return $this->xpathObj($query)->eq(0)->text();
     }
 
     /**
