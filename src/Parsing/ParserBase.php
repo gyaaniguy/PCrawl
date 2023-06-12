@@ -10,13 +10,13 @@ class ParserBase
 {
     public DOMQuery $querypath;
     public DOMQuery $qpXML;
-    private string $body = '';
+    protected string $body = '';
 
     public function __construct(string $body = '', array $options = [])
     {
         if (!empty($body)) {
             $this->body = $body;
-            $this->querypath = QueryPath::withHTML5($body, '', $options);
+            $this->querypath = QueryPath::withHTML($body, '', $options);
         }
     }
 

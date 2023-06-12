@@ -6,6 +6,10 @@ use QueryPath\CSS\ParseException;
 
 class ParserCommon extends ParserBase
 {
+    public function __construct($body = "")
+    {
+        parent::__construct($body);
+    }
     /**
      * @throws ParseException
      */

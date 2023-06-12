@@ -29,7 +29,7 @@ class GuzzleClient extends GuzzleBaseClient
     public function addHeaders(array $headers): GuzzleClient
     {
         if (!empty($headers)) {
-            $this->setHeaders(RegexStuff::combineHeaders($headers, $this->clientOptions['headers']));
+            $this->setHeaders(RegexStuff::combineHeaders($headers, ($this->clientOptions['headers'] ?? [] ) ));
         }
         return $this;
     }
